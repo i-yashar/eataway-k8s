@@ -3,6 +3,7 @@ package bg.tuplovdiv.restaurants.service.impl;
 import bg.tuplovdiv.restaurants.dto.RestaurantDTO;
 import bg.tuplovdiv.restaurants.dto.page.PageDTO;
 import bg.tuplovdiv.restaurants.dto.page.PageInfo;
+import bg.tuplovdiv.restaurants.exception.RestaurantNotFoundException;
 import bg.tuplovdiv.restaurants.mapper.RestaurantMapper;
 import bg.tuplovdiv.restaurants.model.entity.RestaurantEntity;
 import bg.tuplovdiv.restaurants.repository.RestaurantRepository;
@@ -37,7 +38,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     private RestaurantEntity getRestaurantByRestaurantId(UUID restaurantId) {
         return restaurantRepository.findByExternalId(restaurantId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new RestaurantNotFoundException("Restaurant not found"));
     }
 
     @Override
