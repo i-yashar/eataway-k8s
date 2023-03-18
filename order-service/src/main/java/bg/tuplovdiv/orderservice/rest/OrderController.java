@@ -2,6 +2,7 @@ package bg.tuplovdiv.orderservice.rest;
 
 import bg.tuplovdiv.orderservice.dto.CreateOrderDTO;
 import bg.tuplovdiv.orderservice.dto.OrderDTO;
+import bg.tuplovdiv.orderservice.dto.page.PageDTO;
 import bg.tuplovdiv.orderservice.service.OrderService;
 import bg.tuplovdiv.orderservice.validation.OrderValidator;
 import org.springframework.http.ResponseEntity;
@@ -10,8 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -32,24 +31,24 @@ public class OrderController {
 
     @GetMapping(ORDERS_PATH + ORDER_ID)
     public ResponseEntity<OrderDTO> getOrder(@PathVariable("orderId") UUID orderId) {
-        return ResponseEntity.ok(new OrderDTO());
+        return ResponseEntity.ok(orderService.findOrderByOrderId(orderId));
     }
 
     @GetMapping(CLIENT_ORDERS_PATH)
-    public ResponseEntity<List<OrderDTO>> getUserOrders(@PathVariable("userId") UUID userId,
-                                                        @RequestParam(name = "page", required = false, defaultValue = "0") int page,
-                                                        @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
-        return ResponseEntity.ok(new ArrayList<>());
+    public ResponseEntity<PageDTO<OrderDTO>> getUserOrders(@PathVariable("userId") UUID userId,
+                                                           @RequestParam(name = "page", required = false, defaultValue = "0") int page,
+                                                           @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
+        return ResponseEntity.ok(orderService.findAllUserOrders(userId, page, size));
     }
 
     @PostMapping(ORDERS_PATH)
     @PreAuthorize("@orderValidator.isValid(#orderDTO)")
     public ResponseEntity<Void> createNewOrder(@RequestBody CreateOrderDTO orderDTO) {
-        UUID orderId = UUID.randomUUID();
+        OrderDTO order = orderService.createOrder(orderDTO);
 
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentContextPath()
-                .buildAndExpand("/{orderId}", orderId)
+                .buildAndExpand("/{orderId}", order.getOrderId())
                 .toUri();
 
         return ResponseEntity.created(uri).build();

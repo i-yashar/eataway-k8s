@@ -1,5 +1,6 @@
 package bg.tuplovdiv.orderservice.dto;
 
+import bg.tuplovdiv.orderservice.model.OrderStatus;
 import bg.tuplovdiv.orderservice.model.entity.BasketItemEntity;
 
 import java.util.Set;
@@ -13,6 +14,7 @@ public class OrderDTO {
     private String address;
     private Set<BasketItemEntity> items;
     private Double totalCost;
+    private OrderStatus status;
 
     public UUID getOrderId() {
         return orderId;
@@ -74,6 +76,15 @@ public class OrderDTO {
 
     public OrderDTO setTotalCost(Double totalCost) {
         this.totalCost = totalCost;
+        return this;
+    }
+
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public OrderDTO setStatus(OrderStatus status) {
+        this.status = status;
         return this;
     }
 }

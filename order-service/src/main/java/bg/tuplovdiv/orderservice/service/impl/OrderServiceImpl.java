@@ -4,6 +4,7 @@ import bg.tuplovdiv.orderservice.dto.CreateOrderDTO;
 import bg.tuplovdiv.orderservice.dto.OrderDTO;
 import bg.tuplovdiv.orderservice.dto.page.PageDTO;
 import bg.tuplovdiv.orderservice.mapper.OrderMapper;
+import bg.tuplovdiv.orderservice.model.OrderStatus;
 import bg.tuplovdiv.orderservice.model.entity.OrderEntity;
 import bg.tuplovdiv.orderservice.repository.OrderRepository;
 import bg.tuplovdiv.orderservice.service.OrderService;
@@ -43,7 +44,17 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDTO createOrder(CreateOrderDTO orderDTO) {
-        return null;
+        UUID orderId = registerOrder(orderDTO);
+        //todo: implement delivery logic
+        return new OrderDTO();
+    }
+
+    private UUID registerOrder(CreateOrderDTO orderDTO) {
+        OrderEntity orderEntity = mapper.toEntity(orderDTO);
+        orderEntity.setStatus(OrderStatus.REGISTERED);
+
+        return orderRepository.save(orderEntity)
+                .getExternalId();
     }
 
     private OrderEntity getOrderByOrderId(UUID orderId) {

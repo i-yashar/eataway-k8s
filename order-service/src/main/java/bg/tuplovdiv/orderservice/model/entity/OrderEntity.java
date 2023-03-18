@@ -1,5 +1,6 @@
 package bg.tuplovdiv.orderservice.model.entity;
 
+import bg.tuplovdiv.orderservice.model.OrderStatus;
 import jakarta.persistence.*;
 
 import java.util.UUID;
@@ -32,6 +33,10 @@ public class OrderEntity {
 
     @Column(nullable = false)
     private Double totalCost;
+
+    @Enumerated(value = EnumType.STRING)
+    @Column(nullable = false)
+    private OrderStatus status;
 
     public Long getId() {
         return id;
@@ -102,6 +107,15 @@ public class OrderEntity {
 
     public OrderEntity setTotalCost(Double totalCost) {
         this.totalCost = totalCost;
+        return this;
+    }
+
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public OrderEntity setStatus(OrderStatus status) {
+        this.status = status;
         return this;
     }
 }
