@@ -1,7 +1,11 @@
 package bg.tuplovdiv.orderservice.rest;
 
+import bg.tuplovdiv.orderservice.dto.CreateOrderDTO;
 import bg.tuplovdiv.orderservice.dto.OrderDTO;
+import bg.tuplovdiv.orderservice.service.OrderService;
+import bg.tuplovdiv.orderservice.validation.OrderValidator;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -18,6 +22,14 @@ public class OrderController {
     private static final String CLIENT_ID = "/{userId}";
     private static final String CLIENT_ORDERS_PATH = "/users" + CLIENT_ID + ORDERS_PATH;
 
+    private final OrderService orderService;
+    private final OrderValidator orderValidator;
+
+    public OrderController(OrderService orderService, OrderValidator orderValidator) {
+        this.orderService = orderService;
+        this.orderValidator = orderValidator;
+    }
+
     @GetMapping(ORDERS_PATH + ORDER_ID)
     public ResponseEntity<OrderDTO> getOrder(@PathVariable("orderId") UUID orderId) {
         return ResponseEntity.ok(new OrderDTO());
@@ -31,7 +43,8 @@ public class OrderController {
     }
 
     @PostMapping(ORDERS_PATH)
-    public ResponseEntity<Void> createNewOrder(@RequestBody OrderDTO orderDTO) {
+    @PreAuthorize("@orderValidator.isValid(#orderDTO)")
+    public ResponseEntity<Void> createNewOrder(@RequestBody CreateOrderDTO orderDTO) {
         UUID orderId = UUID.randomUUID();
 
         URI uri = ServletUriComponentsBuilder
