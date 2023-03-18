@@ -1,8 +1,8 @@
 package bg.tuplovdiv.orderservice.dto;
 
-import bg.tuplovdiv.orderservice.model.entity.MenuEntity;
+import bg.tuplovdiv.orderservice.model.entity.BasketItemEntity;
 
-import java.util.Collection;
+import java.util.Set;
 import java.util.UUID;
 
 public class OrderDTO {
@@ -11,7 +11,7 @@ public class OrderDTO {
     private String clientPhoneNumber;
     private UUID deliverDriverId;
     private String address;
-    private Collection<MenuEntity> orderItems;
+    private Set<BasketItemEntity> items;
     private Double totalCost;
 
     public UUID getOrderId() {
@@ -59,12 +59,12 @@ public class OrderDTO {
         return this;
     }
 
-    public Collection<MenuEntity> getOrderItems() {
-        return orderItems;
+    public Set<BasketItemEntity> getItems() {
+        return items;
     }
 
-    public OrderDTO setOrderItems(Collection<MenuEntity> orderItems) {
-        this.orderItems = orderItems;
+    public OrderDTO setItems(Set<BasketItemEntity> items) {
+        this.items = items;
         return this;
     }
 

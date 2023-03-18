@@ -24,7 +24,9 @@ public class OrderController {
     }
 
     @GetMapping(CLIENT_ORDERS_PATH)
-    public ResponseEntity<List<OrderDTO>> getUserOrders(@PathVariable("userId") UUID userId) {
+    public ResponseEntity<List<OrderDTO>> getUserOrders(@PathVariable("userId") UUID userId,
+                                                        @RequestParam(name = "page", required = false, defaultValue = "0") int page,
+                                                        @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
         return ResponseEntity.ok(new ArrayList<>());
     }
 
