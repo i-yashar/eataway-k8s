@@ -16,7 +16,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
                 .authorizeHttpRequests()
-                .anyRequest().authenticated();
+                .anyRequest().permitAll();
 
         return http.build();
     }

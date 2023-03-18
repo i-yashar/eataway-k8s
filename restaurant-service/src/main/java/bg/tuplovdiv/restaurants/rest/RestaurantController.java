@@ -26,8 +26,8 @@ public class RestaurantController {
     }
 
     @GetMapping(RESTAURANTS_PATH)
-    public ResponseEntity<PageDTO<RestaurantDTO>> getRestaurants(@RequestParam(name = "page", required = false) Integer page,
-                                                                 @RequestParam(name = "size", required = false) Integer size) {
+    public ResponseEntity<PageDTO<RestaurantDTO>> getRestaurants(@RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
+                                                                 @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
         return ResponseEntity.ok(restaurantService.findAllRestaurants(page, size));
     }
 }

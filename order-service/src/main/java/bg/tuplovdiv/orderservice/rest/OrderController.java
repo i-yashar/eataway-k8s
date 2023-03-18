@@ -15,15 +15,15 @@ import java.util.UUID;
 public class OrderController {
     private static final String ORDER_ID = "/{orderId}";
     private static final String ORDERS_PATH = "/orders";
-    private static final String USER_ID = "/{userId}";
-    private static final String USER_ORDERS_PATH = "/users" + USER_ID + ORDERS_PATH;
+    private static final String CLIENT_ID = "/{userId}";
+    private static final String CLIENT_ORDERS_PATH = "/users" + CLIENT_ID + ORDERS_PATH;
 
     @GetMapping(ORDERS_PATH + ORDER_ID)
     public ResponseEntity<OrderDTO> getOrder(@PathVariable("orderId") UUID orderId) {
         return ResponseEntity.ok(new OrderDTO());
     }
 
-    @GetMapping(USER_ORDERS_PATH)
+    @GetMapping(CLIENT_ORDERS_PATH)
     public ResponseEntity<List<OrderDTO>> getUserOrders(@PathVariable("userId") UUID userId) {
         return ResponseEntity.ok(new ArrayList<>());
     }
