@@ -2,7 +2,6 @@ package bg.tuplovdiv.restaurants.service.impl;
 
 import bg.tuplovdiv.restaurants.dto.RestaurantDTO;
 import bg.tuplovdiv.restaurants.dto.page.PageDTO;
-import bg.tuplovdiv.restaurants.dto.page.PageInfo;
 import bg.tuplovdiv.restaurants.exception.RestaurantNotFoundException;
 import bg.tuplovdiv.restaurants.mapper.RestaurantMapper;
 import bg.tuplovdiv.restaurants.model.entity.RestaurantEntity;
@@ -13,7 +12,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -48,11 +46,18 @@ public class RestaurantServiceImpl implements RestaurantService {
         return getRestaurantsPage(pageable);
     }
 
+    @Override
+    public RestaurantDTO saveRestaurant(RestaurantDTO restaurantDTO) {
+        RestaurantEntity restaurantEntity = mapper.toEntity(restaurantDTO);
+
+        return mapper.toDTO(restaurantRepository.save(restaurantEntity));
+    }
+
     private PageDTO<RestaurantDTO> getRestaurantsPage(Pageable pageable) {
         Page<RestaurantEntity> restaurants = restaurantRepository.findAll(pageable);
         return new PageDTO<RestaurantDTO>()
                 .setContent(mapToListOfDTOs(restaurants.getContent()))
-                .setPageInfo(new PageInfo().setSize(restaurants.getSize()).setHasNext(restaurants.hasNext()));
+                .setPageInfo(restaurants.getContent().size(), restaurants.hasNext());
     }
 
     private List<RestaurantDTO> mapToListOfDTOs(List<RestaurantEntity> restaurants) {

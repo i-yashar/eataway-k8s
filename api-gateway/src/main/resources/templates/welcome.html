@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments/head::head"></head>
+
+<body>
+
+<div th:replace="fragments/navbar :: navbar">
+    Navbar
+</div>
+
+<div class="welcomePage jumbotron mt-5 pb-3 mx-auto col-8">
+    <h1 sec:authorize="isAuthenticated()" class="display-4">Welcome to Eataway, <span th:text="${user}"></span>!</h1>
+    <h1 sec:authorize="isAnonymous()" class="display-4">Welcome to Eataway!</h1>
+    <p sec:authorize="isAnonymous()" class="lead">Eataway is an awesome food delivery website, with many awesome restaurants
+        to choose from!</p>
+    <hr class="my-4">
+    <div sec:authorize="isAnonymous()" class="row">
+        <p class="lead"><a href="/users/login">Log in</a> to make orders.</p>
+        <p class="lead"> Don't have a profile yet? <a href="/users/register">Register</a>, it's free :)</p>
+    </div>
+
+</div>
+
+<div>
+    <footer></footer>
+</div>
+</body>
+</html>

@@ -1,11 +1,19 @@
 package bg.tuplovdiv.restaurants.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 import java.util.UUID;
 
 public class RestaurantDTO {
+
     private UUID restaurantId;
+
+    @NotBlank
     private String name;
+
+    @NotBlank
     private String address;
+
     private String description;
 
     public UUID getRestaurantId() {

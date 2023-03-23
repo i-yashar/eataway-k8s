@@ -19,8 +19,8 @@ public class PageDTO<T> {
         return pageInfo;
     }
 
-    public PageDTO<T> setPageInfo(PageInfo pageInfo) {
-        this.pageInfo = pageInfo;
+    public PageDTO<T> setPageInfo(int size, boolean hasNext) {
+        this.pageInfo = new PageInfo().setSize(size).setHasNext(hasNext);
         return this;
     }
 }
