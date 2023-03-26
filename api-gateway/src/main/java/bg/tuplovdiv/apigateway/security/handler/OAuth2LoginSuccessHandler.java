@@ -1,5 +1,7 @@
-package bg.tuplovdiv.apigateway.security;
+package bg.tuplovdiv.apigateway.security.handler;
 
+import bg.tuplovdiv.apigateway.security.user.impl.EatawayUser;
+import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
 import bg.tuplovdiv.apigateway.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,9 +17,9 @@ import java.io.IOException;
 public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
     private final UserService userService;
-    private final AuthorizationUserProvider userProvider;
+    private final AuthenticatedUserProvider userProvider;
 
-    public OAuth2LoginSuccessHandler(UserService userService, AuthorizationUserProvider userProvider) {
+    public OAuth2LoginSuccessHandler(UserService userService, AuthenticatedUserProvider userProvider) {
         this.userService = userService;
         this.userProvider = userProvider;
         setDefaultTargetUrl("/home");

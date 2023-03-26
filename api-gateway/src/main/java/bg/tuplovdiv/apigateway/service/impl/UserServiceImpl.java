@@ -3,7 +3,7 @@ package bg.tuplovdiv.apigateway.service.impl;
 import bg.tuplovdiv.apigateway.mapper.UserMapper;
 import bg.tuplovdiv.apigateway.model.entity.UserEntity;
 import bg.tuplovdiv.apigateway.repository.UserRepository;
-import bg.tuplovdiv.apigateway.security.EatawayUser;
+import bg.tuplovdiv.apigateway.security.user.impl.EatawayUser;
 import bg.tuplovdiv.apigateway.service.UserService;
 import org.springframework.stereotype.Service;
 

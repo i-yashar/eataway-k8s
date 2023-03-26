@@ -1,7 +1,7 @@
 package bg.tuplovdiv.apigateway.mapper;
 
 import bg.tuplovdiv.apigateway.model.entity.UserEntity;
-import bg.tuplovdiv.apigateway.security.EatawayUser;
+import bg.tuplovdiv.apigateway.security.user.impl.EatawayUser;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -1,7 +1,7 @@
 package bg.tuplovdiv.apigateway.controller;
 
-import bg.tuplovdiv.apigateway.security.AuthorizationUser;
-import bg.tuplovdiv.apigateway.security.AuthorizationUserProvider;
+import bg.tuplovdiv.apigateway.security.user.AuthenticatedUser;
+import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,9 +11,9 @@ import java.security.Principal;
 @Controller
 public class HomeController {
 
-    private final AuthorizationUserProvider userProvider;
+    private final AuthenticatedUserProvider userProvider;
 
-    public HomeController(AuthorizationUserProvider userProvider) {
+    public HomeController(AuthenticatedUserProvider userProvider) {
         this.userProvider = userProvider;
     }
 
@@ -21,7 +21,7 @@ public class HomeController {
     public String getHome(Model model, Principal principal) {
 
         if(principal != null) {
-            AuthorizationUser user = userProvider.provide();
+            AuthenticatedUser user = userProvider.provide();
             model.addAttribute("user", user.getName());
         }
 

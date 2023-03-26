@@ -1,8 +1,9 @@
-package bg.tuplovdiv.apigateway.security;
+package bg.tuplovdiv.apigateway.security.user.impl;
 
+import bg.tuplovdiv.apigateway.security.user.AuthenticatedUser;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class EatawayUser implements AuthorizationUser {
+public class EatawayUser implements AuthenticatedUser {
 
     @JsonProperty("sub")
     private String userId;
