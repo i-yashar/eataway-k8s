@@ -31,7 +31,7 @@
                 <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
                     <th:block sec:authorize="isAuthenticated()">
                         <li class="nav-item">
-                            <form th:action="@{/users/logout}" th:method="post">
+                            <form th:action="@{/logout}" th:method="post">
                                 <input class="btn btn-link nav-link active" type="submit" value="Logout">
                             </form>
                         </li>

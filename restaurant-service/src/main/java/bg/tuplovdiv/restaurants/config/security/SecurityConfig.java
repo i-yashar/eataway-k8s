@@ -1,4 +1,4 @@
-package bg.tuplovdiv.restaurants.security;
+package bg.tuplovdiv.restaurants.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
