@@ -22,7 +22,6 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
     public OAuth2LoginSuccessHandler(UserService userService, AuthenticatedUserProvider userProvider) {
         this.userService = userService;
         this.userProvider = userProvider;
-        setDefaultTargetUrl("/home");
     }
 
     @Override
