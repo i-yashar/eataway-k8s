@@ -21,6 +21,7 @@ public abstract class DefaultAuthenticatedUserProvider implements AuthenticatedU
         this.exception = exception;
     }
 
+    @Override
     public AuthenticatedUser provide() {
         checkIfPrincipalPresent(exception);
         return getUser();
