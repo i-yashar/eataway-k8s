@@ -15,7 +15,7 @@
             <h2 class="text-center text-justify text-dark">Welcome to dashboard!</h2>
 
             <div th:each="restaurant : ${restaurants}" class="post-frame card card-body mt-3">
-                <div th:id="${'postNo' + restaurant.id}" class="media align-items-center align-items-lg-start text-center text-lg-left flex-column flex-lg-row">
+                <div th:id="${'postNo' + restaurant.restaurantId}" class="media align-items-center align-items-lg-start text-center text-lg-left flex-column flex-lg-row">
 
                     <div class="post-header media-body">
                         <h4 class="media-title font-weight-semibold">
@@ -33,7 +33,7 @@
                         <ul class="list-inline list-inline-dotted mb-0">
                             <li class="list-inline-item">
                                 <a class="upVoteBtn btn btn-success"
-                                   th:href="@{/eataway/restaurants/{restaurantId}(restaurantId = ${restaurant.id})}"
+                                   th:href="@{/eataway/restaurants/{restaurantId}(restaurantId = ${restaurant.restaurantId})}"
                                    role="button">Visit</a>
                             </li>
                         </ul>

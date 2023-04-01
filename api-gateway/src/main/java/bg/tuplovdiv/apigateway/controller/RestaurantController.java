@@ -5,14 +5,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.UUID;
 
 @Controller
+@RequestMapping("eataway")
 public class RestaurantController {
 
-    private static final String RESTAURANTS_PATH = "eataway/restaurants";
+    private static final String RESTAURANTS_PATH = "restaurants";
     private static final String RESTAURANT_ID_PATH = "/{restaurantId}";
 
     private final RestaurantService restaurantService;
