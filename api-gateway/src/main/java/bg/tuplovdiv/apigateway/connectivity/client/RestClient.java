@@ -1,6 +1,9 @@
 package bg.tuplovdiv.apigateway.connectivity.client;
 
 import bg.tuplovdiv.apigateway.connectivity.handler.ResponseHandler;
+import bg.tuplovdiv.apigateway.exception.BadRequestException;
+import bg.tuplovdiv.apigateway.exception.ResponseBodyParsingException;
+import bg.tuplovdiv.apigateway.exception.UnableToReachHostException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -19,17 +22,16 @@ public abstract class RestClient {
     protected <T> T get(HttpRequest request, ResponseHandler<T> handler) {
         HttpResponse<String> response = sendRequest(request);
 
-        verifyResponse(response);
+        verifyResponse(request, response);
 
         return handler.handle(response);
     }
 
-    protected void verifyResponse(HttpResponse<String> response) {
+    protected void verifyResponse(HttpRequest request, HttpResponse<String> response) {
         boolean isValid = response != null && response.statusCode() >= 200 && response.statusCode() < 300;
 
         if(!isValid) {
-            //todo: add custom exception
-            throw new RuntimeException();
+            throw new BadRequestException("Request: " + request.uri() + " was unsuccessful. Status code returned: " + (response != null ? response.statusCode() : ""));
         }
     }
 
@@ -39,8 +41,7 @@ public abstract class RestClient {
         try {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (IOException | InterruptedException e) {
-            //todo: add custom exception
-            throw new RuntimeException();
+            throw new UnableToReachHostException("Unsuccessful request attempt to: " + request.uri());
         }
 
         return response;
@@ -50,8 +51,7 @@ public abstract class RestClient {
         try {
             return mapper.readValue(json, type);
         } catch (JsonProcessingException e) {
-            //todo: add custom exception
-            throw new RuntimeException();
+            throw new ResponseBodyParsingException("Error message: " + e.getMessage());
         }
     }
 
