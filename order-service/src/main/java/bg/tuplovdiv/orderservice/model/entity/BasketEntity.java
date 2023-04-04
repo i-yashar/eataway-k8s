@@ -18,7 +18,7 @@ public class BasketEntity {
     @OneToOne
     private UserEntity owner;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<BasketItemEntity> items;
 
     public Long getId() {

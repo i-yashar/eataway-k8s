@@ -43,12 +43,12 @@ public class OrderController {
 
     @PostMapping(ORDERS_PATH)
     @PreAuthorize("@orderValidator.isValid(#orderDTO)")
-    public ResponseEntity<Void> createNewOrder(@RequestBody CreateOrderDTO orderDTO) {
-        OrderDTO order = orderService.createOrder(orderDTO);
+    public ResponseEntity<Void> createOrder(@RequestBody CreateOrderDTO orderDTO) {
+        UUID orderId = orderService.createOrder(orderDTO);
 
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentContextPath()
-                .buildAndExpand("/{orderId}", order.getOrderId())
+                .buildAndExpand("/{orderId}", orderId)
                 .toUri();
 
         return ResponseEntity.created(uri).build();

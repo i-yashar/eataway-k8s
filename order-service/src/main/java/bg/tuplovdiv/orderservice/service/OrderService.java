@@ -9,5 +9,5 @@ import java.util.UUID;
 public interface OrderService {
     OrderDTO findOrderByOrderId(UUID orderId);
     PageDTO<OrderDTO> findAllUserOrders(UUID userId, int page, int size);
-    OrderDTO createOrder(CreateOrderDTO orderDTO);
+    UUID createOrder(CreateOrderDTO orderDTO);
 }
