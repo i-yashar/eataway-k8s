@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -84,18 +85,17 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(orderEntity);
     }
 
-    private OrderContext buildOrderContext(CreateOrderDTO orderDTO) {
-        UUID clientId = orderDTO.getClientId();
-        String clientPhoneNumber = orderDTO.getClientPhoneNumber();
-        String address = orderDTO.getAddress();
-        BasketDTO basket = basketService.getByBasketId(orderDTO.getBasketId());
-        Double totalCost = orderDTO.getTotalCost();
+    private OrderContext buildOrderContext(CreateOrderDTO order) {
+        BasketDTO basket = basketService.getByBasketId(order.getBasketId());
 
-        return new OrderContext()
-                .setClientId(clientId)
-                .setClientPhoneNumber(clientPhoneNumber)
-                .setAddress(address)
-                .setBasket(basket)
-                .setTotalCost(totalCost);
+        return OrderContext.getBuilder()
+                .orderId(UUID.randomUUID())
+                .clientId(order.getClientId())
+                .clientPhone(order.getClientPhoneNumber())
+                .address(order.getAddress())
+                .basket(basket)
+                .totalCost(order.getTotalCost())
+                .createdAt(LocalDateTime.now())
+                .build();
     }
 }
