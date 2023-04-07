@@ -1,6 +1,6 @@
 package bg.tuplovdiv.orderservice.validation;
 
-import bg.tuplovdiv.orderservice.dto.CreateOrderDTO;
+import bg.tuplovdiv.orderservice.dto.OrderDTO;
 import bg.tuplovdiv.orderservice.model.entity.BasketEntity;
 import bg.tuplovdiv.orderservice.repository.BasketRepository;
 import org.springframework.stereotype.Component;
@@ -8,13 +8,13 @@ import org.springframework.stereotype.Component;
 @Component
 public record OrderValidator(BasketRepository basketRepository) {
 
-    public boolean isValid(CreateOrderDTO orderDTO) {
-        validateBasketCost(orderDTO);
+    public boolean isValid(OrderDTO orderDTO) {
+//        validateBasketCost(orderDTO);
 
         return true;
     }
 
-    private void validateBasketCost(CreateOrderDTO orderDTO) {
+    private void validateBasketCost(OrderDTO orderDTO) {
         BasketEntity basket = getBasketByBasketId(orderDTO);
 
         boolean totalCostIsValid = basket.getItems()
@@ -29,7 +29,7 @@ public record OrderValidator(BasketRepository basketRepository) {
         }
     }
 
-    private BasketEntity getBasketByBasketId(CreateOrderDTO orderDTO) {
+    private BasketEntity getBasketByBasketId(OrderDTO orderDTO) {
         //todo: add custom validation
         return basketRepository.findBasketEntityByExternalId(orderDTO.getBasketId())
                 .orElseThrow(IllegalArgumentException::new);

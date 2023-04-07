@@ -1,14 +1,12 @@
 package bg.tuplovdiv.orderservice.service.impl;
 
 import bg.tuplovdiv.orderservice.dto.BasketDTO;
-import bg.tuplovdiv.orderservice.dto.CreateOrderDTO;
 import bg.tuplovdiv.orderservice.dto.OrderDTO;
 import bg.tuplovdiv.orderservice.dto.page.PageDTO;
 import bg.tuplovdiv.orderservice.mapper.OrderMapper;
-import bg.tuplovdiv.orderservice.model.OrderStatus;
+import bg.tuplovdiv.orderservice.messaging.OrderContext;
+import bg.tuplovdiv.orderservice.messaging.process.CreateOrderProcess;
 import bg.tuplovdiv.orderservice.model.entity.OrderEntity;
-import bg.tuplovdiv.orderservice.order.OrderContext;
-import bg.tuplovdiv.orderservice.order.process.CreateOrderProcess;
 import bg.tuplovdiv.orderservice.repository.OrderRepository;
 import bg.tuplovdiv.orderservice.service.BasketService;
 import bg.tuplovdiv.orderservice.service.OrderService;
@@ -17,10 +15,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static bg.tuplovdiv.orderservice.model.OrderStatus.REGISTERED;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -71,21 +70,24 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public UUID createOrder(CreateOrderDTO orderDTO) {
-        persistOrder(orderDTO);
+    public UUID createOrder(OrderDTO orderDTO) {
         OrderContext context = buildOrderContext(orderDTO);
+        persistOrder(orderDTO, context.getOrderId());
 
-        return createOrderProcess.start(context);
+        createOrderProcess.start(context);
+
+        return context.getOrderId();
     }
 
-    private void persistOrder(CreateOrderDTO orderDTO) {
+    private void persistOrder(OrderDTO orderDTO, UUID orderId) {
+        orderDTO.setOrderId(orderId);
+        orderDTO.setStatus(REGISTERED);
         OrderEntity orderEntity = mapper.toEntity(orderDTO);
-        orderEntity.setStatus(OrderStatus.REGISTERED);
 
         orderRepository.save(orderEntity);
     }
 
-    private OrderContext buildOrderContext(CreateOrderDTO order) {
+    private OrderContext buildOrderContext(OrderDTO order) {
         BasketDTO basket = basketService.getByBasketId(order.getBasketId());
 
         return OrderContext.getBuilder()
@@ -95,7 +97,6 @@ public class OrderServiceImpl implements OrderService {
                 .address(order.getAddress())
                 .basket(basket)
                 .totalCost(order.getTotalCost())
-                .createdAt(LocalDateTime.now())
                 .build();
     }
 }

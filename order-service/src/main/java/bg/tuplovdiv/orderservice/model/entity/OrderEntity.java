@@ -28,8 +28,8 @@ public class OrderEntity {
     @Column(nullable = false)
     private String address;
 
-    @OneToOne
-    private BasketEntity basket;
+    @Column(nullable = false)
+    private UUID basketId;
 
     @Column(nullable = false)
     private Double totalCost;
@@ -92,12 +92,12 @@ public class OrderEntity {
         return this;
     }
 
-    public BasketEntity getBasket() {
-        return basket;
+    public UUID getBasketId() {
+        return basketId;
     }
 
-    public OrderEntity setBasket(BasketEntity basket) {
-        this.basket = basket;
+    public OrderEntity setBasketId(UUID basketId) {
+        this.basketId = basketId;
         return this;
     }
 

@@ -1,12 +1,10 @@
 package bg.tuplovdiv.orderservice.rest;
 
-import bg.tuplovdiv.orderservice.dto.CreateOrderDTO;
 import bg.tuplovdiv.orderservice.dto.OrderDTO;
 import bg.tuplovdiv.orderservice.dto.page.PageDTO;
 import bg.tuplovdiv.orderservice.service.OrderService;
 import bg.tuplovdiv.orderservice.validation.OrderValidator;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -42,8 +40,8 @@ public class OrderController {
     }
 
     @PostMapping(ORDERS_PATH)
-    @PreAuthorize("@orderValidator.isValid(#orderDTO)")
-    public ResponseEntity<Void> createOrder(@RequestBody CreateOrderDTO orderDTO) {
+    //@PreAuthorize("@orderValidator.isValid(#orderDTO)")
+    public ResponseEntity<Void> createOrder(@RequestBody OrderDTO orderDTO) {
         UUID orderId = orderService.createOrder(orderDTO);
 
         URI uri = ServletUriComponentsBuilder

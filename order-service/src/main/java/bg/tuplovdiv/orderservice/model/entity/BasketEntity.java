@@ -15,7 +15,7 @@ public class BasketEntity {
 
     private UUID externalId;
 
-    @OneToOne
+    @ManyToOne
     private UserEntity owner;
 
     @OneToMany(fetch = FetchType.EAGER)
