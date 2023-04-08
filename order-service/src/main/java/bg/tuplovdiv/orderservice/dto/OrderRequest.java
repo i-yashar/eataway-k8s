@@ -22,7 +22,6 @@ public class OrderRequest {
     private UUID deliveryDriverId;
     private String address;
     private UUID basketId;
-    private Double totalCost;
     private OrderStatus status;
 
     public UUID getOrderId() {
@@ -76,15 +75,6 @@ public class OrderRequest {
 
     public OrderRequest setBasketId(UUID basketId) {
         this.basketId = basketId;
-        return this;
-    }
-
-    public Double getTotalCost() {
-        return totalCost;
-    }
-
-    public OrderRequest setTotalCost(Double totalCost) {
-        this.totalCost = totalCost;
         return this;
     }
 

@@ -96,7 +96,16 @@ public class OrderServiceImpl implements OrderService {
                 .clientPhone(order.getClientPhoneNumber())
                 .address(order.getAddress())
                 .basket(basket)
-                .totalCost(order.getTotalCost())
+                .totalCost(calculateTotalCost(order))
                 .build();
+    }
+
+    private Double calculateTotalCost(OrderRequest orderRequest) {
+        BasketDTO basket = basketService.getByBasketId(orderRequest.getBasketId());
+
+        return basket.getItems()
+                .stream()
+                .map(item -> item.getMenu().getPrice() * item.getCount())
+                .reduce((double) 0, Double::sum);
     }
 }
