@@ -1,10 +1,21 @@
 package bg.tuplovdiv.orderservice.dto;
 
 import bg.tuplovdiv.orderservice.model.OrderStatus;
+import bg.tuplovdiv.orderservice.validation.order.ValidOrder;
 
 import java.util.UUID;
 
-public class OrderDTO {
+@ValidOrder
+public class OrderRequest {
+    public static final String ORDER_ID_JSON_PROPERTY = "orderId";
+    public static final String CLIENT_ID_JSON_PROPERTY = "clientId";
+    public static final String CLIENT_PHONE_NUMBER_JSON_PROPERTY = "clientPhoneNumber";
+    public static final String DELIVERY_DRIVER_ID_JSON_PROPERTY = "deliveryDriverId";
+    public static final String ADDRESS_JSON_PROPERTY = "address";
+    public static final String BASKET_ID_JSON_PROPERTY = "basketId";
+    public static final String TOTAL_COST_JSON_PROPERTY = "totalCost";
+    public static final String STATUS_JSON_PROPERTY = "status";
+
     private UUID orderId;
     private UUID clientId;
     private String clientPhoneNumber;
@@ -18,7 +29,7 @@ public class OrderDTO {
         return orderId;
     }
 
-    public OrderDTO setOrderId(UUID orderId) {
+    public OrderRequest setOrderId(UUID orderId) {
         this.orderId = orderId;
         return this;
     }
@@ -27,7 +38,7 @@ public class OrderDTO {
         return clientId;
     }
 
-    public OrderDTO setClientId(UUID clientId) {
+    public OrderRequest setClientId(UUID clientId) {
         this.clientId = clientId;
         return this;
     }
@@ -36,7 +47,7 @@ public class OrderDTO {
         return clientPhoneNumber;
     }
 
-    public OrderDTO setClientPhoneNumber(String clientPhoneNumber) {
+    public OrderRequest setClientPhoneNumber(String clientPhoneNumber) {
         this.clientPhoneNumber = clientPhoneNumber;
         return this;
     }
@@ -45,7 +56,7 @@ public class OrderDTO {
         return deliveryDriverId;
     }
 
-    public OrderDTO setDeliveryDriverId(UUID deliveryDriverId) {
+    public OrderRequest setDeliveryDriverId(UUID deliveryDriverId) {
         this.deliveryDriverId = deliveryDriverId;
         return this;
     }
@@ -54,7 +65,7 @@ public class OrderDTO {
         return address;
     }
 
-    public OrderDTO setAddress(String address) {
+    public OrderRequest setAddress(String address) {
         this.address = address;
         return this;
     }
@@ -63,7 +74,7 @@ public class OrderDTO {
         return basketId;
     }
 
-    public OrderDTO setBasketId(UUID basketId) {
+    public OrderRequest setBasketId(UUID basketId) {
         this.basketId = basketId;
         return this;
     }
@@ -72,7 +83,7 @@ public class OrderDTO {
         return totalCost;
     }
 
-    public OrderDTO setTotalCost(Double totalCost) {
+    public OrderRequest setTotalCost(Double totalCost) {
         this.totalCost = totalCost;
         return this;
     }
@@ -81,7 +92,7 @@ public class OrderDTO {
         return status;
     }
 
-    public OrderDTO setStatus(OrderStatus status) {
+    public OrderRequest setStatus(OrderStatus status) {
         this.status = status;
         return this;
     }

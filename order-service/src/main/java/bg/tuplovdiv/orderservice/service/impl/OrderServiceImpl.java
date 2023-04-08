@@ -1,7 +1,7 @@
 package bg.tuplovdiv.orderservice.service.impl;
 
 import bg.tuplovdiv.orderservice.dto.BasketDTO;
-import bg.tuplovdiv.orderservice.dto.OrderDTO;
+import bg.tuplovdiv.orderservice.dto.OrderRequest;
 import bg.tuplovdiv.orderservice.dto.page.PageDTO;
 import bg.tuplovdiv.orderservice.mapper.OrderMapper;
 import bg.tuplovdiv.orderservice.messaging.OrderContext;
@@ -37,7 +37,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDTO findOrderByOrderId(UUID orderId) {
+    public OrderRequest findOrderByOrderId(UUID orderId) {
         OrderEntity order = getOrderByOrderId(orderId);
 
         return mapper.toDTO(order);
@@ -49,28 +49,28 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public PageDTO<OrderDTO> findAllUserOrders(UUID userId, int page, int size) {
+    public PageDTO<OrderRequest> findAllUserOrders(UUID userId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 
         return getAllUserOrdersPage(userId, pageable);
     }
 
-    private PageDTO<OrderDTO> getAllUserOrdersPage(UUID userId, Pageable pageable) {
+    private PageDTO<OrderRequest> getAllUserOrdersPage(UUID userId, Pageable pageable) {
         Page<OrderEntity> orders = orderRepository.findAllByClientId(userId, pageable);
 
-        return new PageDTO<OrderDTO>()
+        return new PageDTO<OrderRequest>()
                 .setContent(mapToOrderDTOs(orders))
                 .setPageInfo(orders.getSize(), orders.hasNext());
     }
 
-    private Collection<OrderDTO> mapToOrderDTOs(Page<OrderEntity> orders) {
+    private Collection<OrderRequest> mapToOrderDTOs(Page<OrderEntity> orders) {
         return orders.map(mapper::toDTO)
                 .stream()
                 .collect(Collectors.toList());
     }
 
     @Override
-    public UUID createOrder(OrderDTO orderDTO) {
+    public UUID createOrder(OrderRequest orderDTO) {
         OrderContext context = buildOrderContext(orderDTO);
         persistOrder(orderDTO, context.getOrderId());
 
@@ -79,7 +79,7 @@ public class OrderServiceImpl implements OrderService {
         return context.getOrderId();
     }
 
-    private void persistOrder(OrderDTO orderDTO, UUID orderId) {
+    private void persistOrder(OrderRequest orderDTO, UUID orderId) {
         orderDTO.setOrderId(orderId);
         orderDTO.setStatus(REGISTERED);
         OrderEntity orderEntity = mapper.toEntity(orderDTO);
@@ -87,7 +87,7 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(orderEntity);
     }
 
-    private OrderContext buildOrderContext(OrderDTO order) {
+    private OrderContext buildOrderContext(OrderRequest order) {
         BasketDTO basket = basketService.getByBasketId(order.getBasketId());
 
         return OrderContext.getBuilder()
