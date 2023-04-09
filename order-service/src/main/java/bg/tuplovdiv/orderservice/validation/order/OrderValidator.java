@@ -14,7 +14,7 @@ import static bg.tuplovdiv.orderservice.dto.OrderRequest.*;
 @Component
 public class OrderValidator implements ConstraintValidator<ValidOrder, OrderRequest> {
 
-    private static final String INVALID_ORDER_REQUEST_MESSAGE = "Invalid order request.";
+    private static final String INVALID_ORDER_REQUEST_MESSAGE = "Invalid order request. Please provide a valid value for field '%s'.";
 
     private final UserRepository userRepository;
     private final BasketRepository basketRepository;
@@ -61,13 +61,10 @@ public class OrderValidator implements ConstraintValidator<ValidOrder, OrderRequ
         return basketRepository.findBasketEntityByExternalId(basketId).isEmpty();
     }
 
-    private void addConstraintViolation(ConstraintValidatorContext context, String... properties) {
+    private void addConstraintViolation(ConstraintValidatorContext context, String property) {
         ConstraintValidatorContext.ConstraintViolationBuilder builder = context
-                .buildConstraintViolationWithTemplate(INVALID_ORDER_REQUEST_MESSAGE);
-
-        for (String property : properties) {
-            builder.addPropertyNode(property);
-        }
+                .buildConstraintViolationWithTemplate(
+                        String.format(INVALID_ORDER_REQUEST_MESSAGE, property));
 
         builder.addConstraintViolation().disableDefaultConstraintViolation();
     }
