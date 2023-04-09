@@ -1,7 +1,9 @@
 package bg.tuplovdiv.orderservice.service.impl;
 
 import bg.tuplovdiv.orderservice.dto.BasketDTO;
-import bg.tuplovdiv.orderservice.dto.OrderRequest;
+import bg.tuplovdiv.orderservice.dto.OrderDTO;
+import bg.tuplovdiv.orderservice.dto.CreateOrderRequest;
+import bg.tuplovdiv.orderservice.dto.TakeOrderRequest;
 import bg.tuplovdiv.orderservice.dto.page.PageDTO;
 import bg.tuplovdiv.orderservice.mapper.OrderMapper;
 import bg.tuplovdiv.orderservice.messaging.OrderContext;
@@ -19,6 +21,7 @@ import java.util.Collection;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static bg.tuplovdiv.orderservice.model.OrderStatus.ACTIVE;
 import static bg.tuplovdiv.orderservice.model.OrderStatus.REGISTERED;
 
 @Service
@@ -37,40 +40,35 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderRequest findOrderByOrderId(UUID orderId) {
+    public OrderDTO findOrderByOrderId(UUID orderId) {
         OrderEntity order = getOrderByOrderId(orderId);
 
-        return mapper.toDTO(order);
-    }
-
-    private OrderEntity getOrderByOrderId(UUID orderId) {
-        return orderRepository.findOrderEntityByExternalId(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+        return mapper.toOrderDTO(order);
     }
 
     @Override
-    public PageDTO<OrderRequest> findAllUserOrders(UUID userId, int page, int size) {
+    public PageDTO<OrderDTO> findAllUserOrders(UUID userId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 
         return getAllUserOrdersPage(userId, pageable);
     }
 
-    private PageDTO<OrderRequest> getAllUserOrdersPage(UUID userId, Pageable pageable) {
+    private PageDTO<OrderDTO> getAllUserOrdersPage(UUID userId, Pageable pageable) {
         Page<OrderEntity> orders = orderRepository.findAllByClientId(userId, pageable);
 
-        return new PageDTO<OrderRequest>()
+        return new PageDTO<OrderDTO>()
                 .setContent(mapToOrderDTOs(orders))
                 .setPageInfo(orders.getSize(), orders.hasNext());
     }
 
-    private Collection<OrderRequest> mapToOrderDTOs(Page<OrderEntity> orders) {
-        return orders.map(mapper::toDTO)
+    private Collection<OrderDTO> mapToOrderDTOs(Page<OrderEntity> orders) {
+        return orders.map(mapper::toOrderDTO)
                 .stream()
                 .collect(Collectors.toList());
     }
 
     @Override
-    public UUID createOrder(OrderRequest orderDTO) {
+    public UUID createOrder(CreateOrderRequest orderDTO) {
         OrderContext context = buildOrderContext(orderDTO);
         persistOrder(orderDTO, context);
 
@@ -79,29 +77,29 @@ public class OrderServiceImpl implements OrderService {
         return context.getOrderId();
     }
 
-    private void persistOrder(OrderRequest orderDTO, OrderContext context) {
-        orderDTO.setOrderId(context.getOrderId());
-        orderDTO.setStatus(REGISTERED);
-        OrderEntity orderEntity = mapper.toEntity(orderDTO);
+    private void persistOrder(CreateOrderRequest orderRequest, OrderContext context) {
+        OrderEntity orderEntity = mapper.toOrderEntity(orderRequest);
+        orderEntity.setExternalId(context.getOrderId());
         orderEntity.setTotalCost(context.getTotalCost());
+        orderEntity.setStatus(REGISTERED);
 
         orderRepository.save(orderEntity);
     }
 
-    private OrderContext buildOrderContext(OrderRequest order) {
-        BasketDTO basket = basketService.getByBasketId(order.getBasketId());
+    private OrderContext buildOrderContext(CreateOrderRequest orderRequest) {
+        BasketDTO basket = basketService.getByBasketId(orderRequest.getBasketId());
 
         return OrderContext.getBuilder()
                 .orderId(UUID.randomUUID())
-                .clientId(order.getClientId())
-                .clientPhone(order.getClientPhoneNumber())
-                .address(order.getAddress())
+                .clientId(orderRequest.getClientId())
+                .clientPhone(orderRequest.getClientPhoneNumber())
+                .address(orderRequest.getAddress())
                 .basket(basket)
-                .totalCost(calculateTotalCost(order))
+                .totalCost(calculateTotalCost(orderRequest))
                 .build();
     }
 
-    private Double calculateTotalCost(OrderRequest orderRequest) {
+    private Double calculateTotalCost(CreateOrderRequest orderRequest) {
         BasketDTO basket = basketService.getByBasketId(orderRequest.getBasketId());
 
         return basket.getItems()
@@ -109,4 +107,24 @@ public class OrderServiceImpl implements OrderService {
                 .map(item -> item.getMenu().getPrice() * item.getCount())
                 .reduce((double) 0, Double::sum);
     }
+
+    @Override
+    public OrderDTO updateOrderStatus(TakeOrderRequest orderRequest) {
+        OrderEntity orderEntity = updateOrderEntity(orderRequest);
+
+        return mapper.toOrderDTO(orderRepository.save(orderEntity));
+    }
+
+    private OrderEntity updateOrderEntity(TakeOrderRequest orderRequest) {
+        OrderEntity orderEntity = getOrderByOrderId(orderRequest.getOrderId());
+        orderEntity.setDeliverDriverId(orderRequest.getDeliveryDriverId());
+        orderEntity.setStatus(ACTIVE);
+        return orderEntity;
+    }
+
+    private OrderEntity getOrderByOrderId(UUID orderId) {
+        return orderRepository.findOrderEntityByExternalId(orderId)
+                .orElseThrow(IllegalArgumentException::new);
+    }
 }
+

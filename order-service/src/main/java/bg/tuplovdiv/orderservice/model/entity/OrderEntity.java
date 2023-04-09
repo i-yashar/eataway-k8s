@@ -22,7 +22,6 @@ public class OrderEntity {
     @Column(nullable = false)
     private String clientPhoneNumber;
 
-    @Column(nullable = false)
     private UUID deliverDriverId;
 
     @Column(nullable = false)

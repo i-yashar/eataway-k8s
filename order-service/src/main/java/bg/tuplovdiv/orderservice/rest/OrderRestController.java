@@ -1,6 +1,8 @@
 package bg.tuplovdiv.orderservice.rest;
 
-import bg.tuplovdiv.orderservice.dto.OrderRequest;
+import bg.tuplovdiv.orderservice.dto.OrderDTO;
+import bg.tuplovdiv.orderservice.dto.CreateOrderRequest;
+import bg.tuplovdiv.orderservice.dto.TakeOrderRequest;
 import bg.tuplovdiv.orderservice.dto.page.PageDTO;
 import bg.tuplovdiv.orderservice.service.OrderService;
 import jakarta.validation.Valid;
@@ -13,7 +15,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/orders/api/v1")
-public class OrderController {
+public class OrderRestController {
     private static final String ORDER_ID = "/{orderId}";
     private static final String ORDERS_PATH = "/orders";
     private static final String CLIENT_ID = "/{userId}";
@@ -21,31 +23,41 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    public OrderController(OrderService orderService) {
+    public OrderRestController(OrderService orderService) {
         this.orderService = orderService;
     }
 
     @GetMapping(ORDERS_PATH + ORDER_ID)
-    public ResponseEntity<OrderRequest> getOrder(@PathVariable("orderId") UUID orderId) {
+    public ResponseEntity<OrderDTO> getOrder(@PathVariable("orderId") UUID orderId) {
         return ResponseEntity.ok(orderService.findOrderByOrderId(orderId));
     }
 
     @GetMapping(CLIENT_ORDERS_PATH)
-    public ResponseEntity<PageDTO<OrderRequest>> getUserOrders(@PathVariable("userId") UUID userId,
+    public ResponseEntity<PageDTO<OrderDTO>> getUserOrders(@PathVariable("userId") UUID userId,
                                                                @RequestParam(name = "page", required = false, defaultValue = "0") int page,
                                                                @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
         return ResponseEntity.ok(orderService.findAllUserOrders(userId, page, size));
     }
 
     @PostMapping(ORDERS_PATH)
-    public ResponseEntity<Void> createOrder(@RequestBody @Valid OrderRequest orderDTO) {
-        UUID orderId = orderService.createOrder(orderDTO);
+    public ResponseEntity<Void> createOrder(@RequestBody @Valid CreateOrderRequest orderRequest) {
+        UUID orderId = orderService.createOrder(orderRequest);
 
-        URI uri = ServletUriComponentsBuilder
-                .fromCurrentContextPath()
-                .buildAndExpand("/{orderId}", orderId)
-                .toUri();
+        URI uri = buildOrderCreatedPath(orderId);
 
         return ResponseEntity.created(uri).build();
+    }
+
+    private URI buildOrderCreatedPath(UUID orderId) {
+        return ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{orderId}")
+                .buildAndExpand(orderId)
+                .toUri();
+    }
+
+    @PutMapping(ORDERS_PATH + ORDER_ID)
+    public ResponseEntity<OrderDTO> updateOrder(@RequestBody @Valid TakeOrderRequest orderRequest) {
+        return ResponseEntity.ok(orderService.updateOrderStatus(orderRequest));
     }
 }

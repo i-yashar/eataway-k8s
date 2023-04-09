@@ -4,7 +4,7 @@ import bg.tuplovdiv.orderservice.dto.BasketDTO;
 
 import java.util.UUID;
 
-public class OrderContext extends Message{
+public class OrderContext extends Message {
     private final UUID orderId;
     private final UUID clientId;
     private final String clientPhoneNumber;

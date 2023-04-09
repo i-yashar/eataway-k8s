@@ -1,6 +1,6 @@
 package bg.tuplovdiv.orderservice.validation.order;
 
-import bg.tuplovdiv.orderservice.dto.OrderRequest;
+import bg.tuplovdiv.orderservice.dto.CreateOrderRequest;
 import bg.tuplovdiv.orderservice.repository.BasketRepository;
 import bg.tuplovdiv.orderservice.repository.UserRepository;
 import jakarta.validation.ConstraintValidator;
@@ -9,34 +9,28 @@ import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
-import static bg.tuplovdiv.orderservice.dto.OrderRequest.*;
+import static bg.tuplovdiv.orderservice.dto.CreateOrderRequest.*;
 
 @Component
-public class OrderValidator implements ConstraintValidator<ValidOrder, OrderRequest> {
+public class CreateOrderValidator implements ConstraintValidator<ValidCreateOrderRequest, CreateOrderRequest> {
 
-    private static final String INVALID_ORDER_REQUEST_MESSAGE = "Invalid order request. Please provide a valid value for field '%s'.";
+    private static final String INVALID_CREATE_ORDER_REQUEST_MESSAGE = "Invalid create order request. Please provide a valid value for field '%s'.";
 
     private final UserRepository userRepository;
     private final BasketRepository basketRepository;
 
-    public OrderValidator(UserRepository userRepository, BasketRepository basketRepository) {
+    public CreateOrderValidator(UserRepository userRepository, BasketRepository basketRepository) {
         this.userRepository = userRepository;
         this.basketRepository = basketRepository;
     }
 
     @Override
-    public boolean isValid(OrderRequest orderRequest, ConstraintValidatorContext context) {
+    public boolean isValid(CreateOrderRequest orderRequest, ConstraintValidatorContext context) {
         UUID clientId = orderRequest.getClientId();
-        UUID deliveryDriverId = orderRequest.getDeliveryDriverId();
         UUID basketId = orderRequest.getBasketId();
 
         if (hasInvalidClient(clientId)) {
             addConstraintViolation(context, CLIENT_ID_JSON_PROPERTY);
-            return false;
-        }
-
-        if (hasInvalidDeliveryDriver(deliveryDriverId)) {
-            addConstraintViolation(context, DELIVERY_DRIVER_ID_JSON_PROPERTY);
             return false;
         }
 
@@ -45,12 +39,7 @@ public class OrderValidator implements ConstraintValidator<ValidOrder, OrderRequ
             return false;
         }
 
-        return false;
-    }
-
-
-    private boolean hasInvalidDeliveryDriver(UUID deliveryDriverId) {
-        return userRepository.findByExternalId(deliveryDriverId).isEmpty();
+        return true;
     }
 
     private boolean hasInvalidClient(UUID clientId) {
@@ -62,10 +51,10 @@ public class OrderValidator implements ConstraintValidator<ValidOrder, OrderRequ
     }
 
     private void addConstraintViolation(ConstraintValidatorContext context, String property) {
-        ConstraintValidatorContext.ConstraintViolationBuilder builder = context
+        context
                 .buildConstraintViolationWithTemplate(
-                        String.format(INVALID_ORDER_REQUEST_MESSAGE, property));
-
-        builder.addConstraintViolation().disableDefaultConstraintViolation();
+                        String.format(INVALID_CREATE_ORDER_REQUEST_MESSAGE, property))
+                .addConstraintViolation()
+                .disableDefaultConstraintViolation();
     }
 }

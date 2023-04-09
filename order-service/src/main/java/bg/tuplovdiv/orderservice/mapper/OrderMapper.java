@@ -1,30 +1,29 @@
 package bg.tuplovdiv.orderservice.mapper;
 
-import bg.tuplovdiv.orderservice.dto.OrderRequest;
+import bg.tuplovdiv.orderservice.dto.OrderDTO;
+import bg.tuplovdiv.orderservice.dto.CreateOrderRequest;
 import bg.tuplovdiv.orderservice.model.entity.OrderEntity;
 import org.springframework.stereotype.Component;
 
 @Component
 public class OrderMapper {
 
-    public OrderRequest toDTO(OrderEntity order) {
-        return new OrderRequest()
+    public OrderDTO toOrderDTO(OrderEntity order) {
+        return new OrderDTO()
                 .setOrderId(order.getExternalId())
                 .setClientId(order.getClientId())
                 .setClientPhoneNumber(order.getClientPhoneNumber())
                 .setDeliveryDriverId(order.getDeliverDriverId())
+                .setAddress(order.getAddress())
                 .setBasketId(order.getBasketId())
-                .setStatus(order.getStatus());
+                .setTotalCost(order.getTotalCost());
     }
 
-    public OrderEntity toEntity(OrderRequest orderRequest) {
+    public OrderEntity toOrderEntity(CreateOrderRequest orderRequest) {
         return new OrderEntity()
-                .setExternalId(orderRequest.getOrderId())
                 .setClientId(orderRequest.getClientId())
                 .setClientPhoneNumber(orderRequest.getClientPhoneNumber())
-                .setDeliverDriverId(orderRequest.getDeliveryDriverId())
                 .setAddress(orderRequest.getAddress())
-                .setBasketId(orderRequest.getBasketId())
-                .setStatus(orderRequest.getStatus());
+                .setBasketId(orderRequest.getBasketId());
     }
 }

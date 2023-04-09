@@ -10,9 +10,9 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@Constraint(validatedBy = OrderValidator.class)
-public @interface ValidOrder {
-    String message() default "Invalid order request.";
+@Constraint(validatedBy = TakeOrderValidator.class)
+public @interface ValidTakeOrderRequest {
+    String message() default "Invalid take order request.";
 
     Class<?>[] groups() default {};
 
