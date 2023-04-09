@@ -14,7 +14,6 @@ public class OrderMapper {
                 .setClientPhoneNumber(order.getClientPhoneNumber())
                 .setDeliveryDriverId(order.getDeliverDriverId())
                 .setBasketId(order.getBasketId())
-                .setTotalCost(order.getTotalCost())
                 .setStatus(order.getStatus());
     }
 
@@ -26,7 +25,6 @@ public class OrderMapper {
                 .setDeliverDriverId(orderRequest.getDeliveryDriverId())
                 .setAddress(orderRequest.getAddress())
                 .setBasketId(orderRequest.getBasketId())
-                .setTotalCost(orderRequest.getTotalCost())
                 .setStatus(orderRequest.getStatus());
     }
 }

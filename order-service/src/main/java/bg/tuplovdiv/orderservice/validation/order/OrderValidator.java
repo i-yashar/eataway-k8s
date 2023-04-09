@@ -29,7 +29,6 @@ public class OrderValidator implements ConstraintValidator<ValidOrder, OrderRequ
         UUID clientId = orderRequest.getClientId();
         UUID deliveryDriverId = orderRequest.getDeliveryDriverId();
         UUID basketId = orderRequest.getBasketId();
-        Double totalCost = orderRequest.getTotalCost();
 
         if (hasInvalidClient(clientId)) {
             addConstraintViolation(context, CLIENT_ID_JSON_PROPERTY);

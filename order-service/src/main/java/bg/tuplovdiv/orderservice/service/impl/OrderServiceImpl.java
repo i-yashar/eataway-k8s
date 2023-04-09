@@ -72,17 +72,18 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public UUID createOrder(OrderRequest orderDTO) {
         OrderContext context = buildOrderContext(orderDTO);
-        persistOrder(orderDTO, context.getOrderId());
+        persistOrder(orderDTO, context);
 
         createOrderProcess.start(context);
 
         return context.getOrderId();
     }
 
-    private void persistOrder(OrderRequest orderDTO, UUID orderId) {
-        orderDTO.setOrderId(orderId);
+    private void persistOrder(OrderRequest orderDTO, OrderContext context) {
+        orderDTO.setOrderId(context.getOrderId());
         orderDTO.setStatus(REGISTERED);
         OrderEntity orderEntity = mapper.toEntity(orderDTO);
+        orderEntity.setTotalCost(context.getTotalCost());
 
         orderRepository.save(orderEntity);
     }
