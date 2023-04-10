@@ -12,13 +12,13 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/restaurants/api/v1")
-public class RestaurantController {
+public class RestaurantRestController {
     private static final String RESTAURANTS_PATH = "/restaurants";
     private static final String RESTAURANT_ID = "/{restaurantId}";
 
     private final RestaurantService restaurantService;
 
-    public RestaurantController(RestaurantService restaurantService) {
+    public RestaurantRestController(RestaurantService restaurantService) {
         this.restaurantService = restaurantService;
     }
 
