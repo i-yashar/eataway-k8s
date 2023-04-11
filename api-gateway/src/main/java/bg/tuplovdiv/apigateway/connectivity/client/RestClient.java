@@ -16,23 +16,20 @@ import java.net.http.HttpResponse;
 
 public abstract class RestClient {
 
-    private final HttpClient client = HttpClient.newHttpClient();
-    private final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    private final HttpClient client;
+    private final ObjectMapper mapper;
+
+    public RestClient() {
+        client = HttpClient.newHttpClient();
+        mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
 
     protected <T> T get(HttpRequest request, ResponseHandler<T> handler) {
         HttpResponse<String> response = sendRequest(request);
 
-        verifyResponse(request, response);
+        verifyResponse(response);
 
         return handler.handle(response);
-    }
-
-    protected void verifyResponse(HttpRequest request, HttpResponse<String> response) {
-        boolean isValid = response != null && response.statusCode() >= 200 && response.statusCode() < 300;
-
-        if(!isValid) {
-            throw new BadRequestException("Request: " + request.uri() + " was unsuccessful. Status code returned: " + (response != null ? response.statusCode() : ""));
-        }
     }
 
     private HttpResponse<String> sendRequest(HttpRequest request) {
@@ -45,6 +42,15 @@ public abstract class RestClient {
         }
 
         return response;
+    }
+
+    protected void verifyResponse(HttpResponse<String> response) {
+        boolean isValid = response != null && response.statusCode() >= 200 && response.statusCode() < 300;
+
+        if(!isValid) {
+            throw new BadRequestException("Request: " + (response != null ? response.request().uri() : null)
+                            + " was unsuccessful. Status code returned: " + (response != null ? response.statusCode() : ""));
+        }
     }
 
     protected <T> T mapJsonToObject(String json, TypeReference<T> type) {

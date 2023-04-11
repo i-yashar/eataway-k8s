@@ -13,8 +13,8 @@ import java.util.UUID;
 public class RestaurantsRestClient extends RestClient {
 
     private static final String HOST = "http://localhost:8080";
-    private static final String RESTAURANTS_API_BASE_PATH = "/restaurants/api/v1";
-    private static final String RESTAURANTS_API_GET_ALL_PATH = RESTAURANTS_API_BASE_PATH + "/restaurants";
+    private static final String RESTAURANTS_API_BASE_PATH = HOST + "/restaurants/api/v1";
+    private static final String RESTAURANTS_API_GET_ALL_PATH = HOST + RESTAURANTS_API_BASE_PATH + "/restaurants";
 
     private static final TypeReference<PageDTO<RestaurantDTO>> PAGE_OF_RESTAURANTS_TYPE = new TypeReference<>() {};
     private static final TypeReference<RestaurantDTO> RESTAURANT_TYPE = new TypeReference<>() {};
@@ -22,7 +22,7 @@ public class RestaurantsRestClient extends RestClient {
     public PageDTO<RestaurantDTO> getRestaurants(int page, int size) {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
-                .uri(URI.create(HOST + RESTAURANTS_API_GET_ALL_PATH))
+                .uri(URI.create(RESTAURANTS_API_GET_ALL_PATH + "?" + "page=" + page + "&" + "size=" + size))
                 .header("accept", "application/json")
                 .build();
 
@@ -32,7 +32,7 @@ public class RestaurantsRestClient extends RestClient {
     public RestaurantDTO getRestaurant(UUID restaurantId) {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
-                .uri(URI.create(HOST + RESTAURANTS_API_GET_ALL_PATH + "/" + restaurantId.toString()))
+                .uri(URI.create(RESTAURANTS_API_GET_ALL_PATH + "/" + restaurantId.toString()))
                 .header("accept", "application/json")
                 .build();
 
