@@ -1,14 +1,12 @@
 package bg.tuplovdiv.orderservice.dto;
 
-import bg.tuplovdiv.orderservice.model.entity.BasketItemEntity;
-
 import java.util.Set;
 import java.util.UUID;
 
 public class BasketDTO {
     private UUID basketId;
     private UUID ownerId;
-    private Set<BasketItemEntity> items;
+    private Set<BasketItemDTO> items;
 
     public UUID getBasketId() {
         return basketId;
@@ -28,11 +26,11 @@ public class BasketDTO {
         return this;
     }
 
-    public Set<BasketItemEntity> getItems() {
+    public Set<BasketItemDTO> getItems() {
         return items;
     }
 
-    public BasketDTO setItems(Set<BasketItemEntity> items) {
+    public BasketDTO setItems(Set<BasketItemDTO> items) {
         this.items = items;
         return this;
     }
