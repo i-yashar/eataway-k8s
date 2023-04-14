@@ -1,17 +1,15 @@
 package bg.tuplovdiv.orderservice.dto;
 
-import bg.tuplovdiv.orderservice.model.entity.MenuEntity;
-
 public class BasketItemDTO {
 
-    private MenuEntity menu;
+    private MenuDTO menu;
     private Integer count;
 
-    public MenuEntity getMenu() {
+    public MenuDTO getMenu() {
         return menu;
     }
 
-    public BasketItemDTO setMenu(MenuEntity menu) {
+    public BasketItemDTO setMenu(MenuDTO menu) {
         this.menu = menu;
         return this;
     }

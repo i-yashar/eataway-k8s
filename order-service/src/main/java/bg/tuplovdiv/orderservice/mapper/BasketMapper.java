@@ -2,8 +2,12 @@ package bg.tuplovdiv.orderservice.mapper;
 
 import bg.tuplovdiv.orderservice.dto.BasketDTO;
 import bg.tuplovdiv.orderservice.dto.BasketItemDTO;
+import bg.tuplovdiv.orderservice.dto.ItemDTO;
+import bg.tuplovdiv.orderservice.dto.MenuDTO;
 import bg.tuplovdiv.orderservice.model.entity.BasketEntity;
 import bg.tuplovdiv.orderservice.model.entity.BasketItemEntity;
+import bg.tuplovdiv.orderservice.model.entity.ItemEntity;
+import bg.tuplovdiv.orderservice.model.entity.MenuEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
@@ -16,14 +20,33 @@ public class BasketMapper {
         return new BasketDTO()
                 .setBasketId(basketEntity.getExternalId())
                 .setOwnerId(basketEntity.getOwner().getExternalId())
-                .setItems(mapToBasketItemDTO(basketEntity.getItems()));
+                .setItems(mapToBasketItemDTOs(basketEntity.getItems()));
     }
 
-    private Set<BasketItemDTO> mapToBasketItemDTO(Set<BasketItemEntity> entities) {
+    private Set<BasketItemDTO> mapToBasketItemDTOs(Set<BasketItemEntity> entities) {
         return entities.stream()
                 .map(entity -> new BasketItemDTO()
-                        .setMenu(entity.getMenu())
+                        .setMenu(mapToMenuDTO(entity.getMenu()))
                         .setCount(entity.getCount()))
+                .collect(Collectors.toSet());
+    }
+
+    private MenuDTO mapToMenuDTO(MenuEntity entity) {
+        return new MenuDTO()
+                .setMenuId(entity.getExternalId())
+                .setName(entity.getName())
+                .setDescription(entity.getDescription())
+                .setPrice(entity.getPrice())
+                .setItems(mapToItemDTOs(entity.getItems()))
+                .setRestaurantId(entity.getRestaurant().getExternalId());
+    }
+
+    private Set<ItemDTO> mapToItemDTOs(Set<ItemEntity> entities) {
+        return entities.stream()
+                .map(entity -> new ItemDTO()
+                        .setItemId(entity.getExternalId())
+                        .setName(entity.getName())
+                        .setQuantity(entity.getQuantity()))
                 .collect(Collectors.toSet());
     }
 }
