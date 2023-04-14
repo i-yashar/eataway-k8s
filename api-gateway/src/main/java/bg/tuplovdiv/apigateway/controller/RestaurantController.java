@@ -35,6 +35,7 @@ public class RestaurantController {
     @GetMapping(RESTAURANTS_PATH + RESTAURANT_ID_PATH)
     public String getRestaurant(@PathVariable UUID restaurantId, Model model) {
         model.addAttribute("restaurant", restaurantService.findRestaurantByRestaurantId(restaurantId));
+        model.addAttribute("menus", restaurantService.findAllRestaurantMenus(restaurantId));
 
         return "restaurant";
     }

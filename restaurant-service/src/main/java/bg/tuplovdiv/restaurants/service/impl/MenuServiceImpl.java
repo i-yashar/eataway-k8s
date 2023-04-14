@@ -35,6 +35,7 @@ public class MenuServiceImpl implements MenuService {
     }
 
     private PageDTO<MenuDTO> getMenusPage(Pageable pageable) {
+        //todo: fix menus.getSize() (it returns size of the pageable)
         Page<MenuEntity> menus = menuRepository.findAll(pageable);
         return new PageDTO<MenuDTO>()
                 .setContent(mapToListOfDTOs(menus.getContent()))
