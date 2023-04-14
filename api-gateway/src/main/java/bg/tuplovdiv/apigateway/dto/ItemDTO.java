@@ -37,9 +37,6 @@ public class ItemDTO {
 
     @Override
     public String toString() {
-        return "ItemDTO{" +
-                "name='" + name + '\'' +
-                ", quantity=" + quantity +
-                '}';
+        return name + " X " + quantity;
     }
 }
