@@ -34,4 +34,12 @@ public class ItemDTO {
         this.quantity = quantity;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "ItemDTO{" +
+                "name='" + name + '\'' +
+                ", quantity=" + quantity +
+                '}';
+    }
 }

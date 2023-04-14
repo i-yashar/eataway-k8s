@@ -30,6 +30,6 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public Collection<MenuDTO> findAllRestaurantMenus(UUID restaurantId) {
-        return null;
+        return client.getRestaurantMenus(restaurantId);
     }
 }
