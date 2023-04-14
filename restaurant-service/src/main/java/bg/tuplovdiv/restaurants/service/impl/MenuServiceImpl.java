@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class MenuServiceImpl implements MenuService {
-
     private final MenuRepository menuRepository;
+
     private final MenuMapper mapper;
 
     public MenuServiceImpl(MenuRepository menuRepository, MenuMapper mapper) {
@@ -28,18 +28,25 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public PageDTO<MenuDTO> findAllMenus(int page, int size) {
+    public PageDTO<MenuDTO> findAllRestaurantMenus(UUID restaurantId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
+        Page<MenuEntity> menus = menuRepository.findAllByRestaurantExternalId(restaurantId, pageable);
 
-        return getMenusPage(pageable);
+        return getMenusPage(menus);
     }
 
-    private PageDTO<MenuDTO> getMenusPage(Pageable pageable) {
-        //todo: fix menus.getSize() (it returns size of the pageable)
+    @Override
+    public PageDTO<MenuDTO> findAllMenus(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
         Page<MenuEntity> menus = menuRepository.findAll(pageable);
+
+        return getMenusPage(menus);
+    }
+
+    private PageDTO<MenuDTO> getMenusPage(Page<MenuEntity> menus) {
         return new PageDTO<MenuDTO>()
                 .setContent(mapToListOfDTOs(menus.getContent()))
-                .setPageInfo(menus.getSize(), menus.hasNext());
+                .setPageInfo(menus.getContent().size(), menus.hasNext());
     }
 
     private Collection<MenuDTO> mapToListOfDTOs(List<MenuEntity> content) {

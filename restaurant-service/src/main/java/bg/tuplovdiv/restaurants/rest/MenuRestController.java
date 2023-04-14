@@ -11,10 +11,11 @@ import java.net.URI;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/menus/api/v1")
+@RequestMapping("/restaurants/api/v1")
 public class MenuRestController {
 
-    private static final String MENUS_PATH = "/menus";
+    private static final String ALL_MENUS_PATH = "/menus";
+    private static final String MENUS_PATH = "/restaurants/{restaurantId}/menus";
 
     private final MenuService menuService;
 
@@ -22,10 +23,17 @@ public class MenuRestController {
         this.menuService = menuService;
     }
 
-    @GetMapping(MENUS_PATH)
+    @GetMapping(ALL_MENUS_PATH)
     public ResponseEntity<PageDTO<MenuDTO>> getAllMenus(@RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
                                                         @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
         return ResponseEntity.ok(menuService.findAllMenus(page, size));
+    }
+
+    @GetMapping(MENUS_PATH)
+    private ResponseEntity<PageDTO<MenuDTO>> getAllRestaurantMenus(@PathVariable UUID restaurantId,
+                                                                   @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
+                                                                   @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
+        return ResponseEntity.ok(menuService.findAllRestaurantMenus(restaurantId, page, size));
     }
 
     @PostMapping(MENUS_PATH)
