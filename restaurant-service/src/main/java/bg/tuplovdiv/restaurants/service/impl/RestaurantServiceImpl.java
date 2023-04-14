@@ -46,13 +46,6 @@ public class RestaurantServiceImpl implements RestaurantService {
         return getRestaurantsPage(pageable);
     }
 
-    @Override
-    public RestaurantDTO saveRestaurant(RestaurantDTO restaurantDTO) {
-        RestaurantEntity restaurantEntity = mapper.toEntity(restaurantDTO);
-
-        return mapper.toDTO(restaurantRepository.save(restaurantEntity));
-    }
-
     private PageDTO<RestaurantDTO> getRestaurantsPage(Pageable pageable) {
         Page<RestaurantEntity> restaurants = restaurantRepository.findAll(pageable);
         return new PageDTO<RestaurantDTO>()
@@ -64,5 +57,12 @@ public class RestaurantServiceImpl implements RestaurantService {
         return restaurants.stream()
                 .map(mapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public RestaurantDTO saveRestaurant(RestaurantDTO restaurantDTO) {
+        RestaurantEntity restaurantEntity = mapper.toEntity(restaurantDTO);
+
+        return mapper.toDTO(restaurantRepository.save(restaurantEntity));
     }
 }
