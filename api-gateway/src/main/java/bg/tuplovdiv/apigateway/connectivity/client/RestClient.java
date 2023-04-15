@@ -1,15 +1,14 @@
 package bg.tuplovdiv.apigateway.connectivity.client;
 
 import bg.tuplovdiv.apigateway.connectivity.handler.ResponseHandler;
-import bg.tuplovdiv.apigateway.exception.BadRequestException;
-import bg.tuplovdiv.apigateway.exception.ResponseBodyParsingException;
-import bg.tuplovdiv.apigateway.exception.UnableToReachHostException;
+import bg.tuplovdiv.apigateway.exception.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -25,11 +24,34 @@ public abstract class RestClient {
     }
 
     protected <T> T get(HttpRequest request, ResponseHandler<T> handler) {
-        HttpResponse<String> response = sendRequest(request);
-
-        verifyResponse(response);
+        HttpResponse<String> response = execute(request);
 
         return handler.handle(response);
+    }
+
+    protected  <T> T post(HttpRequest request, ResponseHandler<T> handler) {
+        HttpResponse<String> response = execute(request);
+
+        return handler.handle(response);
+    }
+
+    protected  <T> T put(HttpRequest request, ResponseHandler<T> handler) {
+        HttpResponse<String> response = execute(request);
+
+        return handler.handle(response);
+    }
+
+    protected  <T> T delete(HttpRequest request, ResponseHandler<T> handler) {
+        HttpResponse<String> response = execute(request);
+
+        return handler.handle(response);
+    }
+
+    private HttpResponse<String> execute(HttpRequest request) {
+        HttpResponse<String> response = sendRequest(request);
+        verifyResponse(response);
+
+        return response;
     }
 
     private HttpResponse<String> sendRequest(HttpRequest request) {
@@ -49,8 +71,16 @@ public abstract class RestClient {
 
         if(!isValid) {
             throw new BadRequestException("Request: " + (response != null ? response.request().uri() : null)
-                            + " was unsuccessful. Status code returned: " + (response != null ? response.statusCode() : ""));
+                    + " was unsuccessful. Status code returned: " + (response != null ? response.statusCode() : ""));
         }
+    }
+
+    protected HttpRequest.BodyPublisher createRequestBody(Object object) {
+        return HttpRequest.BodyPublishers.ofString(mapObjectToJson(object));
+    }
+
+    protected URI buildURI(String path, String... components) {
+        return URI.create(String.format(path, (Object[]) components));
     }
 
     protected <T> T mapJsonToObject(String json, TypeReference<T> type) {
@@ -61,7 +91,16 @@ public abstract class RestClient {
         }
     }
 
-    public HttpRequest post() {
-        return null;
+    protected String mapObjectToJson(Object object) {
+        try {
+            return mapper.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            throw new ConversionToJsonException("Error message: " + e.getMessage());
+        }
+    }
+
+    protected String extractLocation(HttpResponse<String> response) {
+        return response.headers().firstValue("Location")
+                .orElseThrow(() -> new LocationHeaderNotFoundException("Response does not contain mandatory 'Location' header"));
     }
 }
