@@ -16,7 +16,8 @@ import java.util.UUID;
 @Component
 public class OrdersRestClient extends RestClient {
 
-    private static final String ORDERS_API_BASE_PATH = "/orders/api/v1";
+    private static final String HOST = "http://localhost:8081";
+    private static final String ORDERS_API_BASE_PATH = HOST + "/orders/api/v1";
     private static final String ORDERS_API_BASKETS_BASE_PATH = ORDERS_API_BASE_PATH + "/users/%s/basket";
     private static final String ORDERS_API_BASKETS_BASKET_ITEM_PATH = ORDERS_API_BASKETS_BASE_PATH + "/items/%s";
     private static final String ORDERS_API_GET_USER_ORDER = ORDERS_API_BASE_PATH + "/%s";
