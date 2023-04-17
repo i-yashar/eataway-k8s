@@ -14,7 +14,7 @@ import static bg.tuplovdiv.orderservice.dto.TakeOrderRequest.*;
 @Component
 public class TakeOrderValidator implements ConstraintValidator<ValidTakeOrderRequest, TakeOrderRequest> {
 
-    private static final String INVALID_TAKE_ORDER_REQUEST_MESSAGE = "Invalid create order request. Please provide a valid value for field '%s'.";
+    private static final String INVALID_TAKE_ORDER_REQUEST_MESSAGE = "Invalid take order request. Please provide a valid value for field '%s'.";
 
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
