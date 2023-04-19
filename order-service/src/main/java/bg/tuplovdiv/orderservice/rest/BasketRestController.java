@@ -14,7 +14,7 @@ public class BasketRestController {
     private static final String BASKET_PATH = "/users/{ownerId}/basket";
     private static final String BASKET_ITEM_PATH = BASKET_PATH + "/items/{menuId}";
 
-    @PostMapping(BASKET_PATH)
+    @PutMapping(BASKET_PATH)
     public ResponseEntity<Void> addBasketItem(@PathVariable UUID ownerId,
                                               @RequestBody BasketItemDTO basketItem) {
         return null;
