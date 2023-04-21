@@ -34,6 +34,8 @@ public class BasketRestController {
 
     @DeleteMapping(BASKET_ITEM_PATH)
     public ResponseEntity<Void> deleteBasketItem(@PathVariable UUID ownerId, @PathVariable UUID menuId) {
-        return null;
+        basketService.deleteBasketItem(ownerId, menuId);
+
+        return ResponseEntity.noContent().build();
     }
 }
