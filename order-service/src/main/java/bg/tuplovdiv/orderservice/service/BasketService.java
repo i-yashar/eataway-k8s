@@ -7,5 +7,7 @@ import java.util.UUID;
 
 public interface BasketService {
     BasketDTO addBasketItem(UUID ownerId, BasketItemDTO basketItem);
+    BasketDTO getBasketByOwnerId(UUID ownerId);
     BasketDTO getByBasketId(UUID basketId);
+    void deleteBasketItem(UUID ownerId, UUID menuId);
 }

@@ -29,7 +29,7 @@ public class BasketRestController {
 
     @GetMapping(BASKET_PATH)
     public ResponseEntity<BasketDTO> getBasket(@PathVariable UUID ownerId) {
-        return null;
+        return ResponseEntity.ok(basketService.getBasketByOwnerId(ownerId));
     }
 
     @DeleteMapping(BASKET_ITEM_PATH)
