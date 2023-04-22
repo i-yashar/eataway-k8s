@@ -66,24 +66,20 @@ public class OrdersRestClient extends RestClient {
         return post(request, this::extractLocation);
     }
 
-    public BasketDTO getUserBasket() {
-        AuthenticatedUser user = userProvider.provide();
-
+    public BasketDTO getUserBasket(UUID ownerId) {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
-                .uri(buildURI(ORDERS_API_BASKETS_BASE_PATH, user.getUserId()))
+                .uri(buildURI(ORDERS_API_BASKETS_BASE_PATH, ownerId.toString()))
                 .header("accept", "application/json")
                 .build();
 
         return get(request, response -> mapJsonToObject(response.body(), BASKET_DTO_TYPE));
     }
 
-    public BasketDTO addBasketItem(BasketItemDTO basketItem) {
-        AuthenticatedUser user = userProvider.provide();
-
+    public BasketDTO addBasketItem(UUID ownerId, BasketItemDTO basketItem) {
         HttpRequest request = HttpRequest.newBuilder()
                 .PUT(createRequestBody(basketItem))
-                .uri(buildURI(ORDERS_API_BASKETS_BASE_PATH, user.getUserId()))
+                .uri(buildURI(ORDERS_API_BASKETS_BASE_PATH, ownerId.toString()))
                 .header("Content-Type", "application/json")
                 .header("accept", "application/json")
                 .build();
@@ -91,12 +87,10 @@ public class OrdersRestClient extends RestClient {
         return put(request, response -> mapJsonToObject(response.body(), BASKET_DTO_TYPE));
     }
 
-    public Void deleteBasketItem(UUID menuId) {
-        AuthenticatedUser user = userProvider.provide();
-
+    public Void deleteBasketItem(UUID ownerId, UUID menuId) {
         HttpRequest request = HttpRequest.newBuilder()
                 .DELETE()
-                .uri(buildURI(ORDERS_API_BASKETS_BASKET_ITEM_PATH, user.getUserId(), menuId.toString()))
+                .uri(buildURI(ORDERS_API_BASKETS_BASKET_ITEM_PATH, ownerId.toString(), menuId.toString()))
                 .header("accept", "application/json")
                 .build();
 
