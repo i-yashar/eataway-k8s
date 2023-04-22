@@ -18,8 +18,7 @@ import java.util.UUID;
 public class OrderRestController {
     private static final String ORDER_ID = "/{orderId}";
     private static final String ORDERS_PATH = "/orders";
-    private static final String CLIENT_ID = "/{userId}";
-    private static final String CLIENT_ORDERS_PATH = "/users" + CLIENT_ID + ORDERS_PATH;
+    private static final String CLIENT_ORDERS_PATH = "/users/{clientId}" +  ORDERS_PATH;
 
     private final OrderService orderService;
 
@@ -33,10 +32,10 @@ public class OrderRestController {
     }
 
     @GetMapping(CLIENT_ORDERS_PATH)
-    public ResponseEntity<PageDTO<OrderDTO>> getUserOrders(@PathVariable("userId") UUID userId,
+    public ResponseEntity<PageDTO<OrderDTO>> getUserOrders(@PathVariable UUID clientId,
                                                                @RequestParam(name = "page", required = false, defaultValue = "0") int page,
                                                                @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
-        return ResponseEntity.ok(orderService.findAllUserOrders(userId, page, size));
+        return ResponseEntity.ok(orderService.findAllUserOrders(clientId, page, size));
     }
 
     @PostMapping(ORDERS_PATH)

@@ -47,14 +47,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public PageDTO<OrderDTO> findAllUserOrders(UUID userId, int page, int size) {
+    public PageDTO<OrderDTO> findAllUserOrders(UUID clientId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 
-        return getAllUserOrdersPage(userId, pageable);
+        return getAllUserOrdersPage(clientId, pageable);
     }
 
-    private PageDTO<OrderDTO> getAllUserOrdersPage(UUID userId, Pageable pageable) {
-        Page<OrderEntity> orders = orderRepository.findAllByClientId(userId, pageable);
+    private PageDTO<OrderDTO> getAllUserOrdersPage(UUID clientId, Pageable pageable) {
+        Page<OrderEntity> orders = orderRepository.findAllByClientId(clientId, pageable);
 
         return new PageDTO<OrderDTO>()
                 .setContent(mapToOrderDTOs(orders))
