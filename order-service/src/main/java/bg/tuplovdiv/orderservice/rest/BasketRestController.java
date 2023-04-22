@@ -22,18 +22,18 @@ public class BasketRestController {
     }
 
     @PutMapping(BASKET_PATH)
-    public ResponseEntity<BasketDTO> addBasketItem(@PathVariable UUID ownerId,
+    public ResponseEntity<BasketDTO> addBasketItem(@PathVariable String ownerId,
                                               @RequestBody BasketItemDTO basketItem) {
         return ResponseEntity.ok(basketService.addBasketItem(ownerId, basketItem));
     }
 
     @GetMapping(BASKET_PATH)
-    public ResponseEntity<BasketDTO> getBasket(@PathVariable UUID ownerId) {
+    public ResponseEntity<BasketDTO> getBasket(@PathVariable String ownerId) {
         return ResponseEntity.ok(basketService.getBasketByOwnerId(ownerId));
     }
 
     @DeleteMapping(BASKET_ITEM_PATH)
-    public ResponseEntity<Void> deleteBasketItem(@PathVariable UUID ownerId, @PathVariable UUID menuId) {
+    public ResponseEntity<Void> deleteBasketItem(@PathVariable String ownerId, @PathVariable UUID menuId) {
         basketService.deleteBasketItem(ownerId, menuId);
 
         return ResponseEntity.noContent().build();

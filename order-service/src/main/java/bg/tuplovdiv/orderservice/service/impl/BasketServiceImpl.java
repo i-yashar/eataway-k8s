@@ -31,7 +31,7 @@ public class BasketServiceImpl implements BasketService {
     }
 
     @Override
-    public BasketDTO addBasketItem(UUID ownerId, BasketItemDTO basketItem) {
+    public BasketDTO addBasketItem(String ownerId, BasketItemDTO basketItem) {
         BasketEntity basket = getBasketEntityByOwnerId(ownerId);
         Set<BasketItemEntity> items = getBasketItems(basket);
         Optional<BasketItemEntity> optItem = getBasketItem(items, basketItem.getMenu().getMenuId());
@@ -65,7 +65,7 @@ public class BasketServiceImpl implements BasketService {
     }
 
     @Override
-    public BasketDTO getBasketByOwnerId(UUID ownerId) {
+    public BasketDTO getBasketByOwnerId(String ownerId) {
         BasketEntity basket = getBasketEntityByOwnerId(ownerId);
 
         return mapper.toBasketDTO(basket);
@@ -77,12 +77,12 @@ public class BasketServiceImpl implements BasketService {
     }
 
     @Override
-    public void deleteBasketItem(UUID ownerId, UUID menuId) {
+    public void deleteBasketItem(String ownerId, UUID menuId) {
         BasketEntity basket = getBasketEntityByOwnerId(ownerId);
         removeBasketItemFromBasket(basket, menuId);
     }
 
-    private BasketEntity getBasketEntityByOwnerId(UUID ownerId) {
+    private BasketEntity getBasketEntityByOwnerId(String ownerId) {
         return basketRepository.findBasketEntityByOwnerExternalId(ownerId)
                 .orElseThrow(() -> new BasketNotFoundException("Basket with ownerId " + ownerId + " not found"));
     }

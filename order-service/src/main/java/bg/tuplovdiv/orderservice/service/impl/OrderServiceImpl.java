@@ -85,7 +85,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private OrderContext buildOrderContext(CreateOrderRequest createOrderRequest) {
-        UUID clientId = createOrderRequest.getClientId();
+        String clientId = createOrderRequest.getClientId();
         BasketDTO basket = basketService.getBasketByOwnerId(clientId);
 
         return OrderContext.getBuilder()

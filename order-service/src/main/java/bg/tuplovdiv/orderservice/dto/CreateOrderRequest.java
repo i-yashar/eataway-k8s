@@ -2,8 +2,6 @@ package bg.tuplovdiv.orderservice.dto;
 
 import bg.tuplovdiv.orderservice.validation.order.ValidCreateOrderRequest;
 
-import java.util.UUID;
-
 @ValidCreateOrderRequest
 public class CreateOrderRequest {
     public static final String CLIENT_ID_JSON_PROPERTY = "clientId";
@@ -12,15 +10,15 @@ public class CreateOrderRequest {
     public static final String ADDRESS_JSON_PROPERTY = "address";
     public static final String BASKET_ID_JSON_PROPERTY = "basketId";
 
-    private UUID clientId;
+    private String clientId;
     private String clientPhoneNumber;
     private String address;
 
-    public UUID getClientId() {
+    public String getClientId() {
         return clientId;
     }
 
-    public CreateOrderRequest setClientId(UUID clientId) {
+    public CreateOrderRequest setClientId(String clientId) {
         this.clientId = clientId;
         return this;
     }

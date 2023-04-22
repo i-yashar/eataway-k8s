@@ -7,9 +7,8 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
-
-import static bg.tuplovdiv.orderservice.dto.CreateOrderRequest.*;
+import static bg.tuplovdiv.orderservice.dto.CreateOrderRequest.BASKET_ID_JSON_PROPERTY;
+import static bg.tuplovdiv.orderservice.dto.CreateOrderRequest.CLIENT_ID_JSON_PROPERTY;
 
 @Component
 public class CreateOrderValidator implements ConstraintValidator<ValidCreateOrderRequest, CreateOrderRequest> {
@@ -26,7 +25,7 @@ public class CreateOrderValidator implements ConstraintValidator<ValidCreateOrde
 
     @Override
     public boolean isValid(CreateOrderRequest orderRequest, ConstraintValidatorContext context) {
-        UUID clientId = orderRequest.getClientId();
+        String clientId = orderRequest.getClientId();
 
         if (hasInvalidClient(clientId)) {
             addConstraintViolation(context, CLIENT_ID_JSON_PROPERTY);
@@ -41,11 +40,11 @@ public class CreateOrderValidator implements ConstraintValidator<ValidCreateOrde
         return true;
     }
 
-    private boolean hasInvalidClient(UUID clientId) {
+    private boolean hasInvalidClient(String clientId) {
         return userRepository.findByExternalId(clientId).isEmpty();
     }
 
-    private boolean hasInvalidBasket(UUID clientId) {
+    private boolean hasInvalidBasket(String clientId) {
         return basketRepository.findBasketEntityByOwnerExternalId(clientId).isEmpty();
     }
 

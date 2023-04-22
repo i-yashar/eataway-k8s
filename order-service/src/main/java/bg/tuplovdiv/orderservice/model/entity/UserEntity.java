@@ -2,8 +2,6 @@ package bg.tuplovdiv.orderservice.model.entity;
 
 import jakarta.persistence.*;
 
-import java.util.UUID;
-
 @Entity
 @Table(name = "users")
 public class UserEntity {
@@ -12,7 +10,7 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private UUID externalId;
+    private String externalId;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -29,11 +27,11 @@ public class UserEntity {
         return this;
     }
 
-    public UUID getExternalId() {
+    public String getExternalId() {
         return externalId;
     }
 
-    public UserEntity setExternalId(UUID externalId) {
+    public UserEntity setExternalId(String externalId) {
         this.externalId = externalId;
         return this;
     }

@@ -11,7 +11,7 @@ public class TakeOrderRequest {
     public static final String DELIVERY_DRIVER_ID_JSON_PROPERTY = "deliveryDriverId";
 
     private UUID orderId;
-    private UUID deliveryDriverId;
+    private String deliveryDriverId;
 
     public UUID getOrderId() {
         return orderId;
@@ -22,11 +22,11 @@ public class TakeOrderRequest {
         return this;
     }
 
-    public UUID getDeliveryDriverId() {
+    public String getDeliveryDriverId() {
         return deliveryDriverId;
     }
 
-    public TakeOrderRequest setDeliveryDriverId(UUID deliveryDriverId) {
+    public TakeOrderRequest setDeliveryDriverId(String deliveryDriverId) {
         this.deliveryDriverId = deliveryDriverId;
         return this;
     }

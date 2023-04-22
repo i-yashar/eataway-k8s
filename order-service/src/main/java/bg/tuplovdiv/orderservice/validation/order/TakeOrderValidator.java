@@ -27,7 +27,7 @@ public class TakeOrderValidator implements ConstraintValidator<ValidTakeOrderReq
     @Override
     public boolean isValid(TakeOrderRequest orderRequest, ConstraintValidatorContext context) {
         UUID orderId = orderRequest.getOrderId();
-        UUID deliveryDriverId = orderRequest.getDeliveryDriverId();
+        String deliveryDriverId = orderRequest.getDeliveryDriverId();
 
         if(hasInvalidOrder(orderId)) {
             addConstraintViolation(context, ORDER_ID_JSON_PROPERTY);
@@ -46,7 +46,7 @@ public class TakeOrderValidator implements ConstraintValidator<ValidTakeOrderReq
         return orderRepository.findOrderEntityByExternalId(orderId).isEmpty();
     }
 
-    private boolean hasInvalidDeliveryDriver(UUID deliveryDriverId) {
+    private boolean hasInvalidDeliveryDriver(String deliveryDriverId) {
         return userRepository.findByExternalId(deliveryDriverId).isEmpty();
     }
 

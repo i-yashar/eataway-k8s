@@ -17,12 +17,12 @@ public class OrderEntity {
     private UUID externalId;
 
     @Column(nullable = false)
-    private UUID clientId;
+    private String clientId;
 
     @Column(nullable = false)
     private String clientPhoneNumber;
 
-    private UUID deliverDriverId;
+    private String deliverDriverId;
 
     @Column(nullable = false)
     private String address;
@@ -55,11 +55,11 @@ public class OrderEntity {
         return this;
     }
 
-    public UUID getClientId() {
+    public String getClientId() {
         return clientId;
     }
 
-    public OrderEntity setClientId(UUID clientId) {
+    public OrderEntity setClientId(String clientId) {
         this.clientId = clientId;
         return this;
     }
@@ -73,11 +73,11 @@ public class OrderEntity {
         return this;
     }
 
-    public UUID getDeliverDriverId() {
+    public String getDeliverDriverId() {
         return deliverDriverId;
     }
 
-    public OrderEntity setDeliverDriverId(UUID deliverDriverId) {
+    public OrderEntity setDeliverDriverId(String deliverDriverId) {
         this.deliverDriverId = deliverDriverId;
         return this;
     }
