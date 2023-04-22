@@ -10,7 +10,7 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String externalId;
+    private String userId;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -27,12 +27,12 @@ public class UserEntity {
         return this;
     }
 
-    public String getExternalId() {
-        return externalId;
+    public String getUserId() {
+        return userId;
     }
 
-    public UserEntity setExternalId(String externalId) {
-        this.externalId = externalId;
+    public UserEntity setUserId(String externalId) {
+        this.userId = externalId;
         return this;
     }
 

@@ -47,7 +47,7 @@ public class TakeOrderValidator implements ConstraintValidator<ValidTakeOrderReq
     }
 
     private boolean hasInvalidDeliveryDriver(String deliveryDriverId) {
-        return userRepository.findByExternalId(deliveryDriverId).isEmpty();
+        return userRepository.findByUserId(deliveryDriverId).isEmpty();
     }
 
     private void addConstraintViolation(ConstraintValidatorContext context, String property) {

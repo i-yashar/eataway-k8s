@@ -28,7 +28,7 @@ public class BasketMapper {
     public BasketDTO toBasketDTO(BasketEntity basketEntity) {
         return new BasketDTO()
                 .setBasketId(basketEntity.getExternalId())
-                .setOwnerId(basketEntity.getOwner().getExternalId())
+                .setOwnerId(basketEntity.getOwner().getUserId())
                 .setItems(mapToBasketItemDTOs(basketEntity.getItems()));
     }
 

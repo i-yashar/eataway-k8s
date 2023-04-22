@@ -10,5 +10,5 @@ import java.util.UUID;
 @Repository
 public interface BasketRepository extends JpaRepository<BasketEntity, Long> {
     Optional<BasketEntity> findBasketEntityByExternalId(UUID basketId);
-    Optional<BasketEntity> findBasketEntityByOwnerExternalId(String ownerId);
+    Optional<BasketEntity> findBasketEntityByOwnerUserId(String ownerId);
 }

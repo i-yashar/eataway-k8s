@@ -8,9 +8,12 @@ import bg.tuplovdiv.orderservice.exception.MenuNotFoundException;
 import bg.tuplovdiv.orderservice.mapper.BasketMapper;
 import bg.tuplovdiv.orderservice.model.entity.BasketEntity;
 import bg.tuplovdiv.orderservice.model.entity.BasketItemEntity;
+import bg.tuplovdiv.orderservice.model.entity.UserEntity;
 import bg.tuplovdiv.orderservice.repository.BasketRepository;
+import bg.tuplovdiv.orderservice.repository.UserRepository;
 import bg.tuplovdiv.orderservice.service.BasketService;
 import jakarta.transaction.Transactional;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -23,10 +26,12 @@ import java.util.UUID;
 public class BasketServiceImpl implements BasketService {
 
     private final BasketRepository basketRepository;
+    private final UserRepository userRepository;
     private final BasketMapper mapper;
 
-    public BasketServiceImpl(BasketRepository basketRepository, BasketMapper mapper) {
+    public BasketServiceImpl(BasketRepository basketRepository, UserRepository userRepository, BasketMapper mapper) {
         this.basketRepository = basketRepository;
+        this.userRepository = userRepository;
         this.mapper = mapper;
     }
 
@@ -82,9 +87,23 @@ public class BasketServiceImpl implements BasketService {
         removeBasketItemFromBasket(basket, menuId);
     }
 
-    private BasketEntity getBasketEntityByOwnerId(String ownerId) {
-        return basketRepository.findBasketEntityByOwnerExternalId(ownerId)
-                .orElseThrow(() -> new BasketNotFoundException("Basket with ownerId " + ownerId + " not found"));
+    private BasketEntity getBasketEntityByOwnerId(String userId) {
+        return basketRepository.findBasketEntityByOwnerUserId(userId)
+                .orElse(createUserBasket(userId));
+    }
+
+    private BasketEntity createUserBasket(String userId) {
+        UserEntity user = getUser(userId);
+        BasketEntity basket = new BasketEntity()
+                .setExternalId(UUID.randomUUID())
+                .setOwner(user)
+                .setItems(new HashSet<>());
+
+        return basketRepository.save(basket);
+    }
+
+    private UserEntity getUser(String userId) {
+        return userRepository.findByUserId(userId).orElseThrow(() -> new UsernameNotFoundException("User with userId " + userId + " not found"));
     }
 
     private void removeBasketItemFromBasket(BasketEntity basket, UUID menuId) {

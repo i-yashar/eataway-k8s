@@ -41,11 +41,11 @@ public class CreateOrderValidator implements ConstraintValidator<ValidCreateOrde
     }
 
     private boolean hasInvalidClient(String clientId) {
-        return userRepository.findByExternalId(clientId).isEmpty();
+        return userRepository.findByUserId(clientId).isEmpty();
     }
 
     private boolean hasInvalidBasket(String clientId) {
-        return basketRepository.findBasketEntityByOwnerExternalId(clientId).isEmpty();
+        return basketRepository.findBasketEntityByOwnerUserId(clientId).isEmpty();
     }
 
     private void addConstraintViolation(ConstraintValidatorContext context, String property) {
