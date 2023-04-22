@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public class BasketDTO {
     private UUID basketId;
-    private UUID ownerId;
+    private String ownerId;
     private Set<BasketItemDTO> items;
 
     public UUID getBasketId() {
@@ -17,11 +17,11 @@ public class BasketDTO {
         return this;
     }
 
-    public UUID getOwnerId() {
+    public String getOwnerId() {
         return ownerId;
     }
 
-    public BasketDTO setOwnerId(UUID ownerId) {
+    public BasketDTO setOwnerId(String ownerId) {
         this.ownerId = ownerId;
         return this;
     }

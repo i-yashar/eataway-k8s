@@ -49,9 +49,9 @@ public class BasketController {
         return ResponseEntity.noContent().build();
     }
 
-    private UUID getUserId() {
+    private String getUserId() {
         AuthenticatedUser user = userProvider.provide();
 
-        return UUID.fromString(user.getUserId());
+        return user.getUserId();
     }
 }

@@ -6,7 +6,7 @@ import bg.tuplovdiv.apigateway.dto.BasketItemDTO;
 import java.util.UUID;
 
 public interface BasketService {
-    BasketDTO getUserBasket(UUID ownerId);
-    BasketDTO addBasketItem(UUID ownerId, BasketItemDTO basketItem);
-    void deleteBasketItem(UUID ownerId, UUID menuId);
+    BasketDTO getUserBasket(String ownerId);
+    BasketDTO addBasketItem(String ownerId, BasketItemDTO basketItem);
+    void deleteBasketItem(String ownerId, UUID menuId);
 }

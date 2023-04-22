@@ -6,13 +6,13 @@ import java.util.UUID;
 
 public class OrderContext extends Message {
     private final UUID orderId;
-    private final UUID clientId;
+    private final String clientId;
     private final String clientPhoneNumber;
     private final String address;
     private final BasketDTO basket;
     private final Double totalCost;
 
-    private OrderContext(UUID orderId, UUID clientId, String clientPhoneNumber, String address, BasketDTO basket, Double totalCost) {
+    private OrderContext(UUID orderId, String clientId, String clientPhoneNumber, String address, BasketDTO basket, Double totalCost) {
         this.orderId = orderId;
         this.clientId = clientId;
         this.clientPhoneNumber = clientPhoneNumber;
@@ -25,7 +25,7 @@ public class OrderContext extends Message {
         return this.orderId;
     }
 
-    public UUID getClientId() {
+    public String getClientId() {
         return clientId;
     }
 
@@ -51,7 +51,7 @@ public class OrderContext extends Message {
 
     public static class Builder {
         private UUID orderId;
-        private UUID clientId;
+        private String clientId;
         private String clientPhoneNumber;
         private String address;
         private BasketDTO basket;
@@ -62,7 +62,7 @@ public class OrderContext extends Message {
             return this;
         }
 
-        public Builder clientId(UUID clientId) {
+        public Builder clientId(String clientId) {
             this.clientId = clientId;
             return this;
         }

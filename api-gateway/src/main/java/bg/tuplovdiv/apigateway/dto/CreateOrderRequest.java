@@ -1,21 +1,19 @@
 package bg.tuplovdiv.apigateway.dto;
 
-import java.util.UUID;
-
 public class CreateOrderRequest {
     public static final String CLIENT_ID_JSON_PROPERTY = "clientId";
     public static final String CLIENT_PHONE_NUMBER_JSON_PROPERTY = "clientPhoneNumber";
     public static final String ADDRESS_JSON_PROPERTY = "address";
 
-    private UUID clientId;
+    private String clientId;
     private String clientPhoneNumber;
     private String address;
 
-    public UUID getClientId() {
+    public String getClientId() {
         return clientId;
     }
 
-    public CreateOrderRequest setClientId(UUID clientId) {
+    public CreateOrderRequest setClientId(String clientId) {
         this.clientId = clientId;
         return this;
     }

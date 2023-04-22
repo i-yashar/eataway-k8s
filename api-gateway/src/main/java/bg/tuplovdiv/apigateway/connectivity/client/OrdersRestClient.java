@@ -66,7 +66,7 @@ public class OrdersRestClient extends RestClient {
         return post(request, this::extractLocation);
     }
 
-    public BasketDTO getUserBasket(UUID ownerId) {
+    public BasketDTO getUserBasket(String ownerId) {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
                 .uri(buildURI(ORDERS_API_BASKETS_BASE_PATH, ownerId.toString()))
@@ -76,7 +76,7 @@ public class OrdersRestClient extends RestClient {
         return get(request, response -> mapJsonToObject(response.body(), BASKET_DTO_TYPE));
     }
 
-    public BasketDTO addBasketItem(UUID ownerId, BasketItemDTO basketItem) {
+    public BasketDTO addBasketItem(String ownerId, BasketItemDTO basketItem) {
         HttpRequest request = HttpRequest.newBuilder()
                 .PUT(createRequestBody(basketItem))
                 .uri(buildURI(ORDERS_API_BASKETS_BASE_PATH, ownerId.toString()))
@@ -87,7 +87,7 @@ public class OrdersRestClient extends RestClient {
         return put(request, response -> mapJsonToObject(response.body(), BASKET_DTO_TYPE));
     }
 
-    public Void deleteBasketItem(UUID ownerId, UUID menuId) {
+    public Void deleteBasketItem(String ownerId, UUID menuId) {
         HttpRequest request = HttpRequest.newBuilder()
                 .DELETE()
                 .uri(buildURI(ORDERS_API_BASKETS_BASKET_ITEM_PATH, ownerId.toString(), menuId.toString()))

@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public class OrderDTO {
     private UUID orderId;
-    private UUID clientId;
+    private String clientId;
     private String clientPhoneNumber;
     private UUID deliveryDriverId;
     private String address;
@@ -20,11 +20,11 @@ public class OrderDTO {
         return this;
     }
 
-    public UUID getClientId() {
+    public String getClientId() {
         return clientId;
     }
 
-    public OrderDTO setClientId(UUID clientId) {
+    public OrderDTO setClientId(String clientId) {
         this.clientId = clientId;
         return this;
     }

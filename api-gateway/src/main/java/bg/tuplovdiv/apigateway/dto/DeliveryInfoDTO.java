@@ -1,4 +1,4 @@
-package bg.tuplovdiv.orderservice.dto;
+package bg.tuplovdiv.apigateway.dto;
 
 import jakarta.validation.constraints.NotBlank;
 

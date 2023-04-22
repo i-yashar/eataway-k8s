@@ -17,17 +17,17 @@ public class BasketServiceImpl implements BasketService {
     }
 
     @Override
-    public BasketDTO getUserBasket(UUID ownerId) {
+    public BasketDTO getUserBasket(String ownerId) {
         return client.getUserBasket(ownerId);
     }
 
     @Override
-    public BasketDTO addBasketItem(UUID ownerId, BasketItemDTO basketItem) {
+    public BasketDTO addBasketItem(String ownerId, BasketItemDTO basketItem) {
         return client.addBasketItem(ownerId, basketItem);
     }
 
     @Override
-    public void deleteBasketItem(UUID ownerId, UUID menuId) {
+    public void deleteBasketItem(String ownerId, UUID menuId) {
         client.deleteBasketItem(ownerId, menuId);
     }
 }
