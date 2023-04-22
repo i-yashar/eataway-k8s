@@ -71,13 +71,6 @@ public class BasketServiceImpl implements BasketService {
         return mapper.toBasketDTO(basket);
     }
 
-    @Override
-    public BasketDTO getByBasketId(UUID basketId) {
-        BasketEntity basketEntity = getBasketEntity(basketId);
-
-        return mapper.toBasketDTO(basketEntity);
-    }
-
     private BasketEntity getBasketEntity(UUID basketId) {
         return basketRepository.findBasketEntityByExternalId(basketId)
                 .orElseThrow(() -> new BasketNotFoundException("Basket with basketId " + basketId + " not found"));
