@@ -1,7 +1,7 @@
 package bg.tuplovdiv.orderservice.mapper;
 
 import bg.tuplovdiv.orderservice.dto.OrderDTO;
-import bg.tuplovdiv.orderservice.dto.CreateOrderRequest;
+import bg.tuplovdiv.orderservice.messaging.OrderContext;
 import bg.tuplovdiv.orderservice.model.entity.OrderEntity;
 import org.springframework.stereotype.Component;
 
@@ -19,11 +19,13 @@ public class OrderMapper {
                 .setTotalCost(order.getTotalCost());
     }
 
-    public OrderEntity toOrderEntity(CreateOrderRequest orderRequest) {
+    public OrderEntity toOrderEntity(OrderContext context) {
         return new OrderEntity()
-                .setClientId(orderRequest.getClientId())
-                .setClientPhoneNumber(orderRequest.getClientPhoneNumber())
-                .setAddress(orderRequest.getAddress())
-                .setBasketId(orderRequest.getBasketId());
+                .setExternalId(context.getOrderId())
+                .setClientId(context.getClientId())
+                .setClientPhoneNumber(context.getClientPhoneNumber())
+                .setAddress(context.getAddress())
+                .setBasketId(context.getBasket().getBasketId())
+                .setTotalCost(context.getTotalCost());
     }
 }

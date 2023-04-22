@@ -1,8 +1,8 @@
 package bg.tuplovdiv.orderservice.service.impl;
 
 import bg.tuplovdiv.orderservice.dto.BasketDTO;
-import bg.tuplovdiv.orderservice.dto.OrderDTO;
 import bg.tuplovdiv.orderservice.dto.CreateOrderRequest;
+import bg.tuplovdiv.orderservice.dto.OrderDTO;
 import bg.tuplovdiv.orderservice.dto.TakeOrderRequest;
 import bg.tuplovdiv.orderservice.dto.page.PageDTO;
 import bg.tuplovdiv.orderservice.mapper.OrderMapper;
@@ -68,40 +68,37 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public UUID createOrder(CreateOrderRequest orderDTO) {
-        OrderContext context = buildOrderContext(orderDTO);
-        persistOrder(orderDTO, context);
+    public UUID createOrder(CreateOrderRequest createOrderRequest) {
+        OrderContext context = buildOrderContext(createOrderRequest);
+        persistOrder(context);
 
         createOrderProcess.start(context);
 
         return context.getOrderId();
     }
 
-    private void persistOrder(CreateOrderRequest orderRequest, OrderContext context) {
-        OrderEntity orderEntity = mapper.toOrderEntity(orderRequest);
-        orderEntity.setExternalId(context.getOrderId());
-        orderEntity.setTotalCost(context.getTotalCost());
+    private void persistOrder(OrderContext context) {
+        OrderEntity orderEntity = mapper.toOrderEntity(context);
         orderEntity.setStatus(REGISTERED);
 
         orderRepository.save(orderEntity);
     }
 
-    private OrderContext buildOrderContext(CreateOrderRequest orderRequest) {
-        BasketDTO basket = basketService.getByBasketId(orderRequest.getBasketId());
+    private OrderContext buildOrderContext(CreateOrderRequest createOrderRequest) {
+        UUID clientId = createOrderRequest.getClientId();
+        BasketDTO basket = basketService.getBasketByOwnerId(clientId);
 
         return OrderContext.getBuilder()
                 .orderId(UUID.randomUUID())
-                .clientId(orderRequest.getClientId())
-                .clientPhone(orderRequest.getClientPhoneNumber())
-                .address(orderRequest.getAddress())
+                .clientId(clientId)
+                .clientPhone(createOrderRequest.getClientPhoneNumber())
+                .address(createOrderRequest.getAddress())
                 .basket(basket)
-                .totalCost(calculateTotalCost(orderRequest))
+                .totalCost(calculateTotalCost(basket))
                 .build();
     }
 
-    private Double calculateTotalCost(CreateOrderRequest orderRequest) {
-        BasketDTO basket = basketService.getByBasketId(orderRequest.getBasketId());
-
+    private Double calculateTotalCost(BasketDTO basket) {
         return basket.getItems()
                 .stream()
                 .map(item -> item.getMenu().getPrice() * item.getCount())

@@ -27,14 +27,13 @@ public class CreateOrderValidator implements ConstraintValidator<ValidCreateOrde
     @Override
     public boolean isValid(CreateOrderRequest orderRequest, ConstraintValidatorContext context) {
         UUID clientId = orderRequest.getClientId();
-        UUID basketId = orderRequest.getBasketId();
 
         if (hasInvalidClient(clientId)) {
             addConstraintViolation(context, CLIENT_ID_JSON_PROPERTY);
             return false;
         }
 
-        if (hasInvalidBasket(basketId)) {
+        if (hasInvalidBasket(clientId)) {
             addConstraintViolation(context, BASKET_ID_JSON_PROPERTY);
             return false;
         }
@@ -46,8 +45,8 @@ public class CreateOrderValidator implements ConstraintValidator<ValidCreateOrde
         return userRepository.findByExternalId(clientId).isEmpty();
     }
 
-    private boolean hasInvalidBasket(UUID basketId) {
-        return basketRepository.findBasketEntityByExternalId(basketId).isEmpty();
+    private boolean hasInvalidBasket(UUID clientId) {
+        return basketRepository.findBasketEntityByOwnerExternalId(clientId).isEmpty();
     }
 
     private void addConstraintViolation(ConstraintValidatorContext context, String property) {

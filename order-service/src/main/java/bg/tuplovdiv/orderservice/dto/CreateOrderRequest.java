@@ -15,7 +15,6 @@ public class CreateOrderRequest {
     private UUID clientId;
     private String clientPhoneNumber;
     private String address;
-    private UUID basketId;
 
     public UUID getClientId() {
         return clientId;
@@ -41,15 +40,6 @@ public class CreateOrderRequest {
 
     public CreateOrderRequest setAddress(String address) {
         this.address = address;
-        return this;
-    }
-
-    public UUID getBasketId() {
-        return basketId;
-    }
-
-    public CreateOrderRequest setBasketId(UUID basketId) {
-        this.basketId = basketId;
         return this;
     }
 
