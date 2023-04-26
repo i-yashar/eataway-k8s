@@ -39,7 +39,7 @@ public class BasketServiceImpl implements BasketService {
     public BasketDTO addBasketItem(String ownerId, BasketItemDTO basketItem) {
         BasketEntity basket = getBasketEntityByOwnerId(ownerId);
         Set<BasketItemEntity> items = getBasketItems(basket);
-        Optional<BasketItemEntity> optItem = getBasketItem(items, basketItem.getMenu().getMenuId());
+        Optional<BasketItemEntity> optItem = getBasketItem(items, basketItem.getMenuId());
 
         if(optItem.isEmpty()) {
             addNewBasketItem(items, basketItem);
@@ -119,7 +119,7 @@ public class BasketServiceImpl implements BasketService {
         }
 
         return items.stream()
-                .filter(item -> item.getMenu().getExternalId().equals(menuId))
+                .filter(item -> item.getMenuId().equals(menuId))
                 .findFirst();
     }
 }

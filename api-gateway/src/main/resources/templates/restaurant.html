@@ -56,8 +56,8 @@
 
           <ul class="list-inline list-inline-dotted mb-0">
             <li class="list-inline-item">
-              <a class="upVoteCommentBtn btn btn-sm btn-success"
-                 th:href="@{/eataway/restaurants/{restaurantId}/menus/{menuId}/addToCart(restaurantId = ${restaurant.restaurantId}, menuId = ${menu.menuId})}"
+              <a th:id="${'addMenuBtn' + menu.menuId}" class="addMenuToBasketBtn btn btn-sm btn-success"
+                 href="javascript:void(0)"
                  role="button">Add to cart </a>
             </li>
           </ul>
@@ -68,7 +68,6 @@
   </div>
 
 </div>
-<script src="/js/dashboard-action.js"></script>
-<script src="/js/comment-action.js"></script>
+<script src="/js/basket-actions.js"></script>
 </body>
 </html>

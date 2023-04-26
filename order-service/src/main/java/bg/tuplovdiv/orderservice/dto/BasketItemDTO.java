@@ -1,16 +1,18 @@
 package bg.tuplovdiv.orderservice.dto;
 
+import java.util.UUID;
+
 public class BasketItemDTO {
 
-    private MenuDTO menu;
+    private UUID menuId;
     private Integer count;
 
-    public MenuDTO getMenu() {
-        return menu;
+    public UUID getMenuId() {
+        return menuId;
     }
 
-    public BasketItemDTO setMenu(MenuDTO menu) {
-        this.menu = menu;
+    public BasketItemDTO setMenuId(UUID menuId) {
+        this.menuId = menuId;
         return this;
     }
 

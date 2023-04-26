@@ -2,6 +2,8 @@ package bg.tuplovdiv.orderservice.model.entity;
 
 import jakarta.persistence.*;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "basket_items")
 public class BasketItemEntity {
@@ -10,8 +12,7 @@ public class BasketItemEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private MenuEntity menu;
+    private UUID menuId;
 
     private Integer count;
 
@@ -24,12 +25,12 @@ public class BasketItemEntity {
         return this;
     }
 
-    public MenuEntity getMenu() {
-        return menu;
+    public UUID getMenuId() {
+        return menuId;
     }
 
-    public BasketItemEntity setMenu(MenuEntity menu) {
-        this.menu = menu;
+    public BasketItemEntity setMenuId(UUID menuId) {
+        this.menuId = menuId;
         return this;
     }
 
