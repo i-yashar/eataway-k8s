@@ -1,8 +1,8 @@
-let addMenuToBasketButtons = Array.from(document.getElementsByClassName('addMenuToBasketBtn'));
+let addMenuToBasketButtons = Array.from(document.getElementsByClassName('addMenuToBasketBtn'))
+let removeMenuFromBasketButtons = Array.from(document.getElementsByClassName('removeMenuFromBasketBtn'))
 
-addMenuToBasketButtons.forEach(button => {
-    button.addEventListener('click', onAddMenuToBasket)
-})
+addMenuToBasketButtons.forEach(button => button.addEventListener('click', onAddMenuToBasket))
+removeMenuFromBasketButtons.forEach(button => button.addEventListener('click', onRemoveMenuFromBasket))
 
 async function onAddMenuToBasket(event) {
     event.preventDefault()
@@ -23,7 +23,20 @@ async function onAddMenuToBasket(event) {
     })
 
     alert('Menu was successfully added to your basket!')
-    console.log(response.json())
+}
+
+async function onRemoveMenuFromBasket(event) {
+    event.preventDefault()
+
+    const menuId = event.target.id.substring(13)
+    const url = "http://localhost:8082/eataway/api/v1/basketItems/" + menuId
+
+    const response = await fetch(url, {
+        method: 'DELETE'
+    })
+
+    location.reload()
+    console.log('hello world')
 }
 
 async function upVoteHandler(event) {
