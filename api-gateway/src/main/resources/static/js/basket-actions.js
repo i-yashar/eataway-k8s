@@ -9,14 +9,21 @@ async function onAddMenuToBasket(event) {
 
     const menuId = event.target.id.substring(10)
     const basketItem = {
-        "menu": {
-            "menuId": menuId,
-            "name":
-        }
+        "menuId": menuId,
+        "count": 1
     }
-    const url = "http:localhost:8082/eataway/api/v1/basketItems"
+    const url = "http://localhost:8082/eataway/api/v1/basketItems"
 
-    const response = await fetch()
+    const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(basketItem)
+    })
+
+    alert('Menu was successfully added to your basket!')
+    console.log(response.json())
 }
 
 async function upVoteHandler(event) {

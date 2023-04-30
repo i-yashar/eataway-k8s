@@ -1,6 +1,7 @@
 package bg.tuplovdiv.orderservice.model.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Cascade;
 
 import java.util.Set;
 import java.util.UUID;
@@ -16,9 +17,11 @@ public class BasketEntity {
     private UUID externalId;
 
     @OneToOne
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE)
     private UserEntity owner;
 
     @OneToMany(fetch = FetchType.EAGER)
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private Set<BasketItemEntity> items;
 
     public Long getId() {

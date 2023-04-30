@@ -1,14 +1,14 @@
 package bg.tuplovdiv.orderservice.service.impl;
 
-import bg.tuplovdiv.orderservice.dto.BasketDTO;
-import bg.tuplovdiv.orderservice.dto.CreateOrderRequest;
-import bg.tuplovdiv.orderservice.dto.OrderDTO;
-import bg.tuplovdiv.orderservice.dto.TakeOrderRequest;
+import bg.tuplovdiv.orderservice.dto.*;
 import bg.tuplovdiv.orderservice.dto.page.PageDTO;
+import bg.tuplovdiv.orderservice.exception.MenuNotFoundException;
 import bg.tuplovdiv.orderservice.mapper.OrderMapper;
 import bg.tuplovdiv.orderservice.messaging.OrderContext;
 import bg.tuplovdiv.orderservice.messaging.process.CreateOrderProcess;
+import bg.tuplovdiv.orderservice.model.entity.MenuEntity;
 import bg.tuplovdiv.orderservice.model.entity.OrderEntity;
+import bg.tuplovdiv.orderservice.repository.MenuRepository;
 import bg.tuplovdiv.orderservice.repository.OrderRepository;
 import bg.tuplovdiv.orderservice.service.BasketService;
 import bg.tuplovdiv.orderservice.service.OrderService;
@@ -30,12 +30,14 @@ public class OrderServiceImpl implements OrderService {
     private final BasketService basketService;
     private final CreateOrderProcess createOrderProcess;
     private final OrderRepository orderRepository;
+    private final MenuRepository menuRepository;
     private final OrderMapper mapper;
 
-    public OrderServiceImpl(BasketService basketService, CreateOrderProcess createOrderProcess, OrderRepository orderRepository, OrderMapper mapper) {
+    public OrderServiceImpl(BasketService basketService, CreateOrderProcess createOrderProcess, OrderRepository orderRepository, MenuRepository menuRepository, OrderMapper mapper) {
         this.basketService = basketService;
         this.createOrderProcess = createOrderProcess;
         this.orderRepository = orderRepository;
+        this.menuRepository = menuRepository;
         this.mapper = mapper;
     }
 
@@ -101,8 +103,13 @@ public class OrderServiceImpl implements OrderService {
     private Double calculateTotalCost(BasketDTO basket) {
         return basket.getItems()
                 .stream()
-                .map(item -> item.getMenu().getPrice() * item.getCount())
+                .map(item -> getMenuByMenuId(item.getMenuId()).getPrice() * item.getCount())
                 .reduce((double) 0, Double::sum);
+    }
+
+    private MenuEntity getMenuByMenuId(UUID menuId) {
+        return menuRepository.findMenuEntityByExternalId(menuId)
+                .orElseThrow(() -> new MenuNotFoundException("Menu with menuId " + menuId + " not found"));
     }
 
     @Override

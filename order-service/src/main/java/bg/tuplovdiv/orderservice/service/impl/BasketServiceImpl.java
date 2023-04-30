@@ -2,8 +2,6 @@ package bg.tuplovdiv.orderservice.service.impl;
 
 import bg.tuplovdiv.orderservice.dto.BasketDTO;
 import bg.tuplovdiv.orderservice.dto.BasketItemDTO;
-import bg.tuplovdiv.orderservice.exception.BasketEmptyException;
-import bg.tuplovdiv.orderservice.exception.BasketNotFoundException;
 import bg.tuplovdiv.orderservice.exception.MenuNotFoundException;
 import bg.tuplovdiv.orderservice.mapper.BasketMapper;
 import bg.tuplovdiv.orderservice.model.entity.BasketEntity;
@@ -41,13 +39,23 @@ public class BasketServiceImpl implements BasketService {
         Set<BasketItemEntity> items = getBasketItems(basket);
         Optional<BasketItemEntity> optItem = getBasketItem(items, basketItem.getMenuId());
 
-        if(optItem.isEmpty()) {
+        if (optItem.isEmpty()) {
             addNewBasketItem(items, basketItem);
         } else {
             incrementBasketItemCount(optItem.get());
         }
 
         return mapper.toBasketDTO(basketRepository.save(basket));
+    }
+
+    private Set<BasketItemEntity> getBasketItems(BasketEntity basket) {
+        Set<BasketItemEntity> items = basket.getItems();
+
+        if (items == null) {
+            items = new HashSet<>();
+        }
+
+        return items;
     }
 
     private void addNewBasketItem(Set<BasketItemEntity> items, BasketItemDTO basketItem) {
@@ -59,26 +67,11 @@ public class BasketServiceImpl implements BasketService {
         item.setCount(item.getCount() + 1);
     }
 
-    private Set<BasketItemEntity> getBasketItems(BasketEntity basket) {
-        Set<BasketItemEntity> items = basket.getItems();
-
-        if(items == null) {
-            items = new HashSet<>();
-        }
-
-        return items;
-    }
-
     @Override
     public BasketDTO getBasketByOwnerId(String ownerId) {
         BasketEntity basket = getBasketEntityByOwnerId(ownerId);
 
         return mapper.toBasketDTO(basket);
-    }
-
-    private BasketEntity getBasketEntity(UUID basketId) {
-        return basketRepository.findBasketEntityByExternalId(basketId)
-                .orElseThrow(() -> new BasketNotFoundException("Basket with basketId " + basketId + " not found"));
     }
 
     @Override
@@ -89,7 +82,7 @@ public class BasketServiceImpl implements BasketService {
 
     private BasketEntity getBasketEntityByOwnerId(String userId) {
         return basketRepository.findBasketEntityByOwnerUserId(userId)
-                .orElse(createUserBasket(userId));
+                .orElseGet(() -> createUserBasket(userId));
     }
 
     private BasketEntity createUserBasket(String userId) {
@@ -103,7 +96,8 @@ public class BasketServiceImpl implements BasketService {
     }
 
     private UserEntity getUser(String userId) {
-        return userRepository.findByUserId(userId).orElseThrow(() -> new UsernameNotFoundException("User with userId " + userId + " not found"));
+        return userRepository.findByUserId(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User with userId " + userId + " not found"));
     }
 
     private void removeBasketItemFromBasket(BasketEntity basket, UUID menuId) {
@@ -114,10 +108,6 @@ public class BasketServiceImpl implements BasketService {
     }
 
     private Optional<BasketItemEntity> getBasketItem(Set<BasketItemEntity> items, UUID menuId) {
-        if (items == null) {
-            throw new BasketEmptyException("Cannot remove item from empty basket");
-        }
-
         return items.stream()
                 .filter(item -> item.getMenuId().equals(menuId))
                 .findFirst();
