@@ -15,12 +15,18 @@ import java.util.UUID;
 public class MenuRestController {
 
     private static final String ALL_MENUS_PATH = "/menus";
+    private static final String MENU_PATH = ALL_MENUS_PATH + "/{menuId}";
     private static final String MENUS_PATH = "/restaurants/{restaurantId}/menus";
 
     private final MenuService menuService;
 
     public MenuRestController(MenuService menuService) {
         this.menuService = menuService;
+    }
+
+    @GetMapping(MENU_PATH)
+    public ResponseEntity<MenuDTO> getMenu(@PathVariable UUID menuId) {
+        return ResponseEntity.ok(menuService.findMenuByMenuId(menuId));
     }
 
     @GetMapping(ALL_MENUS_PATH)

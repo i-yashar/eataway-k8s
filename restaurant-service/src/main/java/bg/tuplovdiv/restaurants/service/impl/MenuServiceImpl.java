@@ -2,6 +2,7 @@ package bg.tuplovdiv.restaurants.service.impl;
 
 import bg.tuplovdiv.restaurants.dto.MenuDTO;
 import bg.tuplovdiv.restaurants.dto.page.PageDTO;
+import bg.tuplovdiv.restaurants.exception.MenuNotFoundException;
 import bg.tuplovdiv.restaurants.mapper.MenuMapper;
 import bg.tuplovdiv.restaurants.model.entity.MenuEntity;
 import bg.tuplovdiv.restaurants.repository.MenuRepository;
@@ -25,6 +26,18 @@ public class MenuServiceImpl implements MenuService {
     public MenuServiceImpl(MenuRepository menuRepository, MenuMapper mapper) {
         this.menuRepository = menuRepository;
         this.mapper = mapper;
+    }
+
+    @Override
+    public MenuDTO findMenuByMenuId(UUID menuId) {
+        MenuEntity menu = getMenuByMenuId(menuId);
+
+        return mapper.toMenuDTO(menu);
+    }
+
+    private MenuEntity getMenuByMenuId(UUID menuId) {
+        return menuRepository.findByExternalId(menuId)
+                .orElseThrow(() -> new MenuNotFoundException("Menu with menuId " + menuId + " not found"));
     }
 
     @Override
