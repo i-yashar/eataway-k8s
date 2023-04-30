@@ -17,11 +17,13 @@ public class RestaurantsRestClient extends RestClient {
 
     private static final String HOST = "http://localhost:8080";
     private static final String RESTAURANTS_API_BASE_PATH = HOST + "/restaurants/api/v1";
+    private static final String RESTAURANTS_API_MENU_PATH = RESTAURANTS_API_BASE_PATH + "/menus/%s";
     private static final String RESTAURANTS_API_GET_ALL_PATH = RESTAURANTS_API_BASE_PATH + "/restaurants";
     private static final String RESTAURANTS_API_MENUS_GET_ALL_PATH = RESTAURANTS_API_GET_ALL_PATH + "/%s" + "/menus";
 
     private static final TypeReference<PageDTO<RestaurantDTO>> PAGE_OF_RESTAURANTS_TYPE = new TypeReference<>() {};
     private static final TypeReference<RestaurantDTO> RESTAURANT_TYPE = new TypeReference<>() {};
+    private static final TypeReference<MenuDTO> MENU_DTO_TYPE = new TypeReference<>() {};
     private static final TypeReference<PageDTO<MenuDTO>> PAGE_OF_RESTAURANT_MENUS_TYPE = new TypeReference<>() {};
 
     public PageDTO<RestaurantDTO> getRestaurants(int page, int size) {
@@ -42,6 +44,16 @@ public class RestaurantsRestClient extends RestClient {
                 .build();
 
         return get(request, response -> mapJsonToObject(response.body(), RESTAURANT_TYPE));
+    }
+
+    public MenuDTO getMenuByMenuId(UUID menuId) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .GET()
+                .uri(buildURI(RESTAURANTS_API_MENU_PATH, menuId.toString()))
+                .header("accept", "application/json")
+                .build();
+
+        return get(request, response -> mapJsonToObject(response.body(), MENU_DTO_TYPE));
     }
 
     public Collection<MenuDTO> getRestaurantMenus(UUID restaurantId) {
