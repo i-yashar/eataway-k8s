@@ -38,7 +38,7 @@ public class BasketServiceImpl implements BasketService {
                     .setMenu(restaurantsClient.getMenuByMenuId(item.getMenuId()))
                     .setCount(item.getCount());
             detailedBasket.getItems().add(detailedItem);
-            detailedBasket.setTotalCost(detailedBasket.getTotalCost() + detailedItem.getMenu().getPrice());
+            detailedBasket.setTotalCost(detailedBasket.getTotalCost() + detailedItem.getMenu().getPrice() * detailedItem.getCount());
         });
 
         return detailedBasket;

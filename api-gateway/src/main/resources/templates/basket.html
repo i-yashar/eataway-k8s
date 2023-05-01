@@ -6,48 +6,109 @@
 <body>
 
 <div th:replace="fragments/navbar :: navbar">
-  Navbar
+    Navbar
 </div>
 <div class="container">
-  <div class="main-body" th:object="${basket}">
+    <div class="main-body" th:object="${basket}">
+        <div class="row gutters-sm">
+            <div class="col-md-8 mx-auto">
+                <div class="mb-3">
+                    <div th:each="item : ${basket.items}" class="post-frame card card-body mt-3 mx-3">
+                        <div class="media align-items-center align-items-lg-start text-center text-lg-left flex-column flex-lg-row">
+                            <div class="post-header media-body">
 
-    <div class="row gutters-sm">
-      <div class="col-md-8">
-        <div class="mb-3">
-          <div th:each="item : ${basket.items}" class="post-frame card card-body mt-3 mx-3">
-            <div class="media align-items-center align-items-lg-start text-center text-lg-left flex-column flex-lg-row">
+                                <h5 class="media-title font-weight-semibold">
+                                    <th:block th:text="${item.menu.name}">Menu Name</th:block>
+                                </h5>
 
-              <div class="post-header media-body">
+                                <p class="mb-3 post-description" th:text="${item.menu.description}">Description</p>
 
-                <h5 class="media-title font-weight-semibold">
-                  <th:block th:text="${item.menu.name}">Menu Name</th:block>
-                </h5>
+                                <p th:each="menuItem : ${item.menu.items}" class="mb-3 post-description"
+                                   th:text="${menuItem}">Items</p>
 
-                <p class="mb-3 post-description" th:text="${item.menu.description}">Description</p>
+                                <span class="mb-3 post-description"
+                                      th:text="'Quantity: ' + ${item.count} + ' | Price for single item: $' + ${item.menu.price}">Price</span>
 
-                <p th:each="menuItem : ${item.menu.items}" class="mb-3 post-description" th:text="${menuItem}">Items</p>
-
-                <span class="mb-3 post-description" th:text="'Quantity: ' + ${item.count} + ' | Price for single item: $' + ${item.menu.price}">Price</span>
-
-                <ul class="list-inline list-inline-dotted mb-0">
-                  <li class="list-inline-item">
-                    <a th:id="${'removeMenuBtn' + item.menu.menuId}"
-                       class="removeMenuFromBasketBtn btn btn-sm btn-success"
-                       href="javascript:void(0)"
-                       role="button">Remove</a>
-                  </li>
-                </ul>
-              </div>
-
+                                <ul class="list-inline list-inline-dotted mb-0">
+                                    <li class="list-inline-item">
+                                        <a th:id="${'removeMenuBtn' + item.menu.menuId}"
+                                           class="removeMenuFromBasketBtn btn btn-sm btn-success"
+                                           href="javascript:void(0)"
+                                           role="button">Remove</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-
         </div>
 
-      </div>
+        <div class="col-md-4 mb-3 mx-auto">
+            <div>
+                <div class="card-body">
+                    <div class="d-flex flex-column align-items-center text-center">
+                        <div class="mt-3">
+                            <h2 class="text-secondary mb-1" th:text="'Total: ' + ${#numbers.formatDecimal(basket.totalCost,1,2)} + '$'"></h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <form
+                id="orderForm"
+                th:action="@{/eataway/orders}"
+                th:method="POST"
+                th:object="${createOrderRequest}"
+                class="main-form mx-auto col-md-8 d-flex flex-column justify-content-center">
+
+            <h2 class="text-dark mt-3 mx-auto mb-4">Delivery details</h2>
+
+            <div class="row">
+                <div class="form-group mx-auto col-md-6 mb-3">
+                    <label for="number" class="text-dark font-weight-bold">Your phone number</label>
+                    <input id="number"
+                           th:field="*{clientPhoneNumber}"
+                           th:errorclass="is-invalid"
+                           name="number"
+                           type="text" min="2" max="20" class="form-control"/>
+                    <p class="invalid-feedback errors alert alert-danger">
+                        Phone number is required and should be at least 5 symbols.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="form-group mx-auto col-md-6 mb-3">
+                    <label for="address" class="text-dark font-weight-bold">Delivery address</label>
+                    <input id="address"
+                           th:field="*{address}"
+                           th:errorclass="is-invalid"
+                           name="address"
+                           type="text" min="2" max="20" class="form-control"/>
+                    <p class="invalid-feedback errors alert alert-danger">
+                        Delivery address is required and should be at least 5 symbols.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col mx-auto col-md-4">
+                    <div class="button-holder d-flex">
+                        <input type="submit" class="mx-auto btn btn-info btn-lg" value="Place order"/>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
     </div>
-  </div>
+
 </div>
+
 <script src="/js/basket-actions.js"></script>
 </body>
 </html>
