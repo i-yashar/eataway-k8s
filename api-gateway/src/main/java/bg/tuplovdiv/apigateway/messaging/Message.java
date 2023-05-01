@@ -1,4 +1,4 @@
-package bg.tuplovdiv.apigateway.order;
+package bg.tuplovdiv.apigateway.messaging;
 
 import java.util.UUID;
 

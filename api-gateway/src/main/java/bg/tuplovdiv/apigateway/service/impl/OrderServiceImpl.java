@@ -19,7 +19,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public UUID createOrder(CreateOrderRequest createOrderRequest) {
-        return UUID.randomUUID();
+        String location = client.createOrder(createOrderRequest);
+        return extractOrderId(location);
+    }
+
+    private UUID extractOrderId(String location) {
+        int startIndex = location.lastIndexOf('/') + 1;
+        return UUID.fromString(location.substring(startIndex));
     }
 
     @Override

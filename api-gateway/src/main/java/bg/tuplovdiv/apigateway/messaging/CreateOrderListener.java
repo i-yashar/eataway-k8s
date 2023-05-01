@@ -1,4 +1,4 @@
-package bg.tuplovdiv.apigateway.order;
+package bg.tuplovdiv.apigateway.messaging;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
@@ -11,6 +11,7 @@ public class CreateOrderListener implements MessageListener<OrderContext> {
     @Override
     @RabbitListener(queues = QUEUE)
     public OrderContext accept(OrderContext message) {
+        System.out.println(message);
         return null;
     }
 }
