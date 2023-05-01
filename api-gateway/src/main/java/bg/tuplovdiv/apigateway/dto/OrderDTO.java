@@ -6,10 +6,10 @@ public class OrderDTO {
     private UUID orderId;
     private String clientId;
     private String clientPhoneNumber;
-    private UUID deliveryDriverId;
+    private String deliveryDriverId;
     private String address;
-    private UUID basketId;
     private Double totalCost;
+    private String status;
 
     public UUID getOrderId() {
         return orderId;
@@ -38,11 +38,11 @@ public class OrderDTO {
         return this;
     }
 
-    public UUID getDeliveryDriverId() {
+    public String getDeliveryDriverId() {
         return deliveryDriverId;
     }
 
-    public OrderDTO setDeliveryDriverId(UUID deliveryDriverId) {
+    public OrderDTO setDeliveryDriverId(String deliveryDriverId) {
         this.deliveryDriverId = deliveryDriverId;
         return this;
     }
@@ -56,21 +56,21 @@ public class OrderDTO {
         return this;
     }
 
-    public UUID getBasketId() {
-        return basketId;
-    }
-
-    public OrderDTO setBasketId(UUID basketId) {
-        this.basketId = basketId;
-        return this;
-    }
-
     public Double getTotalCost() {
         return totalCost;
     }
 
     public OrderDTO setTotalCost(Double totalCost) {
         this.totalCost = totalCost;
+        return this;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public OrderDTO setStatus(String status) {
+        this.status = status;
         return this;
     }
 }

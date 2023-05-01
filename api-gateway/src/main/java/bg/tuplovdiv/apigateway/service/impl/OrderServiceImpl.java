@@ -2,6 +2,7 @@ package bg.tuplovdiv.apigateway.service.impl;
 
 import bg.tuplovdiv.apigateway.connectivity.client.OrdersRestClient;
 import bg.tuplovdiv.apigateway.dto.CreateOrderRequest;
+import bg.tuplovdiv.apigateway.dto.OrderDTO;
 import bg.tuplovdiv.apigateway.service.OrderService;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,11 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public UUID createOrder(CreateOrderRequest createOrderRequest) {
+        return UUID.randomUUID();
+    }
+
+    @Override
+    public OrderDTO getOrderInfo(UUID orderId) {
         return null;
     }
 }
