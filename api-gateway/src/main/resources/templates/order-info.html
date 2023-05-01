@@ -14,7 +14,7 @@
     <h1 class="display-4">Order info</h1>
     <p class="lead">Order id: <span th:text="${order.orderId}"></span></p>
     <p class="lead">Delivery info: Address - <span th:text="${order.address}"></span> | Phone number - <span th:text="${order.clientPhoneNumber}"></span></p>
-    <p class="lead">Total cost: <span th:text="${#numbers.formatDecimal(basket.totalCost,1,2)}"></span>$</p>
+    <p class="lead">Total cost: <span th:text="${#numbers.formatDecimal(order.totalCost,1,2)}"></span>$</p>
     <p class="lead">Status: <span th:text="${order.status}"></span></p>
 
     <hr class="my-4">
