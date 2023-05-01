@@ -12,22 +12,12 @@
 
 <div th:object="${order}" class="welcomePage jumbotron mt-5 pb-3 mx-auto col-8">
     <h1 class="display-4">Order info</h1>
-    <p class="lead">Eataway is an awesome food delivery website, with many awesome restaurants
-        to choose from!</p>
-    <p class="lead">Eataway is an awesome food delivery website, with many awesome restaurants
-        to choose from!</p><p class="lead">Eataway is an awesome food delivery website, with many awesome restaurants
-    to choose from!</p>
+    <p class="lead">Order id: <span th:text="${order.orderId}"></span></p>
+    <p class="lead">Delivery info: Address - <span th:text="${order.address}"></span> | Phone number - <span th:text="${order.clientPhoneNumber}"></span></p>
+    <p class="lead">Total cost: <span th:text="${order.totalCost}"></span></p>
+    <p class="lead">Status: <span th:text="${order.status}"></span></p>
 
     <hr class="my-4">
-    <div class="row">
-        <p class="lead"><a href="/oauth2/authorization/google">Log in</a> to make orders.</p>
-    </div>
-    <div class="row">
-        <p class="lead"><a href="/oauth2/authorization/google">Log in</a> to make orders.</p>
-    </div>
-    <div class="row">
-        <p class="lead"><a href="/oauth2/authorization/google">Log in</a> to make orders.</p>
-    </div>
 
 </div>
 

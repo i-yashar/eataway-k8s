@@ -30,6 +30,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDTO getOrderInfo(UUID orderId) {
-        return null;
+        return client.getUserOrder(orderId);
     }
 }
