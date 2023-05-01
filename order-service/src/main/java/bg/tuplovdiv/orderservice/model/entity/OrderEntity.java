@@ -3,6 +3,7 @@ package bg.tuplovdiv.orderservice.model.entity;
 import bg.tuplovdiv.orderservice.model.OrderStatus;
 import jakarta.persistence.*;
 
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -27,8 +28,8 @@ public class OrderEntity {
     @Column(nullable = false)
     private String address;
 
-    @Column(nullable = false)
-    private UUID basketId;
+    @ManyToMany
+    private Set<MenuEntity> menus;
 
     @Column(nullable = false)
     private Double totalCost;
@@ -91,12 +92,12 @@ public class OrderEntity {
         return this;
     }
 
-    public UUID getBasketId() {
-        return basketId;
+    public Set<MenuEntity> getMenus() {
+        return menus;
     }
 
-    public OrderEntity setBasketId(UUID basketId) {
-        this.basketId = basketId;
+    public OrderEntity setMenus(Set<MenuEntity> menus) {
+        this.menus = menus;
         return this;
     }
 

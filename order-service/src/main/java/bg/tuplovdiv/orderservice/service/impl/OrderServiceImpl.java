@@ -6,8 +6,10 @@ import bg.tuplovdiv.orderservice.exception.MenuNotFoundException;
 import bg.tuplovdiv.orderservice.mapper.OrderMapper;
 import bg.tuplovdiv.orderservice.messaging.OrderContext;
 import bg.tuplovdiv.orderservice.messaging.process.CreateOrderProcess;
+import bg.tuplovdiv.orderservice.model.entity.BasketEntity;
 import bg.tuplovdiv.orderservice.model.entity.MenuEntity;
 import bg.tuplovdiv.orderservice.model.entity.OrderEntity;
+import bg.tuplovdiv.orderservice.repository.BasketRepository;
 import bg.tuplovdiv.orderservice.repository.MenuRepository;
 import bg.tuplovdiv.orderservice.repository.OrderRepository;
 import bg.tuplovdiv.orderservice.service.BasketService;
@@ -18,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -30,13 +33,15 @@ public class OrderServiceImpl implements OrderService {
     private final BasketService basketService;
     private final CreateOrderProcess createOrderProcess;
     private final OrderRepository orderRepository;
+    private final BasketRepository basketRepository;
     private final MenuRepository menuRepository;
     private final OrderMapper mapper;
 
-    public OrderServiceImpl(BasketService basketService, CreateOrderProcess createOrderProcess, OrderRepository orderRepository, MenuRepository menuRepository, OrderMapper mapper) {
+    public OrderServiceImpl(BasketService basketService, CreateOrderProcess createOrderProcess, OrderRepository orderRepository, BasketRepository basketRepository, MenuRepository menuRepository, OrderMapper mapper) {
         this.basketService = basketService;
         this.createOrderProcess = createOrderProcess;
         this.orderRepository = orderRepository;
+        this.basketRepository = basketRepository;
         this.menuRepository = menuRepository;
         this.mapper = mapper;
     }
@@ -76,14 +81,9 @@ public class OrderServiceImpl implements OrderService {
 
         createOrderProcess.start(context);
 
+        resetBasketItems(context.getBasket().getBasketId());
+
         return context.getOrderId();
-    }
-
-    private void persistOrder(OrderContext context) {
-        OrderEntity orderEntity = mapper.toOrderEntity(context);
-        orderEntity.setStatus(REGISTERED);
-
-        orderRepository.save(orderEntity);
     }
 
     private OrderContext buildOrderContext(CreateOrderRequest createOrderRequest) {
@@ -110,6 +110,19 @@ public class OrderServiceImpl implements OrderService {
     private MenuEntity getMenuByMenuId(UUID menuId) {
         return menuRepository.findMenuEntityByExternalId(menuId)
                 .orElseThrow(() -> new MenuNotFoundException("Menu with menuId " + menuId + " not found"));
+    }
+
+    private void persistOrder(OrderContext context) {
+        OrderEntity orderEntity = mapper.toOrderEntity(context);
+        orderEntity.setStatus(REGISTERED);
+
+        orderRepository.save(orderEntity);
+    }
+
+    private void resetBasketItems(UUID basketId) {
+        BasketEntity basket = basketRepository.findBasketEntityByExternalId(basketId).get();
+        basket.setItems(new HashSet<>());
+        basketRepository.save(basket);
     }
 
     @Override
