@@ -15,8 +15,8 @@ public class OrderMapper {
                 .setClientPhoneNumber(order.getClientPhoneNumber())
                 .setDeliveryDriverId(order.getDeliverDriverId())
                 .setAddress(order.getAddress())
-                .setBasketId(order.getBasketId())
-                .setTotalCost(order.getTotalCost());
+                .setTotalCost(order.getTotalCost())
+                .setStatus(order.getStatus().name());
     }
 
     public OrderEntity toOrderEntity(OrderContext context) {
