@@ -6,6 +6,7 @@ import bg.tuplovdiv.apigateway.dto.OrderDTO;
 import bg.tuplovdiv.apigateway.service.OrderService;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.UUID;
 
 @Service
@@ -31,5 +32,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDTO getOrderInfo(UUID orderId) {
         return client.getUserOrder(orderId);
+    }
+
+    @Override
+    public Collection<OrderDTO> getUserOrders(String userId) {
+        return client.getUserOrders(userId).getContent();
     }
 }

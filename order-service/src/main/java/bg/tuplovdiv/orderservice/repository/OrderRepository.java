@@ -12,5 +12,5 @@ import java.util.UUID;
 @Repository
 public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
     Optional<OrderEntity> findOrderEntityByExternalId(UUID orderId);
-    Page<OrderEntity> findAllByClientId(UUID clientId, Pageable pageable);
+    Page<OrderEntity> findAllByClientId(String clientId, Pageable pageable);
 }

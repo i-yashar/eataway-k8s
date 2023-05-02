@@ -32,7 +32,7 @@ public class OrderRestController {
     }
 
     @GetMapping(CLIENT_ORDERS_PATH)
-    public ResponseEntity<PageDTO<OrderDTO>> getUserOrders(@PathVariable UUID clientId,
+    public ResponseEntity<PageDTO<OrderDTO>> getUserOrders(@PathVariable String clientId,
                                                                @RequestParam(name = "page", required = false, defaultValue = "0") int page,
                                                                @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
         return ResponseEntity.ok(orderService.findAllUserOrders(clientId, page, size));

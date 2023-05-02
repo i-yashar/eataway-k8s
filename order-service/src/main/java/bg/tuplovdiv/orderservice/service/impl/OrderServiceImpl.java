@@ -54,13 +54,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public PageDTO<OrderDTO> findAllUserOrders(UUID clientId, int page, int size) {
+    public PageDTO<OrderDTO> findAllUserOrders(String clientId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 
         return getAllUserOrdersPage(clientId, pageable);
     }
 
-    private PageDTO<OrderDTO> getAllUserOrdersPage(UUID clientId, Pageable pageable) {
+    private PageDTO<OrderDTO> getAllUserOrdersPage(String clientId, Pageable pageable) {
         Page<OrderEntity> orders = orderRepository.findAllByClientId(clientId, pageable);
 
         return new PageDTO<OrderDTO>()

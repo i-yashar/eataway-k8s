@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments/head::head"></head>
+<body>
+
+<div th:replace="fragments/navbar :: navbar">
+    Navbar
+</div>
+
+<div class="container-fluid">
+    <div class="row text-justify">
+        <div class="mx-auto col-8 bg-transparent text-white">
+            <h2 class="text-center text-justify text-dark">Your orders</h2>
+
+            <div th:each="order : ${orders}" class="post-frame card card-body mt-3">
+                <div class="media align-items-center align-items-lg-start text-center text-lg-left flex-column flex-lg-row">
+
+                    <div class="post-header media-body">
+                        <h4 class="media-title font-weight-semibold">
+                            <th:block th:text="'Order id: ' + ${order.orderId}">Order id</th:block>
+                        </h4>
+
+                        <ul class="post-details list-inline list-inline-dotted mb-1 mb-lg-2">
+                            <li class="list-inline-item">
+                                <p th:text="'Order status: ' + ${order.status}">Order status</p>
+                            </li>
+                        </ul>
+
+                        <ul class="list-inline list-inline-dotted mb-0">
+                            <li class="list-inline-item">
+                                <a class="upVoteBtn btn btn-success"
+                                   th:href="@{/eataway/orders/{orderId}(orderId = ${order.orderId})}"
+                                   role="button">Details</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+</body>
+</html>

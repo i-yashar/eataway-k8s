@@ -4,10 +4,9 @@ import bg.tuplovdiv.apigateway.dto.BasketDTO;
 import bg.tuplovdiv.apigateway.dto.BasketItemDTO;
 import bg.tuplovdiv.apigateway.dto.CreateOrderRequest;
 import bg.tuplovdiv.apigateway.dto.OrderDTO;
+import bg.tuplovdiv.apigateway.dto.page.PageDTO;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
-import bg.tuplovdiv.apigateway.security.user.AuthenticatedUser;
 import com.fasterxml.jackson.core.type.TypeReference;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.net.http.HttpRequest;
@@ -26,7 +25,7 @@ public class OrdersRestClient extends RestClient {
 
     private static final TypeReference<BasketDTO> BASKET_DTO_TYPE = new TypeReference<>() {};
     private static final TypeReference<OrderDTO> ORDER_DTO_TYPE = new TypeReference<>() {};
-    private static final TypeReference<Page<OrderDTO>> PAGE_OF_ORDER_DTOS_PATH = new TypeReference<>() {};
+    private static final TypeReference<PageDTO<OrderDTO>> PAGE_OF_ORDER_DTOS_PATH = new TypeReference<>() {};
 
     private final AuthenticatedUserProvider userProvider;
 
@@ -44,12 +43,10 @@ public class OrdersRestClient extends RestClient {
         return get(request, response -> mapJsonToObject(response.body(), ORDER_DTO_TYPE));
     }
 
-    public Page<OrderDTO> getUserOrders() {
-        AuthenticatedUser user = userProvider.provide();
-
+    public PageDTO<OrderDTO> getUserOrders(String userId) {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
-                .uri(buildURI(ORDERS_API_GET_USER_ORDERS, user.getUserId()))
+                .uri(buildURI(ORDERS_API_GET_USER_ORDERS, userId))
                 .header("accept", "application/json")
                 .build();
 
@@ -69,7 +66,7 @@ public class OrdersRestClient extends RestClient {
     public BasketDTO getUserBasket(String ownerId) {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
-                .uri(buildURI(ORDERS_API_BASKETS_BASE_PATH, ownerId.toString()))
+                .uri(buildURI(ORDERS_API_BASKETS_BASE_PATH, ownerId))
                 .header("accept", "application/json")
                 .build();
 
@@ -79,7 +76,7 @@ public class OrdersRestClient extends RestClient {
     public BasketDTO addBasketItem(String ownerId, BasketItemDTO basketItem) {
         HttpRequest request = HttpRequest.newBuilder()
                 .PUT(createRequestBody(basketItem))
-                .uri(buildURI(ORDERS_API_BASKETS_BASE_PATH, ownerId.toString()))
+                .uri(buildURI(ORDERS_API_BASKETS_BASE_PATH, ownerId))
                 .header("Content-Type", "application/json")
                 .header("accept", "application/json")
                 .build();
@@ -90,7 +87,7 @@ public class OrdersRestClient extends RestClient {
     public Void deleteBasketItem(String ownerId, UUID menuId) {
         HttpRequest request = HttpRequest.newBuilder()
                 .DELETE()
-                .uri(buildURI(ORDERS_API_BASKETS_BASKET_ITEM_PATH, ownerId.toString(), menuId.toString()))
+                .uri(buildURI(ORDERS_API_BASKETS_BASKET_ITEM_PATH, ownerId, menuId.toString()))
                 .header("accept", "application/json")
                 .build();
 

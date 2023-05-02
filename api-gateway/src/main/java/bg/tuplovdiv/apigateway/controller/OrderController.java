@@ -56,6 +56,13 @@ public class OrderController {
         return "order-info";
     }
 
+    @GetMapping(ORDERS_PATH)
+    public String getUserOrders(Model model) {
+        model.addAttribute("orders", orderService.getUserOrders(getUserId()));
+
+        return "user-orders";
+    }
+
     private String getUserId() {
         AuthenticatedUser user = userProvider.provide();
 
