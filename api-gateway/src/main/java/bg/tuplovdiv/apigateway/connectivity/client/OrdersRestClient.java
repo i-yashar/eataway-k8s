@@ -6,6 +6,7 @@ import bg.tuplovdiv.apigateway.dto.CreateOrderRequest;
 import bg.tuplovdiv.apigateway.dto.OrderDTO;
 import bg.tuplovdiv.apigateway.dto.page.PageDTO;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
+import bg.tuplovdiv.apigateway.security.user.AuthenticatedUser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +24,8 @@ public class OrdersRestClient extends RestClient {
     private static final String ORDERS_API_CREATE_ORDER_PATH = ORDERS_API_BASE_PATH + "/orders";
     private static final String ORDERS_API_GET_USER_ORDERS = ORDERS_API_BASE_PATH + "/users/%s/orders";
 
+    private static final String AUTH_USER_HEADER = "AUTH_USER";
+
     private static final TypeReference<BasketDTO> BASKET_DTO_TYPE = new TypeReference<>() {};
     private static final TypeReference<OrderDTO> ORDER_DTO_TYPE = new TypeReference<>() {};
     private static final TypeReference<PageDTO<OrderDTO>> PAGE_OF_ORDER_DTOS_PATH = new TypeReference<>() {};
@@ -34,10 +37,14 @@ public class OrdersRestClient extends RestClient {
     }
 
     public OrderDTO getUserOrder(UUID orderId) {
+        //todo: decide where to get the authenticated user from (controller or directly from rest client class)
+        AuthenticatedUser user = userProvider.provide();
+
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
                 .uri(buildURI(ORDERS_API_GET_USER_ORDER, orderId.toString()))
                 .header("accept", "application/json")
+                .header(AUTH_USER_HEADER, user.getUserId())
                 .build();
 
         return get(request, response -> mapJsonToObject(response.body(), ORDER_DTO_TYPE));
