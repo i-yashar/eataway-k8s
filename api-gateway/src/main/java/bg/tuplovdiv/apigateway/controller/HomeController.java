@@ -1,7 +1,7 @@
 package bg.tuplovdiv.apigateway.controller;
 
-import bg.tuplovdiv.apigateway.security.user.AuthenticatedUser;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
+import bg.tuplovdiv.apigateway.security.user.impl.EatawayUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +21,8 @@ public class HomeController {
     public String getHome(Model model, Principal principal) {
 
         if(principal != null) {
-            AuthenticatedUser user = userProvider.provide();
-            model.addAttribute("user", user.getName());
+            EatawayUser user = (EatawayUser) userProvider.provide();
+            model.addAttribute("user", user);
         }
 
         return "home-page";

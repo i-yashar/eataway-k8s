@@ -10,16 +10,23 @@
     Navbar
 </div>
 
-<div class="welcomePage jumbotron mt-5 pb-3 mx-auto col-8">
-    <h1 sec:authorize="isAuthenticated()" class="display-4">Welcome to Eataway, <span th:text="${user}"></span>!</h1>
+<div th:object="${user}" class="welcomePage jumbotron mt-5 pb-3 mx-auto col-8">
+    <h1 sec:authorize="isAuthenticated()" class="display-4">Welcome to Eataway, <span
+            th:text="${user.getName()}"></span>!</h1>
     <h1 sec:authorize="isAnonymous()" class="display-4">Welcome to Eataway!</h1>
-    <p sec:authorize="isAnonymous()" class="lead">Eataway is an awesome food delivery website, with many awesome restaurants
+    <p sec:authorize="isAnonymous()" class="lead">Eataway is an awesome food delivery website, with many awesome
+        restaurants
         to choose from!</p>
     <hr class="my-4">
     <div sec:authorize="isAnonymous()" class="row">
         <p class="lead"><a href="/oauth2/authorization/google">Log in</a> to make orders.</p>
     </div>
-
+    <th:block th:if="${user.roles.contains('ADMIN')}">
+        <li class="list-inline-item">
+            <a th:href="@{/admin/eataway/users}"
+               class="btn d-block w-100 d-sm-inline-block btn-success">Admin page</a>
+        </li>
+    </th:block>
 </div>
 
 <div>

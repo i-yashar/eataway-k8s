@@ -24,7 +24,8 @@ public class AdminValidator {
         AuthenticatedUser principal = authenticatedUserProvider.provide();
         UserEntity user = getUser(principal.getUserId());
 
-        return user.getUserRoles().contains(ADMIN);
+        return user.getUserRoles().stream()
+                .anyMatch(role -> role.getUserRole().equals(ADMIN));
     }
 
     private UserEntity getUser(String userId) {

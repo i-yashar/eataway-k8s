@@ -1,6 +1,5 @@
 package bg.tuplovdiv.apigateway.security.user.impl;
 
-import bg.tuplovdiv.apigateway.model.entity.UserRole;
 import bg.tuplovdiv.apigateway.security.user.AuthenticatedUser;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -17,7 +16,7 @@ public class EatawayUser implements AuthenticatedUser {
     @JsonProperty("email")
     private String email;
 
-    private Collection<UserRole> roles;
+    private Collection<String> roles;
 
     @Override
     public String getUserId() {
@@ -49,11 +48,11 @@ public class EatawayUser implements AuthenticatedUser {
         return this;
     }
 
-    public Collection<UserRole> getRoles() {
+    public Collection<String> getRoles() {
         return roles;
     }
 
-    public EatawayUser setRoles(Collection<UserRole> roles) {
+    public EatawayUser setRoles(Collection<String> roles) {
         this.roles = roles;
         return this;
     }
