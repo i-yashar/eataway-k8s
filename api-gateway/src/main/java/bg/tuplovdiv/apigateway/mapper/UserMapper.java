@@ -13,4 +13,11 @@ public class UserMapper {
                 .setName(user.getName())
                 .setEmail(user.getEmail());
     }
+
+    public EatawayUser toDTO(UserEntity entity) {
+        return new EatawayUser()
+                .setUserId(entity.getUserId())
+                .setName(entity.getName())
+                .setRoles(entity.getUserRoles());
+    }
 }

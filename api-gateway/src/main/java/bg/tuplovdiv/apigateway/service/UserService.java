@@ -2,6 +2,9 @@ package bg.tuplovdiv.apigateway.service;
 
 import bg.tuplovdiv.apigateway.security.user.impl.EatawayUser;
 
+import java.util.Collection;
+
 public interface UserService {
     void registerUser(EatawayUser user);
+    Collection<EatawayUser> getAllUsers();
 }

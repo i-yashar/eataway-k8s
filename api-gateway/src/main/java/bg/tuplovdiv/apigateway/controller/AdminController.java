@@ -1,11 +1,10 @@
 package bg.tuplovdiv.apigateway.controller;
 
-import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
-import bg.tuplovdiv.apigateway.security.user.AuthenticatedUser;
 import bg.tuplovdiv.apigateway.security.validation.AdminValidator;
 import bg.tuplovdiv.apigateway.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -25,7 +24,9 @@ public class AdminController {
 
     @GetMapping(USERS_PATH)
     @PreAuthorize("@adminValidator.isAdmin()")
-    public String getUsers() {
+    public String getUsers(Model model) {
+        model.addAttribute("users", userService.getAllUsers());
 
+        return "all-users";
     }
 }
