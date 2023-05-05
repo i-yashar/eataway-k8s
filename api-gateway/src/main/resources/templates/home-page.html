@@ -21,11 +21,25 @@
     <div sec:authorize="isAnonymous()" class="row">
         <p class="lead"><a href="/oauth2/authorization/google">Log in</a> to make orders.</p>
     </div>
-    <th:block th:if="${user.roles.contains('ADMIN')}">
-        <li class="list-inline-item">
-            <a th:href="@{/admin/eataway/users}"
-               class="btn d-block w-100 d-sm-inline-block btn-success">Admin page</a>
-        </li>
+    <th:block sec:authorize="isAuthenticated()">
+        <th:block th:if="${user.roles.contains('ADMIN')}">
+            <div class="row">
+                <p class="lead">You are currently logged in as an administrator</p>
+            </div>
+            <li class="list-inline-item">
+                <a th:href="@{/admin/eataway/users}"
+                   class="btn d-block w-100 d-sm-inline-block btn-success">Admin page</a>
+            </li>
+        </th:block>
+        <th:block th:if="${user.roles.contains('EMPLOYEE')}">
+            <div class="row">
+                <p class="lead">You are currently logged in as an employee</p>
+            </div>
+            <li class="list-inline-item">
+                <a th:href="@{/admin/eataway/users}"
+                   class="btn d-block w-100 d-sm-inline-block btn-success">Customer orders</a>
+            </li>
+        </th:block>
     </th:block>
 </div>
 
