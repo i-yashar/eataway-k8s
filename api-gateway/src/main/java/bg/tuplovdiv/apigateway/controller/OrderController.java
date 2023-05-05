@@ -1,9 +1,11 @@
 package bg.tuplovdiv.apigateway.controller;
 
 import bg.tuplovdiv.apigateway.dto.CreateOrderRequest;
+import bg.tuplovdiv.apigateway.dto.OrderDTO;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
 import bg.tuplovdiv.apigateway.security.user.AuthenticatedUser;
 import bg.tuplovdiv.apigateway.service.OrderService;
+import bg.tuplovdiv.orderservice.exception.UnauthorizedAccessException;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -51,9 +53,18 @@ public class OrderController {
 
     @GetMapping(ORDERS_PATH + "/{orderId}")
     public String getOrderInfo(@PathVariable UUID orderId, Model model) {
-        model.addAttribute("order", orderService.getOrderInfo(orderId));
+        OrderDTO order = orderService.getOrderInfo(orderId);
+        verifyUserAuthorized(order.getClientId());
+
+        model.addAttribute("order", order);
 
         return "order-info";
+    }
+
+    private void verifyUserAuthorized(String ownerId) {
+        if(!ownerId.equals(getUserId())) {
+            throw new UnauthorizedAccessException("You are not authorized to access this resource");
+        }
     }
 
     @GetMapping(ORDERS_PATH)

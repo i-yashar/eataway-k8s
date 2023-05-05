@@ -1,11 +1,10 @@
 package bg.tuplovdiv.orderservice.rest;
 
-import bg.tuplovdiv.orderservice.dto.OrderDTO;
 import bg.tuplovdiv.orderservice.dto.CreateOrderRequest;
+import bg.tuplovdiv.orderservice.dto.OrderDTO;
 import bg.tuplovdiv.orderservice.dto.TakeOrderRequest;
 import bg.tuplovdiv.orderservice.dto.page.PageDTO;
 import bg.tuplovdiv.orderservice.service.OrderService;
-import bg.tuplovdiv.orderservice.service.security.authorization.OrderAuthorizationService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,11 +24,9 @@ public class OrderRestController {
     private static final String AUTH_USER_HEADER = "AUTH_USER";
 
     private final OrderService orderService;
-    private final OrderAuthorizationService orderAuthorizationService;
 
-    public OrderRestController(OrderService orderService, OrderAuthorizationService orderAuthorizationService) {
+    public OrderRestController(OrderService orderService) {
         this.orderService = orderService;
-        this.orderAuthorizationService = orderAuthorizationService;
     }
 
     @GetMapping(ORDERS_PATH + ORDER_ID)
