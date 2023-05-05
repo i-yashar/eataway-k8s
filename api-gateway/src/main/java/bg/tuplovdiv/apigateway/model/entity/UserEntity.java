@@ -2,6 +2,8 @@ package bg.tuplovdiv.apigateway.model.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "users")
 public class UserEntity {
@@ -18,6 +20,9 @@ public class UserEntity {
 
     @Column(nullable = false)
     private String email;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<UserRole> userRoles;
 
     public Long getId() {
         return id;
@@ -52,6 +57,15 @@ public class UserEntity {
 
     public UserEntity setEmail(String email) {
         this.email = email;
+        return this;
+    }
+
+    public Set<UserRole> getUserRoles() {
+        return userRoles;
+    }
+
+    public UserEntity setUserRoles(Set<UserRole> userRoles) {
+        this.userRoles = userRoles;
         return this;
     }
 }
