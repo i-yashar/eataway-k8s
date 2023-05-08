@@ -4,6 +4,7 @@ import bg.tuplovdiv.orderservice.dto.OrderDTO;
 import bg.tuplovdiv.orderservice.exception.BasketNotFoundException;
 import bg.tuplovdiv.orderservice.exception.MenuNotFoundException;
 import bg.tuplovdiv.orderservice.messaging.OrderContext;
+import bg.tuplovdiv.orderservice.model.OrderStatus;
 import bg.tuplovdiv.orderservice.model.entity.BasketEntity;
 import bg.tuplovdiv.orderservice.model.entity.MenuEntity;
 import bg.tuplovdiv.orderservice.model.entity.OrderEntity;
@@ -45,6 +46,29 @@ public class OrderMapper {
                 .setAddress(context.getAddress())
                 .setMenus(getMenusFromBasket(context.getBasket().getBasketId()))
                 .setTotalCost(context.getTotalCost());
+    }
+    
+    public OrderEntity toOrderEntity(OrderDTO dto) {
+        return new OrderEntity()
+                .setExternalId(dto.getOrderId())
+                .setClientId(dto.getClientId())
+                .setClientPhoneNumber(dto.getClientPhoneNumber())
+                .setAddress(dto.getAddress())
+                .setDeliverDriverId(dto.getDeliveryDriverId())
+                .setMenus(getMenusFromUserBasket(dto.getClientId()))
+                .setTotalCost(dto.getTotalCost())
+                .setStatus(OrderStatus.valueOf(dto.getStatus()));
+    }
+
+    private Set<MenuEntity> getMenusFromUserBasket(String clientId) {
+        BasketEntity basket = basketRepository.findBasketEntityByOwnerUserId(clientId)
+                .orElseThrow(() -> new BasketNotFoundException("Basket with clientId " + clientId + " not found"));
+
+        Set<MenuEntity> menus = new HashSet<>();
+
+        basket.getItems().forEach(item -> menus.add(getMenu(item.getMenuId())));
+
+        return menus;
     }
 
     private Set<MenuEntity> getMenusFromBasket(UUID basketId) {

@@ -2,7 +2,6 @@ package bg.tuplovdiv.orderservice.rest;
 
 import bg.tuplovdiv.orderservice.dto.CreateOrderRequest;
 import bg.tuplovdiv.orderservice.dto.OrderDTO;
-import bg.tuplovdiv.orderservice.dto.TakeOrderRequest;
 import bg.tuplovdiv.orderservice.dto.page.PageDTO;
 import bg.tuplovdiv.orderservice.service.OrderService;
 import jakarta.validation.Valid;
@@ -58,7 +57,7 @@ public class OrderRestController {
     }
 
     @PutMapping(ORDERS_PATH + ORDER_ID)
-    public ResponseEntity<OrderDTO> updateOrder(@RequestBody @Valid TakeOrderRequest orderRequest) {
-        return ResponseEntity.ok(orderService.updateOrderStatus(orderRequest));
+    public ResponseEntity<OrderDTO> updateOrder(@RequestBody @Valid OrderDTO order) {
+        return ResponseEntity.ok(orderService.updateOrder(order));
     }
 }

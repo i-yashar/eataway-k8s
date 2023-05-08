@@ -1,6 +1,8 @@
 package bg.tuplovdiv.orderservice.service.impl;
 
-import bg.tuplovdiv.orderservice.dto.*;
+import bg.tuplovdiv.orderservice.dto.BasketDTO;
+import bg.tuplovdiv.orderservice.dto.CreateOrderRequest;
+import bg.tuplovdiv.orderservice.dto.OrderDTO;
 import bg.tuplovdiv.orderservice.dto.page.PageDTO;
 import bg.tuplovdiv.orderservice.exception.MenuNotFoundException;
 import bg.tuplovdiv.orderservice.mapper.OrderMapper;
@@ -24,7 +26,6 @@ import java.util.HashSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static bg.tuplovdiv.orderservice.model.OrderStatus.ACTIVE;
 import static bg.tuplovdiv.orderservice.model.OrderStatus.REGISTERED;
 
 @Service
@@ -126,17 +127,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDTO updateOrderStatus(TakeOrderRequest orderRequest) {
-        OrderEntity orderEntity = updateOrderEntity(orderRequest);
+    public OrderDTO updateOrder(OrderDTO order) {
+        OrderEntity orderEntity = mapper.toOrderEntity(order);
+        orderEntity.setId(getOrderByOrderId(order.getOrderId()).getId());
 
         return mapper.toOrderDTO(orderRepository.save(orderEntity));
-    }
-
-    private OrderEntity updateOrderEntity(TakeOrderRequest orderRequest) {
-        OrderEntity orderEntity = getOrderByOrderId(orderRequest.getOrderId());
-        orderEntity.setDeliverDriverId(orderRequest.getDeliveryDriverId());
-        orderEntity.setStatus(ACTIVE);
-        return orderEntity;
     }
 
     private OrderEntity getOrderByOrderId(UUID orderId) {
