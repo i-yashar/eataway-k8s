@@ -32,7 +32,7 @@ public class OrderRestController {
     }
 
     @GetMapping(ORDERS_PATH + ORDER_ID)
-    public ResponseEntity<OrderDTO> getOrder(@PathVariable("orderId") UUID orderId, @RequestHeader(AUTH_USER_HEADER) String userId) {
+    public ResponseEntity<OrderDTO> getOrder(@PathVariable("orderId") UUID orderId) {
         return ResponseEntity.ok(orderService.findOrderByOrderId(orderId));
     }
 

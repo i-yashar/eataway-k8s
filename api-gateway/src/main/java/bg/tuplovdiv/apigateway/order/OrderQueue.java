@@ -7,15 +7,19 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentMap;
 
 @Component
 public class OrderQueue {
 
     private static final ConcurrentLinkedDeque<OrderContext> orders;
+    private static final ConcurrentMap<UUID, OrderContext> activeOrders;
 
     static {
         orders = new ConcurrentLinkedDeque<>();
+        activeOrders = new ConcurrentHashMap<>();
     }
 
     public Collection<OrderDTO> getActiveOrders() {
@@ -26,6 +30,7 @@ public class OrderQueue {
 
     public void registerOrder(OrderContext order) {
         orders.add(order);
+        activeOrders.put(order.getOrderId(), order);
     }
 
     public OrderDTO takeOrder(UUID orderId) {
@@ -37,9 +42,12 @@ public class OrderQueue {
             throw new IllegalStateException();
         }
 
-        orders.removeIf(order -> order.getOrderId().equals(orderId));
+        OrderContext order = optOrder.get();
+        activeOrders.put(orderId, order);
 
-        return mapToOrderDTO(optOrder.get());
+        orders.removeIf(orderContext -> orderContext.getOrderId().equals(orderId));
+
+        return mapToOrderDTO(order);
     }
 
     private OrderDTO mapToOrderDTO(OrderContext order) {
@@ -49,5 +57,13 @@ public class OrderQueue {
                 .setClientPhoneNumber(order.getClientPhoneNumber())
                 .setAddress(order.getAddress())
                 .setTotalCost(order.getTotalCost());
+    }
+
+    public OrderContext getOrderInfo(UUID orderId) {
+        return activeOrders.get(orderId);
+    }
+
+    public void removeOrderInfo(UUID orderId) {
+        activeOrders.remove(orderId);
     }
 }

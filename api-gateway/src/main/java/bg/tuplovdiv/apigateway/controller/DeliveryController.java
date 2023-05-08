@@ -1,5 +1,6 @@
 package bg.tuplovdiv.apigateway.controller;
 
+import bg.tuplovdiv.apigateway.messaging.OrderContext;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
 import bg.tuplovdiv.apigateway.security.user.AuthenticatedUser;
 import bg.tuplovdiv.apigateway.security.validation.DeliveryValidator;
@@ -17,6 +18,7 @@ import java.util.UUID;
 public class DeliveryController {
 
     private static final String ORDERS_PATH = "orders";
+    private static final String ORDER_INFO_PATH = ORDERS_PATH + "/{orderId}";
     private static final String UPDATE_ORDERS_PATH = ORDERS_PATH + "/{orderId}";
 
     private final DeliveryService deliveryService;
@@ -34,6 +36,16 @@ public class DeliveryController {
         model.addAttribute("orders", deliveryService.getActiveOrders());
 
         return "active-orders";
+    }
+
+    @GetMapping(ORDER_INFO_PATH)
+    public String getOrderInfo(@PathVariable UUID orderId, Model model) {
+        OrderContext orderInfo = deliveryService.getOrderInfo(orderId);
+
+        model.addAttribute("order", orderInfo);
+        model.addAttribute("menus", orderInfo.getBasket().getItems());
+
+        return "order-delivery-info";
     }
 
     @PostMapping(ORDERS_PATH)

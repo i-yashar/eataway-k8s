@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments/head::head"></head>
+<body>
+
+<div th:replace="fragments/navbar :: navbar">
+    Navbar
+</div>
+
+<div class="container-fluid col-md-8">
+
+    <h1 class="text-white mt-5">Delivery info</h1>
+
+    <div class="row text-justify">
+
+        <div th:object="${order}" class="post-frame card card-body mt-3">
+
+            <div th:id="${'postNo' + order.orderId}" class="media align-items-center align-items-lg-start text-center text-lg-left flex-column flex-lg-row">
+
+                <div class="post-header media-body">
+                    <h4 class="media-title font-weight-semibold">
+                        <th:block th:text="'Order id: ' + ${order.orderId}">Order id</th:block>
+                    </h4>
+
+                    <p class="mb-3 post-description" th:text="'Delivery address: ' + ${order.address}">Order address</p>
+
+                    <p class="mb-3 post-description" th:text="'Client phone number: ' + ${order.clientPhoneNumber}">Client phone number</p>
+
+                    <p class="mb-3 post-description" th:text="'Total cost: ' + ${order.totalCost} + '$'">Total cost</p>
+
+                    <p class="mb-3 post-description" th:text="'Total cost: ' + ${order.totalCost} + '$'">Total cost</p>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <h2 class="text-white mt-5">Menus</h2>
+
+    <div th:each="menu : ${menus}" class="row text-justify">
+        <div class="post-frame card card-body mt-3">
+            <div class="media align-items-center align-items-lg-start text-center text-lg-left flex-column flex-lg-row">
+
+                <div class="post-header media-body">
+
+                    <h5 class="media-title font-weight-semibold">
+                        <th:block th:text="${menu.menuName} + ' X ' + ${menu.count}">Menu Name</th:block>
+                    </h5>
+
+                    <p class="mb-3 post-description" th:text="'Restaurant name: ' + ${menu.restaurantName}">Restaurant name</p>
+
+                    <p class="mb-3 post-description" th:text="'Restaurant address: ' + ${menu.restaurantAddress}">Restaurant address</p>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <ul class="list-inline list-inline-dotted mb-0">
+        <li class="list-inline-item">
+            <a class="upVoteBtn btn btn-success"
+               href="#"
+               role="button">View details</a>
+        </li>
+    </ul>
+
+</div>
+<script src="/js/basket-actions.js"></script>
+</body>
+</html>

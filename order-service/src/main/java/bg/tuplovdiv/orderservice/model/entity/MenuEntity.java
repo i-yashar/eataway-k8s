@@ -27,7 +27,7 @@ public class MenuEntity {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<ItemEntity> items;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private RestaurantEntity restaurant;
 
     public Long getId() {
