@@ -32,7 +32,7 @@ public class OrderMapper {
                 .setOrderId(order.getExternalId())
                 .setClientId(order.getClientId())
                 .setClientPhoneNumber(order.getClientPhoneNumber())
-                .setDeliveryDriverId(order.getDeliverDriverId())
+                .setDeliveryDriverId(order.getDeliveryDriverId())
                 .setAddress(order.getAddress())
                 .setTotalCost(order.getTotalCost())
                 .setStatus(order.getStatus().name());
@@ -54,7 +54,7 @@ public class OrderMapper {
                 .setClientId(dto.getClientId())
                 .setClientPhoneNumber(dto.getClientPhoneNumber())
                 .setAddress(dto.getAddress())
-                .setDeliverDriverId(dto.getDeliveryDriverId())
+                .setDeliveryDriverId(dto.getDeliveryDriverId())
                 .setMenus(getMenusFromUserBasket(dto.getClientId()))
                 .setTotalCost(dto.getTotalCost())
                 .setStatus(OrderStatus.valueOf(dto.getStatus()));

@@ -4,8 +4,10 @@ import bg.tuplovdiv.orderservice.dto.CreateOrderRequest;
 import bg.tuplovdiv.orderservice.dto.OrderDTO;
 import bg.tuplovdiv.orderservice.dto.page.PageDTO;
 import bg.tuplovdiv.orderservice.service.OrderService;
+import bg.tuplovdiv.orderservice.validation.order.DeliveryValidator;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -22,9 +24,11 @@ public class OrderRestController {
     private static final String AUTH_USER_HEADER = "AUTH_USER";
 
     private final OrderService orderService;
+    private final DeliveryValidator deliveryValidator;
 
-    public OrderRestController(OrderService orderService) {
+    public OrderRestController(OrderService orderService, DeliveryValidator deliveryValidator) {
         this.orderService = orderService;
+        this.deliveryValidator = deliveryValidator;
     }
 
     @GetMapping(ORDERS_PATH + ORDER_ID)
@@ -57,6 +61,7 @@ public class OrderRestController {
     }
 
     @PutMapping(ORDERS_PATH + ORDER_ID)
+    @PreAuthorize("@deliveryValidator.isValid(#order)")
     public ResponseEntity<OrderDTO> updateOrder(@RequestBody @Valid OrderDTO order) {
         return ResponseEntity.ok(orderService.updateOrder(order));
     }

@@ -1,5 +1,6 @@
 package bg.tuplovdiv.orderservice.repository;
 
+import bg.tuplovdiv.orderservice.model.OrderStatus;
 import bg.tuplovdiv.orderservice.model.entity.OrderEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,4 +14,5 @@ import java.util.UUID;
 public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
     Optional<OrderEntity> findOrderEntityByExternalId(UUID orderId);
     Page<OrderEntity> findAllByClientId(String clientId, Pageable pageable);
+    Optional<OrderEntity> findOrderEntityByDeliveryDriverIdAndStatus(String driverId, OrderStatus status);
 }

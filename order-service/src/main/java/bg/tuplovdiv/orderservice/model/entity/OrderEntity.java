@@ -23,7 +23,7 @@ public class OrderEntity {
     @Column(nullable = false)
     private String clientPhoneNumber;
 
-    private String deliverDriverId;
+    private String deliveryDriverId;
 
     @Column(nullable = false)
     private String address;
@@ -74,12 +74,12 @@ public class OrderEntity {
         return this;
     }
 
-    public String getDeliverDriverId() {
-        return deliverDriverId;
+    public String getDeliveryDriverId() {
+        return deliveryDriverId;
     }
 
-    public OrderEntity setDeliverDriverId(String deliverDriverId) {
-        this.deliverDriverId = deliverDriverId;
+    public OrderEntity setDeliveryDriverId(String deliverDriverId) {
+        this.deliveryDriverId = deliverDriverId;
         return this;
     }
 
