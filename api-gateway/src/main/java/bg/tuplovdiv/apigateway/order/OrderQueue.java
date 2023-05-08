@@ -1,5 +1,6 @@
 package bg.tuplovdiv.apigateway.order;
 
+import bg.tuplovdiv.apigateway.dto.OrderDTO;
 import bg.tuplovdiv.apigateway.messaging.OrderContext;
 import org.springframework.stereotype.Component;
 
@@ -9,6 +10,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 @Component
 public class OrderQueue {
+
     private static final ConcurrentLinkedDeque<OrderContext> orders;
 
     static {
@@ -19,7 +21,7 @@ public class OrderQueue {
         orders.add(order);
     }
 
-    public OrderContext takeOrder(UUID orderId) {
+    public OrderDTO takeOrder(UUID orderId) {
         Optional<OrderContext> optOrder = orders.stream()
                 .filter(order -> order.getOrderId().equals(orderId))
                 .findFirst();
@@ -28,6 +30,17 @@ public class OrderQueue {
             throw new IllegalStateException();
         }
 
-        return optOrder.get();
+        orders.removeIf(order -> order.getOrderId().equals(orderId));
+
+        return mapToOrderDTO(optOrder.get());
+    }
+
+    private OrderDTO mapToOrderDTO(OrderContext order) {
+        return new OrderDTO()
+                .setOrderId(order.getOrderId())
+                .setClientId(order.getClientId())
+                .setClientPhoneNumber(order.getClientPhoneNumber())
+                .setAddress(order.getAddress())
+                .setTotalCost(order.getTotalCost());
     }
 }

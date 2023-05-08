@@ -21,6 +21,7 @@ public class OrdersRestClient extends RestClient {
     private static final String ORDERS_API_BASKETS_BASKET_ITEM_PATH = ORDERS_API_BASKETS_BASE_PATH + "/items/%s";
     private static final String ORDERS_API_GET_USER_ORDER = ORDERS_API_BASE_PATH + "/orders/%s";
     private static final String ORDERS_API_CREATE_ORDER_PATH = ORDERS_API_BASE_PATH + "/orders";
+    private static final String ORDER_API_UPDATE_ORDER_PATH = ORDERS_API_BASE_PATH + "/orders/%s";
     private static final String ORDERS_API_GET_USER_ORDERS = ORDERS_API_BASE_PATH + "/users/%s/orders";
 
     private static final String AUTH_USER_HEADER = "AUTH_USER";
@@ -55,10 +56,6 @@ public class OrdersRestClient extends RestClient {
         return get(request, response -> mapJsonToObject(response.body(), PAGE_OF_ORDER_DTOS_PATH));
     }
 
-    public OrderDTO takeOrder(UUID orderId) {
-        return new OrderDTO();
-    }
-
     public String createOrder(CreateOrderRequest createOrderRequest) {
         HttpRequest request = HttpRequest.newBuilder()
                 .POST(createRequestBody(createOrderRequest))
@@ -67,6 +64,16 @@ public class OrdersRestClient extends RestClient {
                 .build();
 
         return post(request, this::extractLocation);
+    }
+
+    public OrderDTO updateOrder(OrderDTO order) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .PUT(createRequestBody(order))
+                .uri(buildURI(ORDER_API_UPDATE_ORDER_PATH, order.getOrderId().toString()))
+                .header("Content-Type", "application/json")
+                .build();
+
+        return put(request, response -> mapJsonToObject(response.body(), ORDER_DTO_TYPE));
     }
 
     public BasketDTO getUserBasket(String ownerId) {

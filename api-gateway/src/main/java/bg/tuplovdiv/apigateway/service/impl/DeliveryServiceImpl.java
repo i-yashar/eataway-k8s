@@ -20,14 +20,19 @@ public class DeliveryServiceImpl implements DeliveryService {
     }
 
     @Override
-    public OrderDTO takeOrder(UUID orderId) {
-        orderQueue.takeOrder(orderId);
-        return client.takeOrder(orderId);
-        //todo: 1. change orders service controller - one handler for taking orders, another for updating status; 2. add new methods to the orders client; 3. finish delivery service and controller
+    public OrderDTO takeOrder(UUID orderId, String deliveryDriverId) {
+        OrderDTO order = orderQueue.takeOrder(orderId);
+        order.setDeliveryDriverId(deliveryDriverId);
+        order.setStatus("ACTIVE");
+
+        return client.updateOrder(order);
     }
 
     @Override
-    public OrderDTO updateOrder(UUID orderId) {
-        return null;
+    public OrderDTO updateOrder(UUID orderId, String status) {
+        OrderDTO order = client.getUserOrder(orderId);
+        order.setStatus(status);
+
+        return client.updateOrder(order);
     }
 }
