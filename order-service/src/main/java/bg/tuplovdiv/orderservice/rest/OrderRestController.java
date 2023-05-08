@@ -7,7 +7,6 @@ import bg.tuplovdiv.orderservice.dto.page.PageDTO;
 import bg.tuplovdiv.orderservice.service.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -30,7 +29,6 @@ public class OrderRestController {
     }
 
     @GetMapping(ORDERS_PATH + ORDER_ID)
-    @PreAuthorize("@orderAuthorizationService.isOwner(#userId, #orderId)")
     public ResponseEntity<OrderDTO> getOrder(@PathVariable("orderId") UUID orderId, @RequestHeader(AUTH_USER_HEADER) String userId) {
         return ResponseEntity.ok(orderService.findOrderByOrderId(orderId));
     }

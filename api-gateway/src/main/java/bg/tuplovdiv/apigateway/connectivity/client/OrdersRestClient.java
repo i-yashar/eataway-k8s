@@ -60,6 +60,10 @@ public class OrdersRestClient extends RestClient {
         return get(request, response -> mapJsonToObject(response.body(), PAGE_OF_ORDER_DTOS_PATH));
     }
 
+    public OrderDTO takeOrder(UUID orderId) {
+        return new OrderDTO();
+    }
+
     public String createOrder(CreateOrderRequest createOrderRequest) {
         HttpRequest request = HttpRequest.newBuilder()
                 .POST(createRequestBody(createOrderRequest))
