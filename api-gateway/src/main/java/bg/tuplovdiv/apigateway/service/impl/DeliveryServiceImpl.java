@@ -6,6 +6,7 @@ import bg.tuplovdiv.apigateway.order.OrderQueue;
 import bg.tuplovdiv.apigateway.service.DeliveryService;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.UUID;
 
 @Service
@@ -17,6 +18,11 @@ public class DeliveryServiceImpl implements DeliveryService {
     public DeliveryServiceImpl(OrderQueue orderQueue, OrdersRestClient client) {
         this.orderQueue = orderQueue;
         this.client = client;
+    }
+
+    @Override
+    public Collection<OrderDTO> getActiveOrders() {
+        return orderQueue.getActiveOrders();
     }
 
     @Override

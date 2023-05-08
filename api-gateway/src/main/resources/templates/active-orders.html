@@ -1,10 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments/head::head"></head>
 <body>
-$END$
+
+<div th:replace="fragments/navbar :: navbar">
+    Navbar
+</div>
+
+<div class="container-fluid">
+    <div class="row text-justify">
+        <div class="mx-auto col-8 bg-transparent text-white">
+            <h2 class="text-center text-justify text-dark">Welcome to dashboard!</h2>
+
+            <div th:each="order : ${orders}" class="post-frame card card-body mt-3">
+                <div th:id="${'postNo' + order.orderId}" class="media align-items-center align-items-lg-start text-center text-lg-left flex-column flex-lg-row">
+
+                    <div class="post-header media-body">
+                        <h4 class="media-title font-weight-semibold">
+                            <th:block th:text="${order.orderId}">Order id</th:block>
+                        </h4>
+
+                        <p class="mb-3 post-description" th:text="'Address: ' + ${order.getAddress}">Order address</p>
+
+<!--                        <p class="mb-3 post-description" th:text="${restaurant.description}">Description</p>-->
+
+<!--                        <p class="mb-3 post-description" th:text="${restaurant.description}">Description</p>-->
+
+<!--                        <ul class="list-inline list-inline-dotted mb-0">-->
+<!--                            <li class="list-inline-item">-->
+<!--                                <a class="upVoteBtn btn btn-success"-->
+<!--                                   th:href="@{/eataway/restaurants/{restaurantId}(restaurantId = ${restaurant.restaurantId})}"-->
+<!--                                   role="button">Visit</a>-->
+<!--                            </li>-->
+<!--                        </ul>-->
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<script src="/js/dashboard-action.js"></script>
 </body>
 </html>

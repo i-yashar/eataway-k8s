@@ -4,6 +4,7 @@ import bg.tuplovdiv.apigateway.dto.OrderDTO;
 import bg.tuplovdiv.apigateway.messaging.OrderContext;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -15,6 +16,12 @@ public class OrderQueue {
 
     static {
         orders = new ConcurrentLinkedDeque<>();
+    }
+
+    public Collection<OrderDTO> getActiveOrders() {
+        return orders.stream()
+                .map(this::mapToOrderDTO)
+                .toList();
     }
 
     public void registerOrder(OrderContext order) {

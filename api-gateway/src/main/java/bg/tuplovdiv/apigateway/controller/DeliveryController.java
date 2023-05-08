@@ -2,7 +2,9 @@ package bg.tuplovdiv.apigateway.controller;
 
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
 import bg.tuplovdiv.apigateway.security.user.AuthenticatedUser;
+import bg.tuplovdiv.apigateway.security.validation.DeliveryValidator;
 import bg.tuplovdiv.apigateway.service.DeliveryService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +13,7 @@ import java.util.UUID;
 
 @Controller
 @RequestMapping("eataway/delivery")
+@PreAuthorize("@deliveryValidator.isDeliveryDriver()")
 public class DeliveryController {
 
     private static final String ORDERS_PATH = "orders";
@@ -18,10 +21,19 @@ public class DeliveryController {
 
     private final DeliveryService deliveryService;
     private final AuthenticatedUserProvider authenticatedUserProvider;
+    private final DeliveryValidator deliveryValidator;
 
-    public DeliveryController(DeliveryService deliveryService, AuthenticatedUserProvider authenticatedUserProvider) {
+    public DeliveryController(DeliveryService deliveryService, AuthenticatedUserProvider authenticatedUserProvider, DeliveryValidator deliveryValidator) {
         this.deliveryService = deliveryService;
         this.authenticatedUserProvider = authenticatedUserProvider;
+        this.deliveryValidator = deliveryValidator;
+    }
+
+    @GetMapping(ORDERS_PATH)
+    public String getActiveOrders(Model model) {
+        model.addAttribute("orders", deliveryService.getActiveOrders());
+
+        return "active-orders";
     }
 
     @PostMapping(ORDERS_PATH)
