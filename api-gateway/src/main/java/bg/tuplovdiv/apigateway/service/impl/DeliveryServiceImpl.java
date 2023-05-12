@@ -37,7 +37,11 @@ public class DeliveryServiceImpl implements DeliveryService {
         order.setDeliveryDriverId(deliveryDriverId);
         order.setStatus("ACTIVE");
 
-        return client.updateOrder(order);
+        OrderDTO updatedOrder = client.updateOrder(order);
+
+
+
+        return updatedOrder;
     }
 
     @Override
