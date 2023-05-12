@@ -30,7 +30,6 @@ public class OrderQueue {
 
     public void registerOrder(OrderContext order) {
         orders.add(order);
-        activeOrders.put(order.getOrderId(), order);
     }
 
     public OrderDTO takeOrder(UUID orderId) {
