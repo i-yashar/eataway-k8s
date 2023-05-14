@@ -2,6 +2,7 @@ package bg.tuplovdiv.apigateway.controller;
 
 import bg.tuplovdiv.apigateway.dto.CreateOrderRequest;
 import bg.tuplovdiv.apigateway.dto.OrderDTO;
+import bg.tuplovdiv.apigateway.order.OrderStatusEmitters;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
 import bg.tuplovdiv.apigateway.security.user.AuthenticatedUser;
 import bg.tuplovdiv.apigateway.service.OrderService;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.UUID;
@@ -20,6 +22,7 @@ import java.util.UUID;
 public class OrderController {
 
     private static final String ORDERS_PATH = "orders";
+    private static final String ORDER_LIVE_UPDATE_PATH = ORDERS_PATH + "/sse";
 
     private final AuthenticatedUserProvider userProvider;
     private final OrderService orderService;
@@ -39,7 +42,7 @@ public class OrderController {
                               BindingResult bindingResult,
                               RedirectAttributes redirectAttributes) {
 
-        if(bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("createOrderRequest", order);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.createOrderRequest", bindingResult);
             return "redirect:/eataway/basket";
@@ -62,7 +65,7 @@ public class OrderController {
     }
 
     private void verifyUserAuthorized(String ownerId) {
-        if(!ownerId.equals(getUserId())) {
+        if (!ownerId.equals(getUserId())) {
             throw new UnauthorizedAccessException("You are not authorized to access this resource");
         }
     }
@@ -72,6 +75,11 @@ public class OrderController {
         model.addAttribute("orders", orderService.getUserOrders(getUserId()));
 
         return "user-orders";
+    }
+
+    @GetMapping(ORDER_LIVE_UPDATE_PATH)
+    public SseEmitter streamSse() {
+        return OrderStatusEmitters.get(getUserId());
     }
 
     private String getUserId() {

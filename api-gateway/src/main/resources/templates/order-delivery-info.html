@@ -9,15 +9,16 @@
     Navbar
 </div>
 
-<div class="container-fluid col-md-8">
+<div th:object="${order}" class="container-fluid col-md-8">
 
     <h1 class="text-white mt-5">Delivery info</h1>
 
     <div class="row text-justify">
 
-        <div th:object="${order}" class="post-frame card card-body mt-3">
+        <div class="post-frame card card-body mt-3">
 
-            <div th:id="${'postNo' + order.orderId}" class="media align-items-center align-items-lg-start text-center text-lg-left flex-column flex-lg-row">
+            <div th:id="${'postNo' + order.orderId}"
+                 class="media align-items-center align-items-lg-start text-center text-lg-left flex-column flex-lg-row">
 
                 <div class="post-header media-body">
                     <h4 class="media-title font-weight-semibold">
@@ -26,11 +27,12 @@
 
                     <p class="mb-3 post-description" th:text="'Delivery address: ' + ${order.address}">Order address</p>
 
-                    <p class="mb-3 post-description" th:text="'Client phone number: ' + ${order.clientPhoneNumber}">Client phone number</p>
+                    <p class="mb-3 post-description" th:text="'Client phone number: ' + ${order.clientPhoneNumber}">
+                        Client phone number</p>
 
                     <p class="mb-3 post-description" th:text="'Total cost: ' + ${order.totalCost} + '$'">Total cost</p>
 
-                    <p class="mb-3 post-description" th:text="'Total cost: ' + ${order.totalCost} + '$'">Total cost</p>
+                    <p class="mb-3 post-description" th:text="'Order status: ' + ${order.status}">Order status</p>
                 </div>
 
             </div>
@@ -50,9 +52,11 @@
                         <th:block th:text="${menu.menuName} + ' X ' + ${menu.count}">Menu Name</th:block>
                     </h5>
 
-                    <p class="mb-3 post-description" th:text="'Restaurant name: ' + ${menu.restaurantName}">Restaurant name</p>
+                    <p class="mb-3 post-description" th:text="'Restaurant name: ' + ${menu.restaurantName}">Restaurant
+                        name</p>
 
-                    <p class="mb-3 post-description" th:text="'Restaurant address: ' + ${menu.restaurantAddress}">Restaurant address</p>
+                    <p class="mb-3 post-description" th:text="'Restaurant address: ' + ${menu.restaurantAddress}">
+                        Restaurant address</p>
 
                 </div>
 
@@ -60,15 +64,18 @@
         </div>
     </div>
 
-    <ul class="list-inline list-inline-dotted mb-0">
+    <ul class="list-inline list-inline-dotted mt-3 mb-3">
         <li class="list-inline-item">
-            <a class="upVoteBtn btn btn-success"
+            <a id="orderUpdateButton"
+               class="upVoteBtn btn btn-success"
                href="#"
-               role="button">View details</a>
+               role="button"
+               th:text="${order.status == 'REGISTERED' ? 'Take order' : (order.status == 'ACTIVE' ? 'Update to about to be delivered' : 'Update to delivered')}"
+               th:name="${order.status}">Update</a>
         </li>
     </ul>
 
 </div>
-<script src="/js/basket-actions.js"></script>
+<script src="/js/delivery-actions.js"></script>
 </body>
 </html>

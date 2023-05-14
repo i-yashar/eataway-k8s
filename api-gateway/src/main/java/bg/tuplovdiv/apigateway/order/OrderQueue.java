@@ -30,6 +30,7 @@ public class OrderQueue {
 
     public void registerOrder(OrderContext order) {
         orders.add(order);
+        activeOrders.put(order.getOrderId(), order);
     }
 
     public OrderDTO takeOrder(UUID orderId) {
@@ -58,7 +59,7 @@ public class OrderQueue {
                 .setTotalCost(order.getTotalCost());
     }
 
-    public OrderContext getOrderInfo(UUID orderId) {
+    public OrderContext getOrderContext(UUID orderId) {
         return activeOrders.get(orderId);
     }
 

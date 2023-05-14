@@ -1,4 +1,4 @@
-package bg.tuplovdiv.orderservice.messaging;
+package bg.tuplovdiv.apigateway.messaging;
 
 public interface MessageDispatcher {
     void dispatch(Message message);

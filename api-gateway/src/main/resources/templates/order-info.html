@@ -15,14 +15,12 @@
     <p class="lead">Order id: <span th:text="${order.orderId}"></span></p>
     <p class="lead">Delivery info: Address - <span th:text="${order.address}"></span> | Phone number - <span th:text="${order.clientPhoneNumber}"></span></p>
     <p class="lead">Total cost: <span th:text="${#numbers.formatDecimal(order.totalCost,1,2)}"></span>$</p>
-    <p class="lead">Status: <span th:text="${order.status}"></span></p>
+    <p id="orderStatusField" class="lead">Status: <span th:text="${order.status}"></span></p>
 
-    <hr class="my-4">
+    <hr id="orderInfoSeparator" class="my-4">
 
 </div>
 
-<div>
-    <footer></footer>
-</div>
+<script src="/js/order-status.js"></script>
 </body>
 </html>

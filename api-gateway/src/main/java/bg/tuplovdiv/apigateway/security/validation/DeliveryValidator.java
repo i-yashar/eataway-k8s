@@ -20,7 +20,7 @@ public class DeliveryValidator {
         this.userRepository = userRepository;
     }
 
-    public boolean isDeliveryDriver() {
+    public boolean isDeliveryDriverValid() {
         UserEntity user = getUser();
 
         return user.getUserRoles().stream()

@@ -1,6 +1,5 @@
 package bg.tuplovdiv.apigateway.messaging;
 
-import bg.tuplovdiv.orderservice.messaging.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 
@@ -10,11 +9,11 @@ import static bg.tuplovdiv.apigateway.config.messaging.RabbitMQConfig.EXCHANGE;
 import static bg.tuplovdiv.apigateway.config.messaging.RabbitMQConfig.ORDER_UPDATED_ROUTING_KEY;
 
 @Component
-public class OrderStatusUpdateDispatcher implements MessageDispatcher {
+public class OrderStatusChangeDispatcher implements MessageDispatcher {
 
     private final RabbitTemplate template;
 
-    public OrderStatusUpdateDispatcher(RabbitTemplate template) {
+    public OrderStatusChangeDispatcher(RabbitTemplate template) {
         this.template = template;
     }
 

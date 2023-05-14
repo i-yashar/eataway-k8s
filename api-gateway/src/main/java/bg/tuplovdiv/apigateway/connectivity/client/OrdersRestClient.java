@@ -24,8 +24,6 @@ public class OrdersRestClient extends RestClient {
     private static final String ORDER_API_UPDATE_ORDER_PATH = ORDERS_API_BASE_PATH + "/orders/%s";
     private static final String ORDERS_API_GET_USER_ORDERS = ORDERS_API_BASE_PATH + "/users/%s/orders";
 
-    private static final String AUTH_USER_HEADER = "AUTH_USER";
-
     private static final TypeReference<BasketDTO> BASKET_DTO_TYPE = new TypeReference<>() {};
     private static final TypeReference<OrderDTO> ORDER_DTO_TYPE = new TypeReference<>() {};
     private static final TypeReference<PageDTO<OrderDTO>> PAGE_OF_ORDER_DTOS_PATH = new TypeReference<>() {};

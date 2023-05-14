@@ -1,10 +1,10 @@
 package bg.tuplovdiv.apigateway.controller;
 
-import bg.tuplovdiv.apigateway.messaging.OrderContext;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
 import bg.tuplovdiv.apigateway.security.user.AuthenticatedUser;
 import bg.tuplovdiv.apigateway.security.validation.DeliveryValidator;
 import bg.tuplovdiv.apigateway.service.DeliveryService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @Controller
 @RequestMapping("eataway/delivery")
-@PreAuthorize("@deliveryValidator.isDeliveryDriver()")
+@PreAuthorize("@deliveryValidator.isDeliveryDriverValid()")
 public class DeliveryController {
 
     private static final String ORDERS_PATH = "orders";
@@ -40,28 +40,27 @@ public class DeliveryController {
 
     @GetMapping(ORDER_INFO_PATH)
     public String getOrderInfo(@PathVariable UUID orderId, Model model) {
-        OrderContext orderInfo = deliveryService.getOrderInfo(orderId);
-
-        model.addAttribute("order", orderInfo);
-        model.addAttribute("menus", orderInfo.getBasket().getItems());
+        model.addAttribute("order", deliveryService.getOrderInfo(orderId));
+        model.addAttribute("menus", deliveryService.getOrderBasketInfo(orderId).getItems());
 
         return "order-delivery-info";
     }
 
     @PostMapping(ORDERS_PATH)
-    public String takeOrder(@RequestBody UUID orderId, Model model) {
-        model.addAttribute("order", deliveryService.takeOrder(orderId, getUserId()));
+    @ResponseBody
+    public ResponseEntity<Void> takeOrder(@RequestBody String orderId) {
+        deliveryService.takeOrder(UUID.fromString(orderId), getUserId());
 
-        return "delivery-info";
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping(UPDATE_ORDERS_PATH)
-    public String updateOrder(@PathVariable UUID orderId,
-                              @RequestParam String status,
-                              Model model) {
-        model.addAttribute("order", deliveryService.updateOrder(orderId, status));
+    @ResponseBody
+    public ResponseEntity<Void> updateOrder(@PathVariable UUID orderId,
+                                      @RequestParam(name = "status") String status) {
+        deliveryService.updateOrder(orderId, status);
 
-        return "delivery-info";
+        return ResponseEntity.ok().build();
     }
 
     private String getUserId() {

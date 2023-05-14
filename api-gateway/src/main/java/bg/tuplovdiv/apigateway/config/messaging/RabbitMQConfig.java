@@ -5,6 +5,7 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -12,12 +13,19 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfig {
 
     public static final String EXCHANGE = "order";
-    public static final String QUEUE = "order-created-queue";
-    public static final String ROUTING_KEY = "order.event.created";
+    public static final String ORDER_CREATED_QUEUE = "order-created-queue";
+    public static final String ORDER_UPDATED_QUEUE = "order-updated-queue";
+    public static final String ORDER_CREATED_ROUTING_KEY = "order.event.created";
+    public static final String ORDER_UPDATED_ROUTING_KEY = "order.event.updated";
 
     @Bean
-    public Queue queue() {
-        return new Queue(QUEUE);
+    public Queue orderCreatedQueue() {
+        return new Queue(ORDER_CREATED_QUEUE);
+    }
+
+    @Bean
+    public Queue orderUpdatedQueue() {
+        return new Queue(ORDER_UPDATED_QUEUE);
     }
 
     @Bean
@@ -26,11 +34,19 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Binding binding(Queue queue, TopicExchange topicExchange) {
+    public Binding orderCreatedBinding(@Qualifier("orderCreatedQueue") Queue queue, TopicExchange topicExchange) {
         return BindingBuilder
                 .bind(queue)
                 .to(topicExchange)
-                .with(ROUTING_KEY);
+                .with(ORDER_CREATED_ROUTING_KEY);
+    }
+
+    @Bean
+    public Binding orderUpdatedBinding(@Qualifier("orderUpdatedQueue") Queue queue, TopicExchange topicExchange) {
+        return BindingBuilder
+                .bind(queue)
+                .to(topicExchange)
+                .with(ORDER_UPDATED_ROUTING_KEY);
     }
 
     @Bean
