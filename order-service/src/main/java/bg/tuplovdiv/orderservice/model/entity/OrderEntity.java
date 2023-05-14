@@ -28,7 +28,7 @@ public class OrderEntity {
     @Column(nullable = false)
     private String address;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<MenuEntity> menus;
 
     @Column(nullable = false)
