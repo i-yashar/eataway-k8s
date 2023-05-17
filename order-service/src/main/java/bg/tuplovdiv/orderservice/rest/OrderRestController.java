@@ -21,8 +21,6 @@ public class OrderRestController {
     private static final String ORDERS_PATH = "/orders";
     private static final String CLIENT_ORDERS_PATH = "/users/{clientId}" +  ORDERS_PATH;
 
-    private static final String AUTH_USER_HEADER = "AUTH_USER";
-
     private final OrderService orderService;
     private final DeliveryValidator deliveryValidator;
 
@@ -37,10 +35,10 @@ public class OrderRestController {
     }
 
     @GetMapping(CLIENT_ORDERS_PATH)
-    public ResponseEntity<PageDTO<OrderDTO>> getUserOrders(@PathVariable String clientId,
+    public ResponseEntity<PageDTO<OrderDTO>> getUserActiveOrders(@PathVariable String clientId,
                                                                @RequestParam(name = "page", required = false, defaultValue = "0") int page,
                                                                @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
-        return ResponseEntity.ok(orderService.findAllUserOrders(clientId, page, size));
+        return ResponseEntity.ok(orderService.findActiveUserOrders(clientId, page, size));
     }
 
     @PostMapping(ORDERS_PATH)

@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface OrderService {
     OrderDTO findOrderByOrderId(UUID orderId);
-    PageDTO<OrderDTO> findAllUserOrders(String clientId, int page, int size);
+    PageDTO<OrderDTO> findActiveUserOrders(String clientId, int page, int size);
     UUID createOrder(CreateOrderRequest orderRequest);
     OrderDTO updateOrder(OrderDTO order);
 }

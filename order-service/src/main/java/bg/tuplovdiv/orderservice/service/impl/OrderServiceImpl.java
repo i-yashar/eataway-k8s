@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static bg.tuplovdiv.orderservice.model.OrderStatus.ACTIVE;
 import static bg.tuplovdiv.orderservice.model.OrderStatus.REGISTERED;
 
 @Service
@@ -55,14 +56,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public PageDTO<OrderDTO> findAllUserOrders(String clientId, int page, int size) {
+    public PageDTO<OrderDTO> findActiveUserOrders(String clientId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 
-        return getAllUserOrdersPage(clientId, pageable);
+        return getActiveUserOrdersPage(clientId, pageable);
     }
 
-    private PageDTO<OrderDTO> getAllUserOrdersPage(String clientId, Pageable pageable) {
-        Page<OrderEntity> orders = orderRepository.findAllByClientId(clientId, pageable);
+    private PageDTO<OrderDTO> getActiveUserOrdersPage(String clientId, Pageable pageable) {
+        Page<OrderEntity> orders = orderRepository.findAllByClientIdAndStatus(clientId, ACTIVE, pageable);
 
         return new PageDTO<OrderDTO>()
                 .setContent(mapToOrderDTOs(orders))
