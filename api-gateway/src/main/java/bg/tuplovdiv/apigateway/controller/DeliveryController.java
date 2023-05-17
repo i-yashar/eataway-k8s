@@ -32,6 +32,7 @@ public class DeliveryController {
     }
 
     @GetMapping(ORDERS_PATH)
+    @PreAuthorize("@deliveryValidator.isDeliveryDriverFree()")
     public String getActiveOrders(Model model) {
         model.addAttribute("orders", deliveryService.getActiveOrders());
 

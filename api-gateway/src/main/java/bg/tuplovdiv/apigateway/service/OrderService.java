@@ -9,5 +9,5 @@ import java.util.UUID;
 public interface OrderService {
     UUID createOrder(CreateOrderRequest createOrderRequest);
     OrderDTO getOrderInfo(UUID orderId);
-    Collection<OrderDTO> getUserOrders(String userId);
+    Collection<OrderDTO> getUserActiveOrders(String userId);
 }

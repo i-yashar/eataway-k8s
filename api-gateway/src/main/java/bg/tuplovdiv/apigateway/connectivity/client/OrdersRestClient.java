@@ -44,7 +44,7 @@ public class OrdersRestClient extends RestClient {
         return get(request, response -> mapJsonToObject(response.body(), ORDER_DTO_TYPE));
     }
 
-    public PageDTO<OrderDTO> getUserOrders(String userId) {
+    public PageDTO<OrderDTO> getUserActiveOrders(String userId) {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
                 .uri(buildURI(ORDERS_API_GET_USER_ORDERS, userId))

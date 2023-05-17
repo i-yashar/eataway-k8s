@@ -35,7 +35,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Collection<OrderDTO> getUserOrders(String userId) {
-        return client.getUserOrders(userId).getContent();
+    public Collection<OrderDTO> getUserActiveOrders(String userId) {
+        return client.getUserActiveOrders(userId).getContent();
     }
 }

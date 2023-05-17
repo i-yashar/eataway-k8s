@@ -19,8 +19,8 @@ evtSource.onmessage = (event) => {
     div.appendChild(paragraph)
 }
 
-function getTime(unixTime) {
-    var now = new Date();
+function getTime() {
+    let now = new Date();
     return now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds()
 }
 

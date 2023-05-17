@@ -71,8 +71,8 @@ public class OrderController {
     }
 
     @GetMapping(ORDERS_PATH)
-    public String getUserOrders(Model model) {
-        model.addAttribute("orders", orderService.getUserOrders(getUserId()));
+    public String getUserActiveOrders(Model model) {
+        model.addAttribute("orders", orderService.getUserActiveOrders(getUserId()));
 
         return "user-orders";
     }
