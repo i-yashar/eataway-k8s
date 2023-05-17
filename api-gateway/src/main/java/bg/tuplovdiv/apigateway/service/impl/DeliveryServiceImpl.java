@@ -27,7 +27,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     }
 
     @Override
-    public Collection<OrderDTO> getActiveOrders() {
+    public Collection<OrderDTO> getRegisteredOrders() {
         return orderQueue.getActiveOrders();
     }
 

@@ -22,7 +22,7 @@ public class OrderQueue {
         activeOrders = new ConcurrentHashMap<>();
     }
 
-    public Collection<OrderDTO> getActiveOrders() {
+    public Collection<OrderDTO> getRegisteredOrders() {
         return orders.stream()
                 .map(this::mapToOrderDTO)
                 .toList();
@@ -33,12 +33,18 @@ public class OrderQueue {
         activeOrders.put(order.getOrderId(), order);
     }
 
+    public Collection<OrderDTO> getActiveOrders() {
+        return activeOrders.values().stream()
+                .map(this::mapToOrderDTO)
+                .toList();
+    }
+
     public OrderDTO takeOrder(UUID orderId) {
         Optional<OrderContext> optOrder = orders.stream()
                 .filter(order -> order.getOrderId().equals(orderId))
                 .findFirst();
 
-        if(optOrder.isEmpty()) {
+        if (optOrder.isEmpty()) {
             throw new IllegalStateException();
         }
 
