@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 @Service
 public class DeliveryServiceImpl implements DeliveryService {
@@ -29,6 +30,14 @@ public class DeliveryServiceImpl implements DeliveryService {
     @Override
     public Collection<OrderDTO> getRegisteredOrders() {
         return orderQueue.getActiveOrders();
+    }
+
+    @Override
+    public Collection<OrderDTO> getDeliveryDriverActiveOrders(String deliveryDriverId) {
+        return orderQueue.getActiveOrders()
+                .stream()
+                .filter(order -> order.getDeliveryDriverId().equals(deliveryDriverId))
+                .collect(Collectors.toList());
     }
 
     @Override

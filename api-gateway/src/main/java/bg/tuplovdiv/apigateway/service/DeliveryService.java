@@ -8,6 +8,7 @@ import java.util.UUID;
 
 public interface DeliveryService {
     Collection<OrderDTO> getRegisteredOrders();
+    Collection<OrderDTO> getDeliveryDriverActiveOrders(String deliveryDriverId);
     OrderDTO getOrderInfo(UUID orderId);
     BasketDTO getOrderBasketInfo(UUID orderId);
     OrderDTO takeOrder(UUID orderId, String deliveryDriverId);

@@ -20,6 +20,7 @@ public class DeliveryController {
     private static final String ORDERS_PATH = "orders";
     private static final String ORDER_INFO_PATH = ORDERS_PATH + "/{orderId}";
     private static final String UPDATE_ORDERS_PATH = ORDERS_PATH + "/{orderId}";
+    private static final String ACTIVE_ORDERS_PATH = ORDERS_PATH + "/active";
 
     private final DeliveryService deliveryService;
     private final AuthenticatedUserProvider authenticatedUserProvider;
@@ -33,10 +34,17 @@ public class DeliveryController {
 
     @GetMapping(ORDERS_PATH)
     @PreAuthorize("@deliveryValidator.isDeliveryDriverFree()")
-    public String getActiveOrders(Model model) {
+    public String getRegisteredOrders(Model model) {
         model.addAttribute("orders", deliveryService.getRegisteredOrders());
 
-        return "active-orders";
+        return "registered-orders";
+    }
+
+    @GetMapping(ACTIVE_ORDERS_PATH)
+    public String getActiveOrders(Model model) {
+        model.addAttribute("orders", deliveryService.getDeliveryDriverActiveOrders(getUserId()));
+
+        return "active-delivery-driver-orders";
     }
 
     @GetMapping(ORDER_INFO_PATH)
