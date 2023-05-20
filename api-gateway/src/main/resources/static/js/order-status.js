@@ -20,8 +20,8 @@ evtSource.onmessage = (event) => {
 }
 
 function getTime() {
-    let now = new Date();
-    return now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds()
+    let now = new Date()
+    return now.toLocaleString()
 }
 
 function getInfoMessage(status) {
