@@ -3,7 +3,6 @@ package bg.tuplovdiv.apigateway.service.impl;
 import bg.tuplovdiv.apigateway.connectivity.client.OrdersRestClient;
 import bg.tuplovdiv.apigateway.dto.BasketDTO;
 import bg.tuplovdiv.apigateway.dto.OrderDTO;
-import bg.tuplovdiv.apigateway.messaging.delivery.OrderStatusChangeEvent;
 import bg.tuplovdiv.apigateway.order.OrderQueue;
 import bg.tuplovdiv.apigateway.service.DeliveryService;
 import org.springframework.stereotype.Service;
@@ -32,7 +31,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     public Collection<OrderDTO> getDeliveryDriverActiveOrders(String deliveryDriverId) {
         return orderQueue.getActiveOrders()
                 .stream()
-                .filter(order -> order.getDeliveryDriverId().equals(deliveryDriverId))
+                .filter(order -> deliveryDriverId.equals(order.getDeliveryDriverId()))
                 .collect(Collectors.toList());
     }
 
@@ -48,7 +47,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     public OrderDTO takeOrder(UUID orderId, String deliveryDriverId) {
-        OrderDTO order = orderQueue.takeOrder(orderId);
+        OrderDTO order = orderQueue.takeOrder(orderId, deliveryDriverId);
         order.setDeliveryDriverId(deliveryDriverId);
         order.setStatus("ACTIVE");
 
@@ -61,13 +60,5 @@ public class DeliveryServiceImpl implements DeliveryService {
         order.setStatus(status);
 
         return client.updateOrder(order);
-    }
-
-    private OrderStatusChangeEvent getOrderStatusChangeEvent(OrderDTO order) {
-        return new OrderStatusChangeEvent()
-                .setOrderId(order.getOrderId())
-                .setClientId(order.getClientId())
-                .setDeliveryDriverId(order.getDeliveryDriverId())
-                .setStatus(order.getStatus());
     }
 }

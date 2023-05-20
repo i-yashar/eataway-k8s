@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -67,7 +68,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private PageDTO<OrderDTO> getActiveUserOrdersPage(String clientId, Pageable pageable) {
-        Page<OrderEntity> orders = orderRepository.findAllByClientIdAndStatus(clientId, ACTIVE, pageable);
+        Page<OrderEntity> orders = orderRepository.findAllByClientIdAndStatusIn(clientId, Set.of(ACTIVE, REGISTERED), pageable);
 
         return new PageDTO<OrderDTO>()
                 .setContent(mapToOrderDTOs(orders))
