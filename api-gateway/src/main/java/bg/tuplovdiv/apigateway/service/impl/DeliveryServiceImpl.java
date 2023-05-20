@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class DeliveryServiceImpl implements DeliveryService {
@@ -29,10 +28,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     public Collection<OrderDTO> getDeliveryDriverActiveOrders(String deliveryDriverId) {
-        return orderQueue.getActiveOrders()
-                .stream()
-                .filter(order -> deliveryDriverId.equals(order.getDeliveryDriverId()))
-                .collect(Collectors.toList());
+        return client.getDeliveryDriverActiveOrders(deliveryDriverId);
     }
 
     @Override

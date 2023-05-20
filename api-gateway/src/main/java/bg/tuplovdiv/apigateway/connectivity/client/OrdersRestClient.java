@@ -5,11 +5,11 @@ import bg.tuplovdiv.apigateway.dto.BasketItemDTO;
 import bg.tuplovdiv.apigateway.dto.CreateOrderRequest;
 import bg.tuplovdiv.apigateway.dto.OrderDTO;
 import bg.tuplovdiv.apigateway.dto.page.PageDTO;
-import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.springframework.stereotype.Component;
 
 import java.net.http.HttpRequest;
+import java.util.Collection;
 import java.util.UUID;
 
 @Component
@@ -23,16 +23,12 @@ public class OrdersRestClient extends RestClient {
     private static final String ORDERS_API_CREATE_ORDER_PATH = ORDERS_API_BASE_PATH + "/orders";
     private static final String ORDER_API_UPDATE_ORDER_PATH = ORDERS_API_BASE_PATH + "/orders/%s";
     private static final String ORDERS_API_GET_USER_ORDERS = ORDERS_API_BASE_PATH + "/users/%s/orders";
+    private static final String ORDERS_API_GET_DELIVERY_DRIVER_ORDERS = ORDERS_API_BASE_PATH + "/delivery/drivers/%s/orders";
 
     private static final TypeReference<BasketDTO> BASKET_DTO_TYPE = new TypeReference<>() {};
     private static final TypeReference<OrderDTO> ORDER_DTO_TYPE = new TypeReference<>() {};
-    private static final TypeReference<PageDTO<OrderDTO>> PAGE_OF_ORDER_DTOS_PATH = new TypeReference<>() {};
-
-    private final AuthenticatedUserProvider userProvider;
-
-    public OrdersRestClient(AuthenticatedUserProvider userProvider) {
-        this.userProvider = userProvider;
-    }
+    private static final TypeReference<PageDTO<OrderDTO>> PAGE_OF_ORDER_DTOS_TYPE = new TypeReference<>() {};
+    private static final TypeReference<Collection<OrderDTO>> ORDER_DTOS_TYPE = new TypeReference<>() {};
 
     public OrderDTO getUserOrder(UUID orderId) {
         HttpRequest request = HttpRequest.newBuilder()
@@ -51,7 +47,17 @@ public class OrdersRestClient extends RestClient {
                 .header("accept", "application/json")
                 .build();
 
-        return get(request, response -> mapJsonToObject(response.body(), PAGE_OF_ORDER_DTOS_PATH));
+        return get(request, response -> mapJsonToObject(response.body(), PAGE_OF_ORDER_DTOS_TYPE));
+    }
+
+    public Collection<OrderDTO> getDeliveryDriverActiveOrders(String driverId) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .GET()
+                .uri(buildURI(ORDERS_API_GET_DELIVERY_DRIVER_ORDERS, driverId))
+                .header("accept", "application/json")
+                .build();
+
+        return get(request, response -> mapJsonToObject(response.body(), ORDER_DTOS_TYPE));
     }
 
     public String createOrder(CreateOrderRequest createOrderRequest) {
