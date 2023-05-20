@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.UUID;
 
 @RestController
@@ -20,6 +21,7 @@ public class OrderRestController {
     private static final String ORDER_ID = "/{orderId}";
     private static final String ORDERS_PATH = "/orders";
     private static final String CLIENT_ORDERS_PATH = "/users/{clientId}" +  ORDERS_PATH;
+    private static final String ACTIVE_DELIVERY_DRIVER_ORDERS_PATH = "/delivery/drivers/{driverId}" + ORDERS_PATH;
 
     private final OrderService orderService;
     private final DeliveryValidator deliveryValidator;
@@ -62,5 +64,10 @@ public class OrderRestController {
     @PreAuthorize("@deliveryValidator.isValid(#order)")
     public ResponseEntity<OrderDTO> updateOrder(@RequestBody @Valid OrderDTO order) {
         return ResponseEntity.ok(orderService.updateOrder(order));
+    }
+
+    @GetMapping(ACTIVE_DELIVERY_DRIVER_ORDERS_PATH)
+    public ResponseEntity<Collection<OrderDTO>> getActiveDeliveryDriverOrders(@PathVariable String driverId) {
+        return ResponseEntity.ok(orderService.getActiveDeliveryDriverOrders(driverId));
     }
 }

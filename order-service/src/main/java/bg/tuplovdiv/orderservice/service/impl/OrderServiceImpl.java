@@ -29,8 +29,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static bg.tuplovdiv.orderservice.model.OrderStatus.ACTIVE;
-import static bg.tuplovdiv.orderservice.model.OrderStatus.REGISTERED;
+import static bg.tuplovdiv.orderservice.model.OrderStatus.*;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -142,6 +141,15 @@ public class OrderServiceImpl implements OrderService {
         updateOrderProcess.start(createOrderStatusChange(orderEntity));
 
         return mapper.toOrderDTO(orderRepository.save(orderEntity));
+    }
+
+    @Override
+    public Collection<OrderDTO> getActiveDeliveryDriverOrders(String driverId) {
+        return orderRepository
+                .findAllByDeliveryDriverIdAndStatusIn(driverId,Set.of(ACTIVE, ABOUT_TO_BE_DELIVERED))
+                .stream()
+                .map(mapper::toOrderDTO)
+                .collect(Collectors.toList());
     }
 
     private OrderEntity getOrderByOrderId(UUID orderId) {
