@@ -2,6 +2,7 @@ package bg.tuplovdiv.apigateway.connectivity.client;
 
 import bg.tuplovdiv.apigateway.connectivity.handler.ResponseHandler;
 import bg.tuplovdiv.apigateway.exception.*;
+import bg.tuplovdiv.apigateway.security.jwt.JwtProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -17,10 +18,12 @@ public abstract class RestClient {
 
     private final HttpClient client;
     private final ObjectMapper mapper;
+    private final JwtProvider jwtProvider;
 
-    public RestClient() {
+    public RestClient(JwtProvider jwtProvider) {
         client = HttpClient.newHttpClient();
         mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        this.jwtProvider = jwtProvider;
     }
 
     protected <T> T get(HttpRequest request, ResponseHandler<T> handler) {
@@ -102,5 +105,9 @@ public abstract class RestClient {
     protected String extractLocation(HttpResponse<String> response) {
         return response.headers().firstValue("Location")
                 .orElseThrow(() -> new LocationHeaderNotFoundException("Response does not contain mandatory 'Location' header"));
+    }
+
+    protected String getBearerToken() {
+        return "Bearer " + jwtProvider.provideToken();
     }
 }

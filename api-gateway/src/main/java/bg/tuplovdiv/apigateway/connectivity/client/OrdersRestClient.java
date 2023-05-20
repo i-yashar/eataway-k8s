@@ -5,6 +5,7 @@ import bg.tuplovdiv.apigateway.dto.BasketItemDTO;
 import bg.tuplovdiv.apigateway.dto.CreateOrderRequest;
 import bg.tuplovdiv.apigateway.dto.OrderDTO;
 import bg.tuplovdiv.apigateway.dto.page.PageDTO;
+import bg.tuplovdiv.apigateway.security.jwt.JwtProvider;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.springframework.stereotype.Component;
 
@@ -30,11 +31,16 @@ public class OrdersRestClient extends RestClient {
     private static final TypeReference<PageDTO<OrderDTO>> PAGE_OF_ORDER_DTOS_TYPE = new TypeReference<>() {};
     private static final TypeReference<Collection<OrderDTO>> ORDER_DTOS_TYPE = new TypeReference<>() {};
 
+    public OrdersRestClient(JwtProvider jwtProvider) {
+        super(jwtProvider);
+    }
+
     public OrderDTO getUserOrder(UUID orderId) {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
                 .uri(buildURI(ORDERS_API_GET_USER_ORDER, orderId.toString()))
                 .header("accept", "application/json")
+                .header("Authorization", getBearerToken())
                 .build();
 
         return get(request, response -> mapJsonToObject(response.body(), ORDER_DTO_TYPE));
@@ -45,6 +51,7 @@ public class OrdersRestClient extends RestClient {
                 .GET()
                 .uri(buildURI(ORDERS_API_GET_USER_ORDERS, userId))
                 .header("accept", "application/json")
+                .header("Authorization", getBearerToken())
                 .build();
 
         return get(request, response -> mapJsonToObject(response.body(), PAGE_OF_ORDER_DTOS_TYPE));
@@ -55,6 +62,7 @@ public class OrdersRestClient extends RestClient {
                 .GET()
                 .uri(buildURI(ORDERS_API_GET_DELIVERY_DRIVER_ORDERS, driverId))
                 .header("accept", "application/json")
+                .header("Authorization", getBearerToken())
                 .build();
 
         return get(request, response -> mapJsonToObject(response.body(), ORDER_DTOS_TYPE));
@@ -65,6 +73,7 @@ public class OrdersRestClient extends RestClient {
                 .POST(createRequestBody(createOrderRequest))
                 .uri(buildURI(ORDERS_API_CREATE_ORDER_PATH))
                 .header("Content-Type", "application/json")
+                .header("Authorization", getBearerToken())
                 .build();
 
         return post(request, this::extractLocation);
@@ -75,6 +84,7 @@ public class OrdersRestClient extends RestClient {
                 .PUT(createRequestBody(order))
                 .uri(buildURI(ORDER_API_UPDATE_ORDER_PATH, order.getOrderId().toString()))
                 .header("Content-Type", "application/json")
+                .header("Authorization", getBearerToken())
                 .build();
 
         return put(request, response -> mapJsonToObject(response.body(), ORDER_DTO_TYPE));
@@ -85,6 +95,7 @@ public class OrdersRestClient extends RestClient {
                 .GET()
                 .uri(buildURI(ORDERS_API_BASKETS_BASE_PATH, ownerId))
                 .header("accept", "application/json")
+                .header("Authorization", getBearerToken())
                 .build();
 
         return get(request, response -> mapJsonToObject(response.body(), BASKET_DTO_TYPE));
@@ -96,6 +107,7 @@ public class OrdersRestClient extends RestClient {
                 .uri(buildURI(ORDERS_API_BASKETS_BASE_PATH, ownerId))
                 .header("Content-Type", "application/json")
                 .header("accept", "application/json")
+                .header("Authorization", getBearerToken())
                 .build();
 
         return put(request, response -> mapJsonToObject(response.body(), BASKET_DTO_TYPE));
@@ -106,6 +118,7 @@ public class OrdersRestClient extends RestClient {
                 .DELETE()
                 .uri(buildURI(ORDERS_API_BASKETS_BASKET_ITEM_PATH, ownerId, menuId.toString()))
                 .header("accept", "application/json")
+                .header("Authorization", getBearerToken())
                 .build();
 
         return delete(request, response -> null);

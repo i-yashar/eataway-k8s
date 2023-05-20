@@ -3,6 +3,7 @@ package bg.tuplovdiv.apigateway.connectivity.client;
 import bg.tuplovdiv.apigateway.dto.MenuDTO;
 import bg.tuplovdiv.apigateway.dto.RestaurantDTO;
 import bg.tuplovdiv.apigateway.dto.page.PageDTO;
+import bg.tuplovdiv.apigateway.security.jwt.JwtProvider;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.springframework.stereotype.Component;
 
@@ -26,11 +27,16 @@ public class RestaurantsRestClient extends RestClient {
     private static final TypeReference<MenuDTO> MENU_DTO_TYPE = new TypeReference<>() {};
     private static final TypeReference<PageDTO<MenuDTO>> PAGE_OF_RESTAURANT_MENUS_TYPE = new TypeReference<>() {};
 
+    public RestaurantsRestClient(JwtProvider jwtProvider) {
+        super(jwtProvider);
+    }
+
     public PageDTO<RestaurantDTO> getRestaurants(int page, int size) {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
                 .uri(URI.create(RESTAURANTS_API_GET_ALL_PATH + "?" + "page=" + page + "&" + "size=" + size))
                 .header("accept", "application/json")
+                .header("Authorization", getBearerToken())
                 .build();
 
         return get(request, response -> mapJsonToObject(response.body(), PAGE_OF_RESTAURANTS_TYPE));
@@ -41,6 +47,7 @@ public class RestaurantsRestClient extends RestClient {
                 .GET()
                 .uri(URI.create(RESTAURANTS_API_GET_ALL_PATH + "/" + restaurantId.toString()))
                 .header("accept", "application/json")
+                .header("Authorization", getBearerToken())
                 .build();
 
         return get(request, response -> mapJsonToObject(response.body(), RESTAURANT_TYPE));
@@ -51,6 +58,7 @@ public class RestaurantsRestClient extends RestClient {
                 .GET()
                 .uri(buildURI(RESTAURANTS_API_MENU_PATH, menuId.toString()))
                 .header("accept", "application/json")
+                .header("Authorization", getBearerToken())
                 .build();
 
         return get(request, response -> mapJsonToObject(response.body(), MENU_DTO_TYPE));
@@ -61,6 +69,7 @@ public class RestaurantsRestClient extends RestClient {
                 .GET()
                 .uri(URI.create(String.format(RESTAURANTS_API_MENUS_GET_ALL_PATH, restaurantId.toString())))
                 .header("accept", "application/json")
+                .header("Authorization", getBearerToken())
                 .build();
 
         return get(request, this::extractRestaurantMenus);

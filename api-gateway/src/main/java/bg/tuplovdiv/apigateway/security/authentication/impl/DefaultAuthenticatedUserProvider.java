@@ -1,7 +1,7 @@
 package bg.tuplovdiv.apigateway.security.authentication.impl;
 
-import bg.tuplovdiv.apigateway.security.user.AuthenticatedUser;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
+import bg.tuplovdiv.apigateway.security.user.AuthenticatedUser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
