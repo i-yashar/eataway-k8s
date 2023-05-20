@@ -27,5 +27,5 @@ function getTime() {
 function getInfoMessage(status) {
     return status === 'ACTIVE' ?
         'Your order was taken by one of our employees' : status === 'ABOUT_TO_BE_DELIVERED' ?
-            'Your order will be delivered in few minutes' : 'Your order was delivered. Enjoy your food!'
+            'Your order will be delivered in a few minutes' : 'Your order was delivered. Enjoy your food!'
 }
