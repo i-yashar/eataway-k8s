@@ -34,13 +34,13 @@ public class BasketServiceImpl implements BasketService {
     }
 
     @Override
-    public BasketDTO addBasketItem(String ownerId, BasketItemDTO basketItem) {
+    public BasketDTO addBasketItem(String ownerId, BasketItemDTO item) {
         BasketEntity basket = getBasketEntityByOwnerId(ownerId);
-        Set<BasketItemEntity> items = getBasketItems(basket);
-        Optional<BasketItemEntity> optItem = getBasketItem(items, basketItem.getMenuId());
+        Set<BasketItemEntity> basketItems = basket.getItems() == null ? new HashSet<>() : basket.getItems();
+        Optional<BasketItemEntity> optItem = getBasketItem(basketItems, item.getMenuId());
 
         if (optItem.isEmpty()) {
-            addNewBasketItem(items, basketItem);
+            addNewBasketItem(basketItems, item);
         } else {
             incrementBasketItemCount(optItem.get());
         }
@@ -48,19 +48,9 @@ public class BasketServiceImpl implements BasketService {
         return mapper.toBasketDTO(basketRepository.save(basket));
     }
 
-    private Set<BasketItemEntity> getBasketItems(BasketEntity basket) {
-        Set<BasketItemEntity> items = basket.getItems();
-
-        if (items == null) {
-            items = new HashSet<>();
-        }
-
-        return items;
-    }
-
-    private void addNewBasketItem(Set<BasketItemEntity> items, BasketItemDTO basketItem) {
-        BasketItemEntity item = mapper.toBasketItemEntity(basketItem);
-        items.add(item);
+    private void addNewBasketItem(Set<BasketItemEntity> basketItems, BasketItemDTO item) {
+        BasketItemEntity itemEntity = mapper.toBasketItemEntity(item);
+        basketItems.add(itemEntity);
     }
 
     private void incrementBasketItemCount(BasketItemEntity item) {
