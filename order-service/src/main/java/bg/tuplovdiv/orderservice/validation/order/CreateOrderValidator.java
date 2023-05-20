@@ -7,11 +7,11 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.stereotype.Component;
 
-import static bg.tuplovdiv.orderservice.dto.CreateOrderRequest.BASKET_ID_JSON_PROPERTY;
-import static bg.tuplovdiv.orderservice.dto.CreateOrderRequest.CLIENT_ID_JSON_PROPERTY;
-
 @Component
 public class CreateOrderValidator implements ConstraintValidator<ValidCreateOrderRequest, CreateOrderRequest> {
+
+    private static final String CLIENT_ID_JSON_PROPERTY = "clientId";
+    private static final String BASKET_ID_JSON_PROPERTY = "basketId";
 
     private static final String INVALID_CREATE_ORDER_REQUEST_MESSAGE = "Invalid create order request. Please provide a valid value for field '%s'.";
 
