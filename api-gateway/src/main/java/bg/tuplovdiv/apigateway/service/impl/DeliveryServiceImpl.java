@@ -3,41 +3,32 @@ package bg.tuplovdiv.apigateway.service.impl;
 import bg.tuplovdiv.apigateway.connectivity.client.OrdersRestClient;
 import bg.tuplovdiv.apigateway.dto.BasketDTO;
 import bg.tuplovdiv.apigateway.dto.OrderDTO;
-import bg.tuplovdiv.apigateway.messaging.OrderStatusChangeEvent;
-import bg.tuplovdiv.apigateway.messaging.OrderStatusChangeEventTrigger;
 import bg.tuplovdiv.apigateway.order.OrderQueue;
 import bg.tuplovdiv.apigateway.service.DeliveryService;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.UUID;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 @Service
 public class DeliveryServiceImpl implements DeliveryService {
 
     private final OrderQueue orderQueue;
-    private final OrderStatusChangeEventTrigger statusChangeEventTrigger;
     private final OrdersRestClient client;
 
-    public DeliveryServiceImpl(OrderQueue orderQueue, OrderStatusChangeEventTrigger statusChangeEventTrigger, OrdersRestClient client) {
+    public DeliveryServiceImpl(OrderQueue orderQueue, OrdersRestClient client) {
         this.orderQueue = orderQueue;
-        this.statusChangeEventTrigger = statusChangeEventTrigger;
         this.client = client;
     }
 
     @Override
     public Collection<OrderDTO> getRegisteredOrders() {
-        return orderQueue.getActiveOrders();
+        return orderQueue.getRegisteredOrders();
     }
 
     @Override
     public Collection<OrderDTO> getDeliveryDriverActiveOrders(String deliveryDriverId) {
-        return orderQueue.getActiveOrders()
-                .stream()
-                .filter(order -> order.getDeliveryDriverId().equals(deliveryDriverId))
-                .collect(Collectors.toList());
+        return client.getDeliveryDriverActiveOrders(deliveryDriverId);
     }
 
     @Override
@@ -52,11 +43,11 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     public OrderDTO takeOrder(UUID orderId, String deliveryDriverId) {
-        OrderDTO order = orderQueue.takeOrder(orderId);
+        OrderDTO order = orderQueue.takeOrder(orderId, deliveryDriverId);
         order.setDeliveryDriverId(deliveryDriverId);
         order.setStatus("ACTIVE");
 
-        return performOrderUpdate(order, statusChangeEventTrigger::trigger);
+        return client.updateOrder(order);
     }
 
     @Override
@@ -64,23 +55,6 @@ public class DeliveryServiceImpl implements DeliveryService {
         OrderDTO order = client.getUserOrder(orderId);
         order.setStatus(status);
 
-        return performOrderUpdate(order, statusChangeEventTrigger::trigger);
-    }
-
-    private OrderDTO performOrderUpdate(OrderDTO order, Consumer<OrderStatusChangeEvent> action) {
-        OrderDTO updatedOrder = client.updateOrder(order);
-        OrderStatusChangeEvent orderStatusChangeEvent = getOrderStatusChangeEvent(updatedOrder);
-
-        action.accept(orderStatusChangeEvent);
-
-        return updatedOrder;
-    }
-
-    private OrderStatusChangeEvent getOrderStatusChangeEvent(OrderDTO order) {
-        return new OrderStatusChangeEvent()
-                .setOrderId(order.getOrderId())
-                .setClientId(order.getClientId())
-                .setDeliveryDriverId(order.getDeliveryDriverId())
-                .setStatus(order.getStatus());
+        return client.updateOrder(order);
     }
 }

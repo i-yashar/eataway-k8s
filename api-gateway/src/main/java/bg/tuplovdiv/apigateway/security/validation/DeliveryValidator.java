@@ -28,7 +28,7 @@ public class DeliveryValidator {
 
         boolean isDriverBusy = orderQueue.getActiveOrders()
                 .stream()
-                .anyMatch(order -> order.getDeliveryDriverId().equals(user.getUserId()));
+                .anyMatch(order -> user.getUserId().equals(order.getDeliveryDriverId()));
 
         return isDeliveryDriverValid() && !isDriverBusy;
     }

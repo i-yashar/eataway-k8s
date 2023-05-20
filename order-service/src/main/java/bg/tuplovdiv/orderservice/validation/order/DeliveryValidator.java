@@ -7,6 +7,7 @@ import bg.tuplovdiv.orderservice.repository.OrderRepository;
 import bg.tuplovdiv.orderservice.repository.UserRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.Set;
 import java.util.UUID;
 
 import static bg.tuplovdiv.orderservice.model.OrderStatus.*;
@@ -27,12 +28,12 @@ public class DeliveryValidator {
 
         switch (order.getStatus()) {
             case REGISTERED -> {
-                if(!isDriverFree(request.getDeliveryDriverId())) {
+                if (!isDriverFree(request.getDeliveryDriverId())) {
                     return false;
                 }
             }
             case ACTIVE, ABOUT_TO_BE_DELIVERED -> {
-                if(!isCorrectDriver(order, request.getDeliveryDriverId())) {
+                if (!isCorrectDriver(order, request.getDeliveryDriverId())) {
                     return false;
                 }
             }
@@ -45,9 +46,8 @@ public class DeliveryValidator {
     }
 
     private boolean isDriverFree(String driverId) {
-        return orderRepository.findOrderEntityByDeliveryDriverIdAndStatus(driverId, ACTIVE)
-                .isEmpty()
-                && orderRepository.findOrderEntityByDeliveryDriverIdAndStatus(driverId, ABOUT_TO_BE_DELIVERED)
+        return orderRepository
+                .findAllByDeliveryDriverIdAndStatusIn(driverId, Set.of(ACTIVE, ABOUT_TO_BE_DELIVERED))
                 .isEmpty();
     }
 

@@ -5,22 +5,21 @@ import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
-import static bg.tuplovdiv.orderservice.config.messaging.RabbitMQConfig.EXCHANGE;
-import static bg.tuplovdiv.orderservice.config.messaging.RabbitMQConfig.ROUTING_KEY;
+import static bg.tuplovdiv.orderservice.config.messaging.RabbitMQConfig.*;
 
-@Component
-public class OrderDispatcher implements MessageDispatcher {
+@Component("createOrderDispatcher")
+public class CreateOrderDispatcher implements MessageDispatcher {
 
     private final RabbitTemplate template;
 
-    public OrderDispatcher(RabbitTemplate template) {
+    public CreateOrderDispatcher(RabbitTemplate template) {
         this.template = template;
     }
 
     @Override
     public void dispatch(Message message) {
         setMessageMetadata(message);
-        template.convertAndSend(EXCHANGE, ROUTING_KEY, message);
+        template.convertAndSend(EXCHANGE, ORDER_CREATED_ROUTING_KEY, message);
     }
 
     private void setMessageMetadata(Message message) {

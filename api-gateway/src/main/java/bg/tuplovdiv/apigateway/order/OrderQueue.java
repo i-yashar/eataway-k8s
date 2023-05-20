@@ -4,6 +4,7 @@ import bg.tuplovdiv.apigateway.dto.OrderDTO;
 import bg.tuplovdiv.apigateway.messaging.OrderContext;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
@@ -16,10 +17,12 @@ public class OrderQueue {
 
     private static final ConcurrentLinkedDeque<OrderContext> orders;
     private static final ConcurrentMap<UUID, OrderContext> activeOrders;
+    private static final ConcurrentMap<UUID, String> deliveryDrivers;
 
     static {
         orders = new ConcurrentLinkedDeque<>();
         activeOrders = new ConcurrentHashMap<>();
+        deliveryDrivers = new ConcurrentHashMap<>();
     }
 
     public Collection<OrderDTO> getRegisteredOrders() {
@@ -39,7 +42,11 @@ public class OrderQueue {
                 .toList();
     }
 
-    public OrderDTO takeOrder(UUID orderId) {
+    public Collection<String> getDeliveryDrivers() {
+        return new ArrayList<>(deliveryDrivers.values());
+    }
+
+    public OrderDTO takeOrder(UUID orderId, String deliveryDriverId) {
         Optional<OrderContext> optOrder = orders.stream()
                 .filter(order -> order.getOrderId().equals(orderId))
                 .findFirst();
@@ -50,6 +57,7 @@ public class OrderQueue {
 
         OrderContext order = optOrder.get();
         activeOrders.put(orderId, order);
+        deliveryDrivers.put(orderId, deliveryDriverId);
 
         orders.removeIf(orderContext -> orderContext.getOrderId().equals(orderId));
 
@@ -69,7 +77,7 @@ public class OrderQueue {
         return activeOrders.get(orderId);
     }
 
-    public void removeOrderInfo(UUID orderId) {
+    public void removeOrderContext(UUID orderId) {
         activeOrders.remove(orderId);
     }
 }

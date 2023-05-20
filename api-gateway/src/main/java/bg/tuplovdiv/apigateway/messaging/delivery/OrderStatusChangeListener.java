@@ -1,5 +1,6 @@
-package bg.tuplovdiv.apigateway.messaging;
+package bg.tuplovdiv.apigateway.messaging.delivery;
 
+import bg.tuplovdiv.apigateway.messaging.MessageListener;
 import bg.tuplovdiv.apigateway.order.OrderStatusEmitters;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
