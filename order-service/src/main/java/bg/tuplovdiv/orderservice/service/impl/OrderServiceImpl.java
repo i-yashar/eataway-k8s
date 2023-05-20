@@ -67,7 +67,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private PageDTO<OrderDTO> getActiveUserOrdersPage(String clientId, Pageable pageable) {
-        Page<OrderEntity> orders = orderRepository.findAllByClientIdAndStatusIn(clientId, Set.of(ACTIVE, REGISTERED), pageable);
+        Page<OrderEntity> orders = orderRepository.findAllByClientIdAndStatusIn(clientId, Set.of(REGISTERED, ACTIVE, ABOUT_TO_BE_DELIVERED), pageable);
 
         return new PageDTO<OrderDTO>()
                 .setContent(mapToOrderDTOs(orders))
