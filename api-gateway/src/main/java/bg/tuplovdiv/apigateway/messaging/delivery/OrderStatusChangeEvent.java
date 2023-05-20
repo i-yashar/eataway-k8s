@@ -1,4 +1,6 @@
-package bg.tuplovdiv.apigateway.messaging;
+package bg.tuplovdiv.apigateway.messaging.delivery;
+
+import bg.tuplovdiv.apigateway.messaging.Message;
 
 import java.util.UUID;
 

@@ -7,7 +7,9 @@ import bg.tuplovdiv.orderservice.dto.page.PageDTO;
 import bg.tuplovdiv.orderservice.exception.MenuNotFoundException;
 import bg.tuplovdiv.orderservice.mapper.OrderMapper;
 import bg.tuplovdiv.orderservice.messaging.OrderContext;
+import bg.tuplovdiv.orderservice.messaging.delivery.OrderStatusChange;
 import bg.tuplovdiv.orderservice.messaging.process.CreateOrderProcess;
+import bg.tuplovdiv.orderservice.messaging.process.UpdateOrderProcess;
 import bg.tuplovdiv.orderservice.model.entity.BasketEntity;
 import bg.tuplovdiv.orderservice.model.entity.MenuEntity;
 import bg.tuplovdiv.orderservice.model.entity.OrderEntity;
@@ -34,14 +36,16 @@ public class OrderServiceImpl implements OrderService {
 
     private final BasketService basketService;
     private final CreateOrderProcess createOrderProcess;
+    private final UpdateOrderProcess updateOrderProcess;
     private final OrderRepository orderRepository;
     private final BasketRepository basketRepository;
     private final MenuRepository menuRepository;
     private final OrderMapper mapper;
 
-    public OrderServiceImpl(BasketService basketService, CreateOrderProcess createOrderProcess, OrderRepository orderRepository, BasketRepository basketRepository, MenuRepository menuRepository, OrderMapper mapper) {
+    public OrderServiceImpl(BasketService basketService, CreateOrderProcess createOrderProcess, UpdateOrderProcess updateOrderProcess, OrderRepository orderRepository, BasketRepository basketRepository, MenuRepository menuRepository, OrderMapper mapper) {
         this.basketService = basketService;
         this.createOrderProcess = createOrderProcess;
+        this.updateOrderProcess = updateOrderProcess;
         this.orderRepository = orderRepository;
         this.basketRepository = basketRepository;
         this.menuRepository = menuRepository;
@@ -132,12 +136,24 @@ public class OrderServiceImpl implements OrderService {
         OrderEntity orderEntity = mapper.toOrderEntity(order);
         orderEntity.setId(getOrderByOrderId(order.getOrderId()).getId());
 
+        orderEntity = orderRepository.save(orderEntity);
+
+        updateOrderProcess.start(createOrderStatusChange(orderEntity));
+
         return mapper.toOrderDTO(orderRepository.save(orderEntity));
     }
 
     private OrderEntity getOrderByOrderId(UUID orderId) {
         return orderRepository.findOrderEntityByExternalId(orderId)
                 .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private OrderStatusChange createOrderStatusChange(OrderEntity order) {
+        return new OrderStatusChange()
+                .setOrderId(order.getExternalId())
+                .setClientId(order.getClientId())
+                .setDeliveryDriverId(order.getDeliveryDriverId())
+                .setStatus(order.getStatus().name());
     }
 }
 

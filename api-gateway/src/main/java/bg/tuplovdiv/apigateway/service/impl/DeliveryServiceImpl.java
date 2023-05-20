@@ -3,33 +3,29 @@ package bg.tuplovdiv.apigateway.service.impl;
 import bg.tuplovdiv.apigateway.connectivity.client.OrdersRestClient;
 import bg.tuplovdiv.apigateway.dto.BasketDTO;
 import bg.tuplovdiv.apigateway.dto.OrderDTO;
-import bg.tuplovdiv.apigateway.messaging.OrderStatusChangeEvent;
-import bg.tuplovdiv.apigateway.messaging.OrderStatusChangeEventTrigger;
+import bg.tuplovdiv.apigateway.messaging.delivery.OrderStatusChangeEvent;
 import bg.tuplovdiv.apigateway.order.OrderQueue;
 import bg.tuplovdiv.apigateway.service.DeliveryService;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.UUID;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Service
 public class DeliveryServiceImpl implements DeliveryService {
 
     private final OrderQueue orderQueue;
-    private final OrderStatusChangeEventTrigger statusChangeEventTrigger;
     private final OrdersRestClient client;
 
-    public DeliveryServiceImpl(OrderQueue orderQueue, OrderStatusChangeEventTrigger statusChangeEventTrigger, OrdersRestClient client) {
+    public DeliveryServiceImpl(OrderQueue orderQueue, OrdersRestClient client) {
         this.orderQueue = orderQueue;
-        this.statusChangeEventTrigger = statusChangeEventTrigger;
         this.client = client;
     }
 
     @Override
     public Collection<OrderDTO> getRegisteredOrders() {
-        return orderQueue.getActiveOrders();
+        return orderQueue.getRegisteredOrders();
     }
 
     @Override
@@ -56,7 +52,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         order.setDeliveryDriverId(deliveryDriverId);
         order.setStatus("ACTIVE");
 
-        return performOrderUpdate(order, statusChangeEventTrigger::trigger);
+        return client.updateOrder(order);
     }
 
     @Override
@@ -64,16 +60,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         OrderDTO order = client.getUserOrder(orderId);
         order.setStatus(status);
 
-        return performOrderUpdate(order, statusChangeEventTrigger::trigger);
-    }
-
-    private OrderDTO performOrderUpdate(OrderDTO order, Consumer<OrderStatusChangeEvent> action) {
-        OrderDTO updatedOrder = client.updateOrder(order);
-        OrderStatusChangeEvent orderStatusChangeEvent = getOrderStatusChangeEvent(updatedOrder);
-
-        action.accept(orderStatusChangeEvent);
-
-        return updatedOrder;
+        return client.updateOrder(order);
     }
 
     private OrderStatusChangeEvent getOrderStatusChangeEvent(OrderDTO order) {

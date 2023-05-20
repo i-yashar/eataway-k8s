@@ -69,7 +69,7 @@ public class OrderQueue {
         return activeOrders.get(orderId);
     }
 
-    public void removeOrderInfo(UUID orderId) {
+    public void removeOrderContext(UUID orderId) {
         activeOrders.remove(orderId);
     }
 }
