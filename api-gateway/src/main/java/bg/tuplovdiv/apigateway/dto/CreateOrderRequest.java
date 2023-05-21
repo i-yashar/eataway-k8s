@@ -5,10 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public class CreateOrderRequest {
-    public static final String CLIENT_ID_JSON_PROPERTY = "clientId";
-    public static final String CLIENT_PHONE_NUMBER_JSON_PROPERTY = "clientPhoneNumber";
-    public static final String ADDRESS_JSON_PROPERTY = "address";
-
     private String clientId;
 
     @NotBlank

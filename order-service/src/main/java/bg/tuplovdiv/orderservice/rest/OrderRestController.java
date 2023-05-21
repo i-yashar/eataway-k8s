@@ -18,10 +18,11 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/orders/api/v1")
 public class OrderRestController {
-    private static final String ORDER_ID = "/{orderId}";
     private static final String ORDERS_PATH = "/orders";
+    private static final String ORDER_PATH = ORDERS_PATH + "/{orderId}";
     private static final String CLIENT_ORDERS_PATH = "/users/{clientId}" +  ORDERS_PATH;
     private static final String ACTIVE_DELIVERY_DRIVER_ORDERS_PATH = "/delivery/drivers/{driverId}" + ORDERS_PATH;
+    private static final String ORDER_ITEMS_PATH = ORDER_PATH + "/items";
 
     private final OrderService orderService;
     private final DeliveryValidator deliveryValidator;
@@ -31,7 +32,7 @@ public class OrderRestController {
         this.deliveryValidator = deliveryValidator;
     }
 
-    @GetMapping(ORDERS_PATH + ORDER_ID)
+    @GetMapping(ORDER_PATH)
     public ResponseEntity<OrderDTO> getOrder(@PathVariable("orderId") UUID orderId) {
         return ResponseEntity.ok(orderService.findOrderByOrderId(orderId));
     }
@@ -60,7 +61,7 @@ public class OrderRestController {
                 .toUri();
     }
 
-    @PutMapping(ORDERS_PATH + ORDER_ID)
+    @PutMapping(ORDER_PATH)
     @PreAuthorize("@deliveryValidator.isValid(#order)")
     public ResponseEntity<OrderDTO> updateOrder(@RequestBody @Valid OrderDTO order) {
         return ResponseEntity.ok(orderService.updateOrder(order));
