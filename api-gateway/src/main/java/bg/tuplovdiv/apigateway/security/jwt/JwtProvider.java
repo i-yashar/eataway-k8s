@@ -28,7 +28,7 @@ public class JwtProvider {
     }
 
     private boolean isExpired() {
-        Instant validUntil = issuedAt.plus(55, ChronoUnit.HOURS);
+        Instant validUntil = issuedAt.plus(55, ChronoUnit.MINUTES);
         return Instant.now().isAfter(validUntil);
     }
 }
