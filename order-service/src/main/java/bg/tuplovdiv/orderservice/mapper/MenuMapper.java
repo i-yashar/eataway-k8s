@@ -30,7 +30,9 @@ public class MenuMapper {
                 .setName(entity.getName())
                 .setDescription(entity.getDescription())
                 .setPrice(entity.getPrice())
-                .setRestaurantId(entity.getRestaurant().getExternalId());
+                .setRestaurantId(entity.getRestaurant().getExternalId())
+                .setRestaurantName(entity.getRestaurant().getName())
+                .setRestaurantAddress(entity.getRestaurant().getAddress());
     }
 
     public MenuEntity fromDTO(MenuDTO dto) {

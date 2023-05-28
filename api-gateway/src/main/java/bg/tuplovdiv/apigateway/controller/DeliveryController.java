@@ -1,5 +1,6 @@
 package bg.tuplovdiv.apigateway.controller;
 
+import bg.tuplovdiv.apigateway.dto.OrderDTO;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
 import bg.tuplovdiv.apigateway.security.user.AuthenticatedUser;
 import bg.tuplovdiv.apigateway.security.validation.DeliveryValidator;
@@ -49,8 +50,9 @@ public class DeliveryController {
 
     @GetMapping(ORDER_INFO_PATH)
     public String getOrderInfo(@PathVariable UUID orderId, Model model) {
-        model.addAttribute("order", deliveryService.getOrderInfo(orderId));
-        model.addAttribute("menus", deliveryService.getOrderBasketInfo(orderId).getItems());
+        OrderDTO orderInfo = deliveryService.getOrderInfo(orderId);
+        model.addAttribute("order", orderInfo);
+        model.addAttribute("menus", orderInfo.getItems());
 
         return "order-delivery-info";
     }

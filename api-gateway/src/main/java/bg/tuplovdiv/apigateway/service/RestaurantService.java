@@ -1,5 +1,6 @@
 package bg.tuplovdiv.apigateway.service;
 
+import bg.tuplovdiv.apigateway.dto.MenuDTO;
 import bg.tuplovdiv.apigateway.dto.RestaurantDTO;
 
 import java.util.Collection;

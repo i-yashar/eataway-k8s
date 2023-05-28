@@ -9,6 +9,8 @@ public class MenuDTO {
     private String description;
     private Double price;
     private UUID restaurantId;
+    private String restaurantName;
+    private String restaurantAddress;
 
     public UUID getMenuId() {
         return menuId;
@@ -52,6 +54,24 @@ public class MenuDTO {
 
     public MenuDTO setRestaurantId(UUID restaurantId) {
         this.restaurantId = restaurantId;
+        return this;
+    }
+
+    public String getRestaurantName() {
+        return restaurantName;
+    }
+
+    public MenuDTO setRestaurantName(String restaurantName) {
+        this.restaurantName = restaurantName;
+        return this;
+    }
+
+    public String getRestaurantAddress() {
+        return restaurantAddress;
+    }
+
+    public MenuDTO setRestaurantAddress(String restaurantAddress) {
+        this.restaurantAddress = restaurantAddress;
         return this;
     }
 }

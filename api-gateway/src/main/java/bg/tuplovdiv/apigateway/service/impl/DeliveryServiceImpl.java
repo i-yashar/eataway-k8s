@@ -1,6 +1,7 @@
 package bg.tuplovdiv.apigateway.service.impl;
 
 import bg.tuplovdiv.apigateway.connectivity.client.OrdersRestClient;
+import bg.tuplovdiv.apigateway.dto.OrderDTO;
 import bg.tuplovdiv.apigateway.order.OrderQueue;
 import bg.tuplovdiv.apigateway.service.DeliveryService;
 import org.springframework.stereotype.Service;
@@ -35,13 +36,8 @@ public class DeliveryServiceImpl implements DeliveryService {
     }
 
     @Override
-    public BasketDTO getOrderBasketInfo(UUID orderId) {
-        return orderQueue.getOrderContext(orderId).getBasket();
-    }
-
-    @Override
     public OrderDTO takeOrder(UUID orderId, String deliveryDriverId) {
-        OrderDTO order = orderQueue.takeOrder(orderId, deliveryDriverId);
+        OrderDTO order = orderQueue.takeOrder(orderId);
         order.setDeliveryDriverId(deliveryDriverId);
         order.setStatus("ACTIVE");
 

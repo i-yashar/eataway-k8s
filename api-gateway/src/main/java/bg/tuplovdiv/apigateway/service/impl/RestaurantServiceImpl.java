@@ -1,6 +1,7 @@
 package bg.tuplovdiv.apigateway.service.impl;
 
 import bg.tuplovdiv.apigateway.connectivity.client.RestaurantsRestClient;
+import bg.tuplovdiv.apigateway.dto.MenuDTO;
 import bg.tuplovdiv.apigateway.dto.RestaurantDTO;
 import bg.tuplovdiv.apigateway.service.RestaurantService;
 import org.springframework.stereotype.Service;
