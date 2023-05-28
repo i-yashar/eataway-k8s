@@ -24,10 +24,11 @@ import java.util.UUID;
 @RequestMapping("eataway")
 public class OrderController {
 
+    private static final String API_PATH = "api/v1";
     private static final String ORDERS_PATH = "orders";
     private static final String ORDER_PATH = ORDERS_PATH + "/{orderId}";
     private static final String ORDER_LIVE_UPDATE_PATH = ORDERS_PATH + "/sse";
-    private static final String ORDERS_STATUS_INFO_PATH = ORDER_PATH + "/info";
+    private static final String ORDERS_STATUS_INFO_PATH = API_PATH + "/" + ORDER_PATH + "/info";
 
     private final AuthenticatedUserProvider userProvider;
     private final OrderService orderService;

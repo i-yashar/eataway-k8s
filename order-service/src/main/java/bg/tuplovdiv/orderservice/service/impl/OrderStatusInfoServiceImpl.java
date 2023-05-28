@@ -32,7 +32,7 @@ class OrderStatusInfoServiceImpl implements OrderStatusInfoService {
         OrderStatusInfoEntity orderStatusInfoEntity = new OrderStatusInfoEntity()
                 .setExternalId(UUID.randomUUID())
                 .setOrderId(order.getOrderId())
-                .setTime(Instant.now().toString())
+                .setTime(String.valueOf(Instant.now().getEpochSecond()))
                 .setInfoMessage(getInfoMessageByStatus(order.getStatus()));
 
         orderStatusInfoRepository.save(orderStatusInfoEntity);
