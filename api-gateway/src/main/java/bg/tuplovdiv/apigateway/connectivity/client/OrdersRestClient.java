@@ -1,9 +1,6 @@
 package bg.tuplovdiv.apigateway.connectivity.client;
 
-import bg.tuplovdiv.apigateway.dto.BasketDTO;
-import bg.tuplovdiv.apigateway.dto.BasketItemDTO;
-import bg.tuplovdiv.apigateway.dto.CreateOrderRequest;
-import bg.tuplovdiv.apigateway.dto.OrderDTO;
+import bg.tuplovdiv.apigateway.dto.*;
 import bg.tuplovdiv.apigateway.dto.page.PageDTO;
 import bg.tuplovdiv.apigateway.security.jwt.JwtProvider;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -25,11 +22,13 @@ public class OrdersRestClient extends RestClient {
     private static final String ORDER_API_UPDATE_ORDER_PATH = ORDERS_API_BASE_PATH + "/orders/%s";
     private static final String ORDERS_API_GET_USER_ORDERS = ORDERS_API_BASE_PATH + "/users/%s/orders";
     private static final String ORDERS_API_GET_DELIVERY_DRIVER_ORDERS = ORDERS_API_BASE_PATH + "/delivery/drivers/%s/orders";
+    private static final String ORDERS_API_GET_ORDER_STATUS_INFO = ORDERS_API_GET_USER_ORDER + "/info";
 
     private static final TypeReference<BasketDTO> BASKET_DTO_TYPE = new TypeReference<>() {};
     private static final TypeReference<OrderDTO> ORDER_DTO_TYPE = new TypeReference<>() {};
     private static final TypeReference<PageDTO<OrderDTO>> PAGE_OF_ORDER_DTOS_TYPE = new TypeReference<>() {};
     private static final TypeReference<Collection<OrderDTO>> ORDER_DTOS_TYPE = new TypeReference<>() {};
+    private static final TypeReference<Collection<OrderStatusInfoDTO>> ORDER_STATUS_INFO_DTOS_TYPE = new TypeReference<>() {};
 
     public OrdersRestClient(JwtProvider jwtProvider) {
         super(jwtProvider);
@@ -88,6 +87,17 @@ public class OrdersRestClient extends RestClient {
                 .build();
 
         return put(request, response -> mapJsonToObject(response.body(), ORDER_DTO_TYPE));
+    }
+
+    public Collection<OrderStatusInfoDTO> getOrderStatusInfoMessages(UUID orderId) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .GET()
+                .uri(buildURI(ORDERS_API_GET_ORDER_STATUS_INFO, orderId.toString()))
+                .header("Content-Type", "application/json")
+                .header("Authorization", getBearerToken())
+                .build();
+
+        return get(request, response -> mapJsonToObject(response.body(), ORDER_STATUS_INFO_DTOS_TYPE));
     }
 
     public BasketDTO getUserBasket(String ownerId) {

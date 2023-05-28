@@ -2,12 +2,14 @@ package bg.tuplovdiv.apigateway.controller;
 
 import bg.tuplovdiv.apigateway.dto.CreateOrderRequest;
 import bg.tuplovdiv.apigateway.dto.OrderDTO;
+import bg.tuplovdiv.apigateway.dto.OrderStatusInfoDTO;
 import bg.tuplovdiv.apigateway.order.OrderStatusEmitters;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
 import bg.tuplovdiv.apigateway.security.user.AuthenticatedUser;
 import bg.tuplovdiv.apigateway.service.OrderService;
 import bg.tuplovdiv.orderservice.exception.UnauthorizedAccessException;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Collection;
 import java.util.UUID;
 
 @Controller
@@ -22,7 +25,9 @@ import java.util.UUID;
 public class OrderController {
 
     private static final String ORDERS_PATH = "orders";
+    private static final String ORDER_PATH = ORDERS_PATH + "/{orderId}";
     private static final String ORDER_LIVE_UPDATE_PATH = ORDERS_PATH + "/sse";
+    private static final String ORDERS_STATUS_INFO_PATH = ORDER_PATH + "/info";
 
     private final AuthenticatedUserProvider userProvider;
     private final OrderService orderService;
@@ -54,7 +59,7 @@ public class OrderController {
         return "redirect:/eataway/orders/" + orderId;
     }
 
-    @GetMapping(ORDERS_PATH + "/{orderId}")
+    @GetMapping(ORDER_PATH)
     public String getOrderInfo(@PathVariable UUID orderId, Model model) {
         OrderDTO order = orderService.getOrderInfo(orderId);
         verifyUserAuthorized(order.getClientId());
@@ -86,5 +91,11 @@ public class OrderController {
         AuthenticatedUser user = userProvider.provide();
 
         return user.getUserId();
+    }
+
+    @GetMapping(ORDERS_STATUS_INFO_PATH)
+    @ResponseBody
+    public ResponseEntity<Collection<OrderStatusInfoDTO>> getOrderStatusInfoMessages(@PathVariable UUID orderId) {
+        return ResponseEntity.ok(orderService.getOrderStatusInfoMessages(orderId));
     }
 }
