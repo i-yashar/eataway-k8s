@@ -3,6 +3,7 @@ package bg.tuplovdiv.orderservice.model.entity;
 import bg.tuplovdiv.orderservice.model.OrderStatus;
 import jakarta.persistence.*;
 
+import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 
@@ -37,6 +38,8 @@ public class OrderEntity {
     @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
     private OrderStatus status;
+
+    private Instant updatedAt;
 
     public Long getId() {
         return id;
@@ -116,6 +119,15 @@ public class OrderEntity {
 
     public OrderEntity setStatus(OrderStatus status) {
         this.status = status;
+        return this;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public OrderEntity setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
         return this;
     }
 }

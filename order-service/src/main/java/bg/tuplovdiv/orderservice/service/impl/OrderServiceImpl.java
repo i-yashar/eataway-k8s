@@ -23,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -67,7 +68,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private PageDTO<OrderDTO> getActiveUserOrdersPage(String clientId, Pageable pageable) {
-        Page<OrderEntity> orders = orderRepository.findAllByClientIdAndStatusIn(clientId, Set.of(REGISTERED, ACTIVE, ABOUT_TO_BE_DELIVERED), pageable);
+        Page<OrderEntity> orders = orderRepository.findAllByClientIdAndStatusInOrderByUpdatedAtDesc(clientId, Set.of(REGISTERED, ACTIVE, ABOUT_TO_BE_DELIVERED), pageable);
 
         return new PageDTO<OrderDTO>()
                 .setContent(mapToOrderDTOs(orders))
@@ -121,6 +122,7 @@ public class OrderServiceImpl implements OrderService {
     private void persistOrder(OrderContext context) {
         OrderEntity orderEntity = mapper.toOrderEntity(context);
         orderEntity.setStatus(REGISTERED);
+        orderEntity.setUpdatedAt(Instant.now());
 
         orderRepository.save(orderEntity);
     }
@@ -135,12 +137,13 @@ public class OrderServiceImpl implements OrderService {
     public OrderDTO updateOrder(OrderDTO order) {
         OrderEntity orderEntity = mapper.toOrderEntity(order);
         orderEntity.setId(getOrderByOrderId(order.getOrderId()).getId());
+        orderEntity.setUpdatedAt(Instant.now());
 
         orderEntity = orderRepository.save(orderEntity);
 
         updateOrderProcess.start(createOrderStatusChange(orderEntity));
 
-        return mapper.toOrderDTO(orderRepository.save(orderEntity));
+        return mapper.toOrderDTO(orderEntity);
     }
 
     @Override

@@ -39,7 +39,7 @@ public class OrderRestController {
     @GetMapping(CLIENT_ORDERS_PATH)
     public ResponseEntity<PageDTO<OrderDTO>> getActiveUserOrders(@PathVariable String clientId,
                                                                @RequestParam(name = "page", required = false, defaultValue = "0") int page,
-                                                               @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
+                                                               @RequestParam(name = "size", required = false, defaultValue = "15") int size) {
         return ResponseEntity.ok(orderService.findActiveUserOrders(clientId, page, size));
     }
 
