@@ -43,6 +43,7 @@ class OrderStatusInfoServiceImpl implements OrderStatusInfoService {
             case "ACTIVE" -> ACTIVE_STATUS_MESSAGE;
             case "ABOUT_TO_BE_DELIVERED" -> ABOUT_TO_BE_DELIVERED_STATUS_MESSAGE;
             case "DELIVERED" -> DELIVERED_STATUS_MESSAGE;
+            default -> "";
         };
     }
 
