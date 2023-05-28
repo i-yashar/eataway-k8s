@@ -9,8 +9,10 @@ public class OrderContext extends Message {
     private String clientId;
     private String clientPhoneNumber;
     private String address;
+    private String deliveryDriverId;
     private BasketDTO basket;
     private Double totalCost;
+    private String status;
 
     public UUID getOrderId() {
         return orderId;
@@ -48,6 +50,15 @@ public class OrderContext extends Message {
         return this;
     }
 
+    public String getDeliveryDriverId() {
+        return deliveryDriverId;
+    }
+
+    public OrderContext setDeliveryDriverId(String deliveryDriverId) {
+        this.deliveryDriverId = deliveryDriverId;
+        return this;
+    }
+
     public BasketDTO getBasket() {
         return basket;
     }
@@ -63,6 +74,15 @@ public class OrderContext extends Message {
 
     public OrderContext setTotalCost(Double totalCost) {
         this.totalCost = totalCost;
+        return this;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public OrderContext setStatus(String status) {
+        this.status = status;
         return this;
     }
 

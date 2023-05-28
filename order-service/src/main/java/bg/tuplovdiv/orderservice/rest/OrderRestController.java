@@ -25,6 +25,7 @@ public class OrderRestController {
     private static final String CLIENT_ORDERS_PATH = "/users/{clientId}" + ORDERS_PATH;
     private static final String ACTIVE_DELIVERY_DRIVER_ORDERS_PATH = "/delivery/drivers/{driverId}" + ORDERS_PATH;
     private static final String ORDER_STATUS_INFO_PATH = ORDER_PATH + "/info";
+    private static final String ORDER_BASKET_INFO_PATH = ORDER_PATH + "/menus";
 
     private final OrderService orderService;
     private final OrderStatusInfoService orderStatusInfoService;
