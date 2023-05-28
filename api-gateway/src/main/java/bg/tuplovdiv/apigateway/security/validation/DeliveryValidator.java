@@ -2,6 +2,7 @@ package bg.tuplovdiv.apigateway.security.validation;
 
 import bg.tuplovdiv.apigateway.model.entity.UserEntity;
 import bg.tuplovdiv.apigateway.order.OrderQueue;
+import bg.tuplovdiv.apigateway.order.delivery.DriverManager;
 import bg.tuplovdiv.apigateway.repository.UserRepository;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
 import bg.tuplovdiv.apigateway.security.user.AuthenticatedUser;
@@ -14,23 +15,19 @@ import static bg.tuplovdiv.apigateway.model.UserRoleEnum.EMPLOYEE;
 public class DeliveryValidator {
 
     private final AuthenticatedUserProvider authenticatedUserProvider;
-    private final OrderQueue orderQueue;
+    private final DriverManager drivers;
     private final UserRepository userRepository;
 
-    public DeliveryValidator(AuthenticatedUserProvider authenticatedUserProvider, OrderQueue orderQueue, UserRepository userRepository) {
+    public DeliveryValidator(AuthenticatedUserProvider authenticatedUserProvider, OrderQueue orderQueue, DriverManager drivers, UserRepository userRepository) {
         this.authenticatedUserProvider = authenticatedUserProvider;
-        this.orderQueue = orderQueue;
+        this.drivers = drivers;
         this.userRepository = userRepository;
     }
 
     public boolean isDeliveryDriverFree() {
         UserEntity user = getUser();
 
-        boolean isDriverBusy = orderQueue.getActiveOrders()
-                .stream()
-                .anyMatch(order -> user.getUserId().equals(order.getDeliveryDriverId()));
-
-        return isDeliveryDriverValid() && !isDriverBusy;
+        return isDeliveryDriverValid() && !drivers.isPresent(user.getUserId());
     }
 
     public boolean isDeliveryDriverValid() {

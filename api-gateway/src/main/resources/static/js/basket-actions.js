@@ -15,15 +15,17 @@ async function onAddMenuToBasket(event) {
 
     const menuId = event.target.id.substring(10)
     const basketItem = {
-        "menuId": menuId,
-        "count": 1
+        'menu': {
+            'menuId': menuId
+        },
+        'count': 1
     }
-    const url = "http://localhost:8082/eataway/api/v1/basketItems"
+    const url = 'http://localhost:8082/eataway/api/v1/basketItems'
 
     const response = await fetch(url, {
         method: 'PUT',
         headers: {
-            "Content-Type": "application/json"
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify(basketItem)
     })
