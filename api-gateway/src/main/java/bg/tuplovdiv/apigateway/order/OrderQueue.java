@@ -1,6 +1,5 @@
 package bg.tuplovdiv.apigateway.order;
 
-import bg.tuplovdiv.apigateway.dto.OrderDTO;
 import bg.tuplovdiv.apigateway.messaging.OrderContext;
 import org.springframework.stereotype.Component;
 

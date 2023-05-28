@@ -1,6 +1,5 @@
 package bg.tuplovdiv.apigateway.connectivity.client;
 
-import bg.tuplovdiv.apigateway.dto.MenuDTO;
 import bg.tuplovdiv.apigateway.dto.RestaurantDTO;
 import bg.tuplovdiv.apigateway.dto.page.PageDTO;
 import bg.tuplovdiv.apigateway.security.jwt.JwtProvider;

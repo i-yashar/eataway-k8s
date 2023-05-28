@@ -2,7 +2,6 @@ package bg.tuplovdiv.apigateway.service.impl;
 
 import bg.tuplovdiv.apigateway.connectivity.client.OrdersRestClient;
 import bg.tuplovdiv.apigateway.dto.CreateOrderRequest;
-import bg.tuplovdiv.apigateway.dto.OrderDTO;
 import bg.tuplovdiv.apigateway.dto.OrderStatusInfoDTO;
 import bg.tuplovdiv.apigateway.service.OrderService;
 import org.springframework.stereotype.Service;

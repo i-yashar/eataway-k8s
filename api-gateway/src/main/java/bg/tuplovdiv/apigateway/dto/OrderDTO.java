@@ -1,13 +1,15 @@
 package bg.tuplovdiv.apigateway.dto;
 
+import java.util.Set;
 import java.util.UUID;
 
 public class OrderDTO {
     private UUID orderId;
     private String clientId;
-    private String clientPhoneNumber;
     private String deliveryDriverId;
+    private String clientPhoneNumber;
     private String address;
+    private Set<ItemDTO> items;
     private Double totalCost;
     private String status;
 
@@ -29,15 +31,6 @@ public class OrderDTO {
         return this;
     }
 
-    public String getClientPhoneNumber() {
-        return clientPhoneNumber;
-    }
-
-    public OrderDTO setClientPhoneNumber(String clientPhoneNumber) {
-        this.clientPhoneNumber = clientPhoneNumber;
-        return this;
-    }
-
     public String getDeliveryDriverId() {
         return deliveryDriverId;
     }
@@ -47,12 +40,30 @@ public class OrderDTO {
         return this;
     }
 
+    public String getClientPhoneNumber() {
+        return clientPhoneNumber;
+    }
+
+    public OrderDTO setClientPhoneNumber(String clientPhoneNumber) {
+        this.clientPhoneNumber = clientPhoneNumber;
+        return this;
+    }
+
     public String getAddress() {
         return address;
     }
 
     public OrderDTO setAddress(String address) {
         this.address = address;
+        return this;
+    }
+
+    public Set<ItemDTO> getItems() {
+        return items;
+    }
+
+    public OrderDTO setItems(Set<ItemDTO> items) {
+        this.items = items;
         return this;
     }
 

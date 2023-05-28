@@ -1,7 +1,5 @@
 package bg.tuplovdiv.apigateway.messaging;
 
-import bg.tuplovdiv.apigateway.dto.BasketDTO;
-
 import java.util.UUID;
 
 public class OrderContext extends Message {

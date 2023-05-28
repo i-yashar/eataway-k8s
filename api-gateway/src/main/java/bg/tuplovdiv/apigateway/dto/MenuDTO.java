@@ -1,6 +1,5 @@
 package bg.tuplovdiv.apigateway.dto;
 
-import java.util.Set;
 import java.util.UUID;
 
 public class MenuDTO {
@@ -9,7 +8,6 @@ public class MenuDTO {
     private String name;
     private String description;
     private Double price;
-    private Set<ItemDTO> items;
     private UUID restaurantId;
 
     public UUID getMenuId() {
@@ -45,15 +43,6 @@ public class MenuDTO {
 
     public MenuDTO setPrice(Double price) {
         this.price = price;
-        return this;
-    }
-
-    public Set<ItemDTO> getItems() {
-        return items;
-    }
-
-    public MenuDTO setItems(Set<ItemDTO> items) {
-        this.items = items;
         return this;
     }
 

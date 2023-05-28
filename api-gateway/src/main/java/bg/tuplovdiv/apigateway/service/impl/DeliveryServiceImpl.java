@@ -1,8 +1,6 @@
 package bg.tuplovdiv.apigateway.service.impl;
 
 import bg.tuplovdiv.apigateway.connectivity.client.OrdersRestClient;
-import bg.tuplovdiv.apigateway.dto.BasketDTO;
-import bg.tuplovdiv.apigateway.dto.OrderDTO;
 import bg.tuplovdiv.apigateway.order.OrderQueue;
 import bg.tuplovdiv.apigateway.service.DeliveryService;
 import org.springframework.stereotype.Service;

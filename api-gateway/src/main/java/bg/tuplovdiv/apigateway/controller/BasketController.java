@@ -1,8 +1,8 @@
 package bg.tuplovdiv.apigateway.controller;
 
 import bg.tuplovdiv.apigateway.dto.BasketDTO;
-import bg.tuplovdiv.apigateway.dto.BasketItemDTO;
 import bg.tuplovdiv.apigateway.dto.CreateOrderRequest;
+import bg.tuplovdiv.apigateway.dto.ItemDTO;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
 import bg.tuplovdiv.apigateway.security.user.AuthenticatedUser;
 import bg.tuplovdiv.apigateway.service.BasketService;
@@ -43,8 +43,8 @@ public class BasketController {
 
     @PutMapping(ADD_BASKET_ITEM_PATH)
     @ResponseBody
-    public ResponseEntity<BasketDTO> addBasketItem(@RequestBody BasketItemDTO basketItem) {
-        return ResponseEntity.ok(basketService.addBasketItem(getUserId(), basketItem));
+    public ResponseEntity<BasketDTO> addBasketItem(@RequestBody ItemDTO item) {
+        return ResponseEntity.ok(basketService.addBasketItem(getUserId(), item));
     }
 
     @DeleteMapping(DELETE_BASKET_ITEM_PATH)

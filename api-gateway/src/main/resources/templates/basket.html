@@ -23,9 +23,6 @@
 
                                 <p class="mb-3 post-description" th:text="${item.menu.description}">Description</p>
 
-                                <p th:each="menuItem : ${item.menu.items}" class="mb-3 post-description"
-                                   th:text="${menuItem}">Items</p>
-
                                 <span class="mb-3 post-description"
                                       th:text="'Quantity: ' + ${item.count} + ' | Price for single item: $' + ${item.menu.price}">Price</span>
 

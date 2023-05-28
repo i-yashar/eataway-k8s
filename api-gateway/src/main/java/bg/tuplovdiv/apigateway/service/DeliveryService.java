@@ -1,8 +1,5 @@
 package bg.tuplovdiv.apigateway.service;
 
-import bg.tuplovdiv.apigateway.dto.BasketDTO;
-import bg.tuplovdiv.apigateway.dto.OrderDTO;
-
 import java.util.Collection;
 import java.util.UUID;
 
