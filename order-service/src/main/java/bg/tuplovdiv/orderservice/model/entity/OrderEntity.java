@@ -1,6 +1,6 @@
 package bg.tuplovdiv.orderservice.model.entity;
 
-import bg.tuplovdiv.orderservice.model.OrderStatus;
+import bg.tuplovdiv.orderservice.model.enums.OrderStatus;
 import jakarta.persistence.*;
 
 import java.time.Instant;

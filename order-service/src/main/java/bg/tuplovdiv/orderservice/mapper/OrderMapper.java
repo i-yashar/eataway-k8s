@@ -4,7 +4,7 @@ import bg.tuplovdiv.orderservice.dto.OrderDTO;
 import bg.tuplovdiv.orderservice.exception.BasketNotFoundException;
 import bg.tuplovdiv.orderservice.exception.MenuNotFoundException;
 import bg.tuplovdiv.orderservice.messaging.OrderContext;
-import bg.tuplovdiv.orderservice.model.OrderStatus;
+import bg.tuplovdiv.orderservice.model.enums.OrderStatus;
 import bg.tuplovdiv.orderservice.model.entity.BasketEntity;
 import bg.tuplovdiv.orderservice.model.entity.MenuEntity;
 import bg.tuplovdiv.orderservice.model.entity.OrderEntity;

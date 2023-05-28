@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.Set;
 import java.util.UUID;
 
-import static bg.tuplovdiv.orderservice.model.OrderStatus.*;
+import static bg.tuplovdiv.orderservice.model.enums.OrderStatus.*;
 
 @Component
 public class DeliveryValidator {

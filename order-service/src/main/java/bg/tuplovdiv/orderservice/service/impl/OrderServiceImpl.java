@@ -30,7 +30,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static bg.tuplovdiv.orderservice.model.OrderStatus.*;
+import static bg.tuplovdiv.orderservice.model.enums.OrderStatus.*;
 
 @Service
 public class OrderServiceImpl implements OrderService {
