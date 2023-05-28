@@ -1,7 +1,7 @@
 package bg.tuplovdiv.orderservice.rest;
 
 import bg.tuplovdiv.orderservice.dto.BasketDTO;
-import bg.tuplovdiv.orderservice.dto.BasketItemDTO;
+import bg.tuplovdiv.orderservice.dto.ItemDTO;
 import bg.tuplovdiv.orderservice.service.BasketService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +23,7 @@ public class BasketRestController {
 
     @PutMapping(BASKET_PATH)
     public ResponseEntity<BasketDTO> addBasketItem(@PathVariable String ownerId,
-                                              @RequestBody BasketItemDTO basketItem) {
+                                              @RequestBody ItemDTO basketItem) {
         return ResponseEntity.ok(basketService.addBasketItem(ownerId, basketItem));
     }
 

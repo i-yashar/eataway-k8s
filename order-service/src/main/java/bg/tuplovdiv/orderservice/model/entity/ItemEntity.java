@@ -2,8 +2,6 @@ package bg.tuplovdiv.orderservice.model.entity;
 
 import jakarta.persistence.*;
 
-import java.util.UUID;
-
 @Entity
 @Table(name = "items")
 public class ItemEntity {
@@ -12,26 +10,13 @@ public class ItemEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private UUID externalId;
+    @ManyToOne
+    private MenuEntity menu;
 
-    @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false)
-    private Integer quantity;
+    private Integer count;
 
     public Long getId() {
         return id;
-    }
-
-    public UUID getExternalId() {
-        return externalId;
-    }
-
-    public ItemEntity setExternalId(UUID externalId) {
-        this.externalId = externalId;
-        return this;
     }
 
     public ItemEntity setId(Long id) {
@@ -39,21 +24,21 @@ public class ItemEntity {
         return this;
     }
 
-    public String getName() {
-        return name;
+    public MenuEntity getMenu() {
+        return menu;
     }
 
-    public ItemEntity setName(String name) {
-        this.name = name;
+    public ItemEntity setMenu(MenuEntity menu) {
+        this.menu = menu;
         return this;
     }
 
-    public Integer getQuantity() {
-        return quantity;
+    public Integer getCount() {
+        return count;
     }
 
-    public ItemEntity setQuantity(Integer quantity) {
-        this.quantity = quantity;
+    public ItemEntity setCount(Integer count) {
+        this.count = count;
         return this;
     }
 }

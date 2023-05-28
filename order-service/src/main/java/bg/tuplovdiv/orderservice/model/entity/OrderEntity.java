@@ -2,6 +2,7 @@ package bg.tuplovdiv.orderservice.model.entity;
 
 import bg.tuplovdiv.orderservice.model.enums.OrderStatus;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Cascade;
 
 import java.time.Instant;
 import java.util.Set;
@@ -21,16 +22,17 @@ public class OrderEntity {
     @Column(nullable = false)
     private String clientId;
 
+    private String deliveryDriverId;
+
     @Column(nullable = false)
     private String clientPhoneNumber;
-
-    private String deliveryDriverId;
 
     @Column(nullable = false)
     private String address;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<MenuEntity> menus;
+    @OneToMany(fetch = FetchType.EAGER)
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private Set<ItemEntity> items;
 
     @Column(nullable = false)
     private Double totalCost;
@@ -68,21 +70,21 @@ public class OrderEntity {
         return this;
     }
 
-    public String getClientPhoneNumber() {
-        return clientPhoneNumber;
-    }
-
-    public OrderEntity setClientPhoneNumber(String clientPhone) {
-        this.clientPhoneNumber = clientPhone;
-        return this;
-    }
-
     public String getDeliveryDriverId() {
         return deliveryDriverId;
     }
 
-    public OrderEntity setDeliveryDriverId(String deliverDriverId) {
-        this.deliveryDriverId = deliverDriverId;
+    public OrderEntity setDeliveryDriverId(String deliveryDriverId) {
+        this.deliveryDriverId = deliveryDriverId;
+        return this;
+    }
+
+    public String getClientPhoneNumber() {
+        return clientPhoneNumber;
+    }
+
+    public OrderEntity setClientPhoneNumber(String clientPhoneNumber) {
+        this.clientPhoneNumber = clientPhoneNumber;
         return this;
     }
 
@@ -95,12 +97,12 @@ public class OrderEntity {
         return this;
     }
 
-    public Set<MenuEntity> getMenus() {
-        return menus;
+    public Set<ItemEntity> getItems() {
+        return items;
     }
 
-    public OrderEntity setMenus(Set<MenuEntity> menus) {
-        this.menus = menus;
+    public OrderEntity setItems(Set<ItemEntity> items) {
+        this.items = items;
         return this;
     }
 

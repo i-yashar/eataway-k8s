@@ -1,22 +1,18 @@
 package bg.tuplovdiv.orderservice.service.impl;
 
-import bg.tuplovdiv.orderservice.dto.BasketDTO;
 import bg.tuplovdiv.orderservice.dto.CreateOrderRequest;
 import bg.tuplovdiv.orderservice.dto.OrderDTO;
 import bg.tuplovdiv.orderservice.dto.page.PageDTO;
-import bg.tuplovdiv.orderservice.exception.MenuNotFoundException;
+import bg.tuplovdiv.orderservice.exception.BasketNotFoundException;
 import bg.tuplovdiv.orderservice.mapper.OrderMapper;
-import bg.tuplovdiv.orderservice.messaging.OrderContext;
 import bg.tuplovdiv.orderservice.messaging.delivery.OrderStatusChange;
 import bg.tuplovdiv.orderservice.messaging.process.CreateOrderProcess;
 import bg.tuplovdiv.orderservice.messaging.process.UpdateOrderProcess;
 import bg.tuplovdiv.orderservice.model.entity.BasketEntity;
-import bg.tuplovdiv.orderservice.model.entity.MenuEntity;
+import bg.tuplovdiv.orderservice.model.entity.ItemEntity;
 import bg.tuplovdiv.orderservice.model.entity.OrderEntity;
 import bg.tuplovdiv.orderservice.repository.BasketRepository;
-import bg.tuplovdiv.orderservice.repository.MenuRepository;
 import bg.tuplovdiv.orderservice.repository.OrderRepository;
-import bg.tuplovdiv.orderservice.service.BasketService;
 import bg.tuplovdiv.orderservice.service.OrderService;
 import bg.tuplovdiv.orderservice.service.OrderStatusInfoService;
 import org.springframework.data.domain.Page;
@@ -25,10 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static bg.tuplovdiv.orderservice.model.enums.OrderStatus.*;
@@ -36,23 +29,19 @@ import static bg.tuplovdiv.orderservice.model.enums.OrderStatus.*;
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    private final BasketService basketService;
     private final OrderStatusInfoService orderStatusInfoService;
     private final CreateOrderProcess createOrderProcess;
     private final UpdateOrderProcess updateOrderProcess;
     private final OrderRepository orderRepository;
     private final BasketRepository basketRepository;
-    private final MenuRepository menuRepository;
     private final OrderMapper mapper;
 
-    public OrderServiceImpl(BasketService basketService, OrderStatusInfoService orderStatusInfoService, CreateOrderProcess createOrderProcess, UpdateOrderProcess updateOrderProcess, OrderRepository orderRepository, BasketRepository basketRepository, MenuRepository menuRepository, OrderMapper mapper) {
-        this.basketService = basketService;
+    public OrderServiceImpl(OrderStatusInfoService orderStatusInfoService, CreateOrderProcess createOrderProcess, UpdateOrderProcess updateOrderProcess, OrderRepository orderRepository, BasketRepository basketRepository, OrderMapper mapper) {
         this.orderStatusInfoService = orderStatusInfoService;
         this.createOrderProcess = createOrderProcess;
         this.updateOrderProcess = updateOrderProcess;
         this.orderRepository = orderRepository;
         this.basketRepository = basketRepository;
-        this.menuRepository = menuRepository;
         this.mapper = mapper;
     }
 
@@ -60,7 +49,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderDTO findOrderByOrderId(UUID orderId) {
         OrderEntity order = getOrderByOrderId(orderId);
 
-        return mapper.toOrderDTO(order);
+        return mapper.toDTO(order);
     }
 
     @Override
@@ -79,67 +68,64 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private Collection<OrderDTO> mapToOrderDTOs(Page<OrderEntity> orders) {
-        return orders.map(mapper::toOrderDTO)
+        return orders.map(mapper::toDTO)
                 .stream()
                 .collect(Collectors.toList());
     }
 
     @Override
     public UUID createOrder(CreateOrderRequest createOrderRequest) {
-        OrderContext context = buildOrderContext(createOrderRequest);
-        persistOrder(context);
+        OrderEntity order = persistOrder(createOrderRequest);
+        resetBasketItems(createOrderRequest.getClientId());
 
-        createOrderProcess.start(context);
+        createOrderProcess.start(order);
 
-        resetBasketItems(context.getBasket().getBasketId());
-
-        return context.getOrderId();
+        return order.getExternalId();
     }
 
-    private OrderContext buildOrderContext(CreateOrderRequest createOrderRequest) {
+    private OrderEntity persistOrder(CreateOrderRequest createOrderRequest) {
         String clientId = createOrderRequest.getClientId();
-        BasketDTO basket = basketService.getBasketByOwnerId(clientId);
+        Set<ItemEntity> orderItems = getOrderItems(clientId);
 
-        return OrderContext.getBuilder()
-                .orderId(UUID.randomUUID())
-                .clientId(clientId)
-                .clientPhone(createOrderRequest.getClientPhoneNumber())
-                .address(createOrderRequest.getAddress())
-                .basket(basket)
-                .totalCost(calculateTotalCost(basket))
-                .build();
+        OrderEntity orderEntity = new OrderEntity()
+                .setExternalId(UUID.randomUUID())
+                .setClientId(clientId)
+                .setClientPhoneNumber(createOrderRequest.getClientPhoneNumber())
+                .setAddress(createOrderRequest.getAddress())
+                .setItems(orderItems)
+                .setTotalCost(calculateTotalCost(orderItems))
+                .setStatus(REGISTERED)
+                .setUpdatedAt(Instant.now());
+
+        return orderRepository.save(orderEntity);
     }
 
-    private Double calculateTotalCost(BasketDTO basket) {
-        return basket.getItems()
-                .stream()
-                .map(item -> getMenuByMenuId(item.getMenuId()).getPrice() * item.getCount())
+    private Set<ItemEntity> getOrderItems(String clientId) {
+        BasketEntity basketEntity = getBasketEntity(clientId);
+        return Collections.unmodifiableSet(basketEntity.getItems());
+    }
+
+    private Double calculateTotalCost(Set<ItemEntity> items) {
+        return items.stream()
+                .map(item -> item.getMenu().getPrice() * item.getCount())
                 .reduce((double) 0, Double::sum);
     }
 
-    private MenuEntity getMenuByMenuId(UUID menuId) {
-        return menuRepository.findMenuEntityByExternalId(menuId)
-                .orElseThrow(() -> new MenuNotFoundException("Menu with menuId " + menuId + " not found"));
-    }
-
-    private void persistOrder(OrderContext context) {
-        OrderEntity orderEntity = mapper.toOrderEntity(context);
-        orderEntity.setStatus(REGISTERED);
-        orderEntity.setUpdatedAt(Instant.now());
-
-        orderRepository.save(orderEntity);
-    }
-
-    private void resetBasketItems(UUID basketId) {
-        BasketEntity basket = basketRepository.findBasketEntityByExternalId(basketId).get();
+    private void resetBasketItems(String clientId) {
+        BasketEntity basket = getBasketEntity(clientId);
         basket.setItems(new HashSet<>());
         basketRepository.save(basket);
     }
 
+    private BasketEntity getBasketEntity(String clientId) {
+        return basketRepository.findBasketEntityByOwnerUserId(clientId)
+                .orElseThrow(() -> new BasketNotFoundException("Basket not found"));
+    }
+
     @Override
     public OrderDTO updateOrder(OrderDTO order) {
-        OrderEntity orderEntity = mapper.toOrderEntity(order);
-        orderEntity.setId(getOrderByOrderId(order.getOrderId()).getId());
+        OrderEntity orderEntity = getOrderByOrderId(order.getOrderId());
+        orderEntity.setDeliveryDriverId(order.getDeliveryDriverId());
         orderEntity.setUpdatedAt(Instant.now());
 
         orderEntity = orderRepository.save(orderEntity);
@@ -147,7 +133,12 @@ public class OrderServiceImpl implements OrderService {
 
         updateOrderProcess.start(createOrderStatusChange(orderEntity));
 
-        return mapper.toOrderDTO(orderEntity);
+        return mapper.toDTO(orderEntity);
+    }
+
+    private OrderEntity getOrderByOrderId(UUID orderId) {
+        return orderRepository.findOrderEntityByExternalId(orderId)
+                .orElseThrow(IllegalArgumentException::new);
     }
 
     @Override
@@ -155,13 +146,8 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository
                 .findAllByDeliveryDriverIdAndStatusIn(driverId, Set.of(ACTIVE, ABOUT_TO_BE_DELIVERED))
                 .stream()
-                .map(mapper::toOrderDTO)
+                .map(mapper::toDTO)
                 .collect(Collectors.toList());
-    }
-
-    private OrderEntity getOrderByOrderId(UUID orderId) {
-        return orderRepository.findOrderEntityByExternalId(orderId)
-                .orElseThrow(IllegalArgumentException::new);
     }
 
     private OrderStatusChange createOrderStatusChange(OrderEntity order) {
