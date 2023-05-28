@@ -18,6 +18,7 @@ import bg.tuplovdiv.orderservice.repository.MenuRepository;
 import bg.tuplovdiv.orderservice.repository.OrderRepository;
 import bg.tuplovdiv.orderservice.service.BasketService;
 import bg.tuplovdiv.orderservice.service.OrderService;
+import bg.tuplovdiv.orderservice.service.OrderStatusInfoService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -36,6 +37,7 @@ import static bg.tuplovdiv.orderservice.model.enums.OrderStatus.*;
 public class OrderServiceImpl implements OrderService {
 
     private final BasketService basketService;
+    private final OrderStatusInfoService orderStatusInfoService;
     private final CreateOrderProcess createOrderProcess;
     private final UpdateOrderProcess updateOrderProcess;
     private final OrderRepository orderRepository;
@@ -43,8 +45,9 @@ public class OrderServiceImpl implements OrderService {
     private final MenuRepository menuRepository;
     private final OrderMapper mapper;
 
-    public OrderServiceImpl(BasketService basketService, CreateOrderProcess createOrderProcess, UpdateOrderProcess updateOrderProcess, OrderRepository orderRepository, BasketRepository basketRepository, MenuRepository menuRepository, OrderMapper mapper) {
+    public OrderServiceImpl(BasketService basketService, OrderStatusInfoService orderStatusInfoService, CreateOrderProcess createOrderProcess, UpdateOrderProcess updateOrderProcess, OrderRepository orderRepository, BasketRepository basketRepository, MenuRepository menuRepository, OrderMapper mapper) {
         this.basketService = basketService;
+        this.orderStatusInfoService = orderStatusInfoService;
         this.createOrderProcess = createOrderProcess;
         this.updateOrderProcess = updateOrderProcess;
         this.orderRepository = orderRepository;
@@ -140,6 +143,7 @@ public class OrderServiceImpl implements OrderService {
         orderEntity.setUpdatedAt(Instant.now());
 
         orderEntity = orderRepository.save(orderEntity);
+        orderStatusInfoService.saveOrderStatusInfo(order);
 
         updateOrderProcess.start(createOrderStatusChange(orderEntity));
 
@@ -149,7 +153,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Collection<OrderDTO> getActiveDeliveryDriverOrders(String driverId) {
         return orderRepository
-                .findAllByDeliveryDriverIdAndStatusIn(driverId,Set.of(ACTIVE, ABOUT_TO_BE_DELIVERED))
+                .findAllByDeliveryDriverIdAndStatusIn(driverId, Set.of(ACTIVE, ABOUT_TO_BE_DELIVERED))
                 .stream()
                 .map(mapper::toOrderDTO)
                 .collect(Collectors.toList());

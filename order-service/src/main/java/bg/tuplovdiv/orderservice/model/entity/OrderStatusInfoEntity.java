@@ -15,8 +15,8 @@ public class OrderStatusInfoEntity {
     @Column(nullable = false)
     private UUID externalId;
 
-    @ManyToOne
-    private OrderEntity order;
+    @Column(nullable = false)
+    private UUID orderId;
 
     private String time;
 
@@ -40,12 +40,12 @@ public class OrderStatusInfoEntity {
         return this;
     }
 
-    public OrderEntity getOrder() {
-        return order;
+    public UUID getOrderId() {
+        return orderId;
     }
 
-    public OrderStatusInfoEntity setOrder(OrderEntity order) {
-        this.order = order;
+    public OrderStatusInfoEntity setOrderId(UUID orderId) {
+        this.orderId = orderId;
         return this;
     }
 
