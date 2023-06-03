@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
-import java.util.UUID;
 
 @Component
 public class CreateOrderProcess {
@@ -31,7 +30,7 @@ public class CreateOrderProcess {
         Set<ItemDTO> items = itemMapper.toDTO(order.getItems());
 
         return OrderContext.getBuilder()
-                .orderId(UUID.randomUUID())
+                .orderId(order.getExternalId())
                 .clientId(clientId)
                 .clientPhone(order.getClientPhoneNumber())
                 .address(order.getAddress())

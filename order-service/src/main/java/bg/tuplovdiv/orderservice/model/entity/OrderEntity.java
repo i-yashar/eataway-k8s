@@ -2,7 +2,6 @@ package bg.tuplovdiv.orderservice.model.entity;
 
 import bg.tuplovdiv.orderservice.model.enums.OrderStatus;
 import jakarta.persistence.*;
-import org.hibernate.annotations.Cascade;
 
 import java.time.Instant;
 import java.util.Set;
@@ -31,7 +30,6 @@ public class OrderEntity {
     private String address;
 
     @OneToMany(fetch = FetchType.EAGER)
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private Set<ItemEntity> items;
 
     @Column(nullable = false)

@@ -3,8 +3,10 @@ package bg.tuplovdiv.apigateway.service.impl;
 import bg.tuplovdiv.apigateway.exception.UserRoleNotFoundException;
 import bg.tuplovdiv.apigateway.mapper.UserMapper;
 import bg.tuplovdiv.apigateway.model.UserRoleEnum;
+import bg.tuplovdiv.apigateway.model.entity.DeliveryDriverEntity;
 import bg.tuplovdiv.apigateway.model.entity.UserEntity;
 import bg.tuplovdiv.apigateway.model.entity.UserRole;
+import bg.tuplovdiv.apigateway.repository.DeliveryDriverRepository;
 import bg.tuplovdiv.apigateway.repository.UserRepository;
 import bg.tuplovdiv.apigateway.repository.UserRoleRepository;
 import bg.tuplovdiv.apigateway.security.user.impl.EatawayUser;
@@ -25,11 +27,13 @@ import static bg.tuplovdiv.apigateway.model.UserRoleEnum.EMPLOYEE;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final DeliveryDriverRepository deliveryDriverRepository;
     private final UserRoleRepository userRoleRepository;
     private final UserMapper mapper;
 
-    public UserServiceImpl(UserRepository userRepository, UserRoleRepository userRoleRepository, UserMapper mapper) {
+    public UserServiceImpl(UserRepository userRepository, DeliveryDriverRepository deliveryDriverRepository, UserRoleRepository userRoleRepository, UserMapper mapper) {
         this.userRepository = userRepository;
+        this.deliveryDriverRepository = deliveryDriverRepository;
         this.userRoleRepository = userRoleRepository;
         this.mapper = mapper;
     }
@@ -49,11 +53,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void setUserRoles(EatawayUser user) {
-        UserEntity userEntity = getUser(user.getUserId());
-    }
-
-    @Override
     public Collection<EatawayUser> getAllUsers() {
         return userRepository.findAll()
                 .stream()
@@ -68,6 +67,14 @@ public class UserServiceImpl implements UserService {
         user.setUserRoles(createUserRole(EMPLOYEE));
 
         userRepository.save(user);
+        deliveryDriverRepository.save(createDeliveryDriver(user));
+    }
+
+    private DeliveryDriverEntity createDeliveryDriver(UserEntity user) {
+        return new DeliveryDriverEntity()
+                .setDeliveryDriverId(user.getUserId())
+                .setFree(true)
+                .setCurrentOrderId(null);
     }
 
     @Override
@@ -77,6 +84,7 @@ public class UserServiceImpl implements UserService {
         user.setUserRoles(createUserRole(CUSTOMER));
 
         userRepository.save(user);
+        deliveryDriverRepository.delete(getDeliveryDriver(userId));
     }
 
     private UserEntity getUser(String userId) {
@@ -93,5 +101,10 @@ public class UserServiceImpl implements UserService {
     private UserRole getUserRole(UserRoleEnum role) {
         return userRoleRepository.findByUserRole(role)
                 .orElseThrow(() -> new UserRoleNotFoundException("User role " + role.name() + " is unknown"));
+    }
+
+    private DeliveryDriverEntity getDeliveryDriver(String userId) {
+        return deliveryDriverRepository.findByDeliveryDriverId(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("Delivery driver not found."));
     }
 }

@@ -59,6 +59,7 @@ public class DeliveryController {
 
     @PostMapping(ORDERS_PATH)
     @ResponseBody
+    @PreAuthorize("@deliveryValidator.isDeliveryDriverFree()")
     public ResponseEntity<Void> takeOrder(@RequestBody String orderId) {
         deliveryService.takeOrder(UUID.fromString(orderId), getUserId());
 
@@ -67,6 +68,7 @@ public class DeliveryController {
 
     @PutMapping(UPDATE_ORDERS_PATH)
     @ResponseBody
+    @PreAuthorize("@deliveryValidator.isDeliveryDriverCorrect(#orderId)")
     public ResponseEntity<Void> updateOrder(@PathVariable UUID orderId,
                                       @RequestParam(name = "status") String status) {
         deliveryService.updateOrder(orderId, status);

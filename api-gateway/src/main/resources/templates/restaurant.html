@@ -49,9 +49,6 @@
 
           <p class="mb-3 post-description" th:text="${menu.description}">Description</p>
 
-          <h5 class="mb-3 post-description">Items:</h5>
-          <p th:each="item : ${menu.items}" class="mb-3 post-description" th:text="${item}">Items</p>
-
           <span class="mb-3 post-description" th:text="'$' + ${menu.price}">Price</span>
 
           <ul class="list-inline list-inline-dotted mb-0">
