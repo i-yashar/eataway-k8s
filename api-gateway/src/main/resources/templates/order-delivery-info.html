@@ -46,18 +46,18 @@
         <div class="post-frame card card-body mt-3">
             <div class="media align-items-center align-items-lg-start text-center text-lg-left flex-column flex-lg-row">
 
-                <div th:object="${restaurant}" class="post-header media-body">
+                <div class="post-header media-body">
 
                     <h5 class="media-title font-weight-semibold">
                         <th:block th:text="${item.menu.name} + ' X ' + ${item.count}">Menu Name</th:block>
                     </h5>
 
-                    <p class="mb-3 post-description" th:text="'Menu price: ' + ${item.menu.price}">Menu price</p>
+                    <p class="mb-3 post-description" th:text="'Price: ' + ${item.menu.price * item.count}">Menu price</p>
 
-                    <p idclass="mb-3 post-description" th:text="'Restaurant name: ' + ${menu.restaurantName}">Restaurant
+                    <p idclass="mb-3 post-description" th:text="'Restaurant name: ' + ${item.menu.restaurantName}">Restaurant
                         name</p>
 
-                    <p class="mb-3 post-description" th:text="'Restaurant address: ' + ${menu.restaurantAddress}">
+                    <p class="mb-3 post-description" th:text="'Restaurant address: ' + ${item.menu.restaurantAddress}">
                         Restaurant address</p>
 
                 </div>

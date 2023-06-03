@@ -12,8 +12,10 @@ public class DeliveryDriverEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String deliveryDriverId;
 
+    @Column(nullable = false)
     private Boolean isFree;
 
     private UUID currentOrderId;

@@ -52,7 +52,7 @@ public class DeliveryController {
     public String getOrderInfo(@PathVariable UUID orderId, Model model) {
         OrderDTO orderInfo = deliveryService.getOrderInfo(orderId);
         model.addAttribute("order", orderInfo);
-        model.addAttribute("menus", orderInfo.getItems());
+        model.addAttribute("items", orderInfo.getItems());
 
         return "order-delivery-info";
     }

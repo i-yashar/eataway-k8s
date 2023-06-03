@@ -11,6 +11,7 @@ import bg.tuplovdiv.orderservice.messaging.process.UpdateOrderProcess;
 import bg.tuplovdiv.orderservice.model.entity.BasketEntity;
 import bg.tuplovdiv.orderservice.model.entity.ItemEntity;
 import bg.tuplovdiv.orderservice.model.entity.OrderEntity;
+import bg.tuplovdiv.orderservice.model.enums.OrderStatus;
 import bg.tuplovdiv.orderservice.repository.BasketRepository;
 import bg.tuplovdiv.orderservice.repository.OrderRepository;
 import bg.tuplovdiv.orderservice.service.OrderService;
@@ -125,6 +126,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDTO updateOrder(OrderDTO order) {
         OrderEntity orderEntity = getOrderByOrderId(order.getOrderId());
+        orderEntity.setStatus(OrderStatus.valueOf(order.getStatus()));
         orderEntity.setDeliveryDriverId(order.getDeliveryDriverId());
         orderEntity.setUpdatedAt(Instant.now());
 
