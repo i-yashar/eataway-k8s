@@ -1,4 +1,4 @@
-package bg.tuplovdiv.orderservice.task;
+package bg.tuplovdiv.orderservice.task.impl;
 
 import bg.tuplovdiv.orderservice.model.enums.OrderStatus;
 import bg.tuplovdiv.orderservice.repository.ActiveOrderRepository;

@@ -4,39 +4,36 @@ import bg.tuplovdiv.apigateway.dto.OrderDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class OrderQueue {
 
-    private static final ConcurrentLinkedDeque<OrderDTO> orders;
+    private static final ConcurrentHashMap<UUID, OrderDTO> orders;
 
     static {
-        orders = new ConcurrentLinkedDeque<>();
+        orders = new ConcurrentHashMap<>();
     }
 
     public Collection<OrderDTO> getRegisteredOrders() {
-        return orders.stream().toList();
+        return orders.values().stream().toList();
     }
 
     public void registerOrder(OrderDTO order) {
-        orders.add(order);
+        orders.put(order.getOrderId(), order);
     }
 
 
     public OrderDTO takeOrder(UUID orderId) {
-        Optional<OrderDTO> optOrder = orders.stream()
-                .filter(order -> order.getOrderId().equals(orderId))
-                .findFirst();
+        OrderDTO order = orders.get(orderId);
 
-        if (optOrder.isEmpty()) {
+        if (order == null) {
             throw new IllegalStateException();
         }
 
-        orders.removeIf(order -> order.getOrderId().equals(orderId));
+        orders.remove(orderId);
 
-        return optOrder.get();
+        return order;
     }
 }
