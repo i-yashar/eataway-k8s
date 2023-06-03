@@ -8,8 +8,8 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "orders")
-public class OrderEntity {
+@Table(name = "active_orders")
+public class ActiveOrderEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,13 +39,11 @@ public class OrderEntity {
     @Column(nullable = false)
     private OrderStatus status;
 
-    private Instant updatedAt;
-
     public Long getId() {
         return id;
     }
 
-    public OrderEntity setId(Long id) {
+    public ActiveOrderEntity setId(Long id) {
         this.id = id;
         return this;
     }
@@ -54,7 +52,7 @@ public class OrderEntity {
         return externalId;
     }
 
-    public OrderEntity setExternalId(UUID externalId) {
+    public ActiveOrderEntity setExternalId(UUID externalId) {
         this.externalId = externalId;
         return this;
     }
@@ -63,7 +61,7 @@ public class OrderEntity {
         return clientId;
     }
 
-    public OrderEntity setClientId(String clientId) {
+    public ActiveOrderEntity setClientId(String clientId) {
         this.clientId = clientId;
         return this;
     }
@@ -72,7 +70,7 @@ public class OrderEntity {
         return deliveryDriverId;
     }
 
-    public OrderEntity setDeliveryDriverId(String deliveryDriverId) {
+    public ActiveOrderEntity setDeliveryDriverId(String deliveryDriverId) {
         this.deliveryDriverId = deliveryDriverId;
         return this;
     }
@@ -81,7 +79,7 @@ public class OrderEntity {
         return clientPhoneNumber;
     }
 
-    public OrderEntity setClientPhoneNumber(String clientPhoneNumber) {
+    public ActiveOrderEntity setClientPhoneNumber(String clientPhoneNumber) {
         this.clientPhoneNumber = clientPhoneNumber;
         return this;
     }
@@ -90,7 +88,7 @@ public class OrderEntity {
         return address;
     }
 
-    public OrderEntity setAddress(String address) {
+    public ActiveOrderEntity setAddress(String address) {
         this.address = address;
         return this;
     }
@@ -99,7 +97,7 @@ public class OrderEntity {
         return items;
     }
 
-    public OrderEntity setItems(Set<ItemEntity> items) {
+    public ActiveOrderEntity setItems(Set<ItemEntity> items) {
         this.items = items;
         return this;
     }
@@ -108,7 +106,7 @@ public class OrderEntity {
         return totalCost;
     }
 
-    public OrderEntity setTotalCost(Double totalCost) {
+    public ActiveOrderEntity setTotalCost(Double totalCost) {
         this.totalCost = totalCost;
         return this;
     }
@@ -117,7 +115,7 @@ public class OrderEntity {
         return status;
     }
 
-    public OrderEntity setStatus(OrderStatus status) {
+    public ActiveOrderEntity setStatus(OrderStatus status) {
         this.status = status;
         return this;
     }
@@ -126,13 +124,15 @@ public class OrderEntity {
         return updatedAt;
     }
 
-    public OrderEntity setUpdatedAt(Instant updatedAt) {
+    public ActiveOrderEntity setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
         return this;
     }
 
-    public ActiveOrderEntity toActiveOrder() {
-        return new ActiveOrderEntity()
+    private Instant updatedAt;
+
+    public OrderEntity toOrder() {
+        return new OrderEntity()
                 .setId(id)
                 .setExternalId(externalId)
                 .setClientId(clientId)

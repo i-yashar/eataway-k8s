@@ -8,10 +8,12 @@ import bg.tuplovdiv.orderservice.mapper.OrderMapper;
 import bg.tuplovdiv.orderservice.messaging.delivery.OrderStatusChange;
 import bg.tuplovdiv.orderservice.messaging.process.CreateOrderProcess;
 import bg.tuplovdiv.orderservice.messaging.process.UpdateOrderProcess;
+import bg.tuplovdiv.orderservice.model.entity.ActiveOrderEntity;
 import bg.tuplovdiv.orderservice.model.entity.BasketEntity;
 import bg.tuplovdiv.orderservice.model.entity.ItemEntity;
 import bg.tuplovdiv.orderservice.model.entity.OrderEntity;
 import bg.tuplovdiv.orderservice.model.enums.OrderStatus;
+import bg.tuplovdiv.orderservice.repository.ActiveOrderRepository;
 import bg.tuplovdiv.orderservice.repository.BasketRepository;
 import bg.tuplovdiv.orderservice.repository.OrderRepository;
 import bg.tuplovdiv.orderservice.service.OrderService;
@@ -34,23 +36,35 @@ public class OrderServiceImpl implements OrderService {
     private final CreateOrderProcess createOrderProcess;
     private final UpdateOrderProcess updateOrderProcess;
     private final OrderRepository orderRepository;
+    private final ActiveOrderRepository activeOrderRepository;
     private final BasketRepository basketRepository;
     private final OrderMapper mapper;
 
-    public OrderServiceImpl(OrderStatusInfoService orderStatusInfoService, CreateOrderProcess createOrderProcess, UpdateOrderProcess updateOrderProcess, OrderRepository orderRepository, BasketRepository basketRepository, OrderMapper mapper) {
+    public OrderServiceImpl(OrderStatusInfoService orderStatusInfoService, CreateOrderProcess createOrderProcess, UpdateOrderProcess updateOrderProcess, OrderRepository orderRepository, ActiveOrderRepository activeOrderRepository, BasketRepository basketRepository, OrderMapper mapper) {
         this.orderStatusInfoService = orderStatusInfoService;
         this.createOrderProcess = createOrderProcess;
         this.updateOrderProcess = updateOrderProcess;
         this.orderRepository = orderRepository;
+        this.activeOrderRepository = activeOrderRepository;
         this.basketRepository = basketRepository;
         this.mapper = mapper;
     }
 
     @Override
     public OrderDTO findOrderByOrderId(UUID orderId) {
-        OrderEntity order = getOrderByOrderId(orderId);
+        Optional<ActiveOrderEntity> order = activeOrderRepository
+                .findActiveOrderEntityByExternalId(orderId);
 
-        return mapper.toDTO(order);
+        if (order.isEmpty()) {
+            return mapper.toDTO(getOrderByOrderId(orderId));
+        }
+
+        return mapper.toDTO(order.get().toOrder());
+    }
+
+    private OrderEntity getOrderByOrderId(UUID orderId) {
+        return orderRepository.findOrderEntityByExternalId(orderId)
+                .orElseThrow(IllegalArgumentException::new);
     }
 
     @Override
@@ -61,15 +75,15 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private PageDTO<OrderDTO> getActiveUserOrdersPage(String clientId, Pageable pageable) {
-        Page<OrderEntity> orders = orderRepository.findAllByClientIdAndStatusInOrderByUpdatedAtDesc(clientId, Set.of(REGISTERED, ACTIVE, ABOUT_TO_BE_DELIVERED), pageable);
+        Page<ActiveOrderEntity> orders = activeOrderRepository.findAllByClientIdAndStatusInOrderByUpdatedAtDesc(clientId, Set.of(REGISTERED, ACTIVE, ABOUT_TO_BE_DELIVERED), pageable);
 
         return new PageDTO<OrderDTO>()
                 .setContent(mapToOrderDTOs(orders))
                 .setPageInfo(orders.getSize(), orders.hasNext());
     }
 
-    private Collection<OrderDTO> mapToOrderDTOs(Page<OrderEntity> orders) {
-        return orders.map(mapper::toDTO)
+    private Collection<OrderDTO> mapToOrderDTOs(Page<ActiveOrderEntity> orders) {
+        return orders.map(o -> mapper.toDTO(o.toOrder()))
                 .stream()
                 .collect(Collectors.toList());
     }
@@ -88,7 +102,7 @@ public class OrderServiceImpl implements OrderService {
         String clientId = createOrderRequest.getClientId();
         Set<ItemEntity> orderItems = getOrderItems(clientId);
 
-        OrderEntity orderEntity = new OrderEntity()
+        ActiveOrderEntity orderEntity = new ActiveOrderEntity()
                 .setExternalId(UUID.randomUUID())
                 .setClientId(clientId)
                 .setClientPhoneNumber(createOrderRequest.getClientPhoneNumber())
@@ -98,7 +112,7 @@ public class OrderServiceImpl implements OrderService {
                 .setStatus(REGISTERED)
                 .setUpdatedAt(Instant.now());
 
-        return orderRepository.save(orderEntity);
+        return activeOrderRepository.save(orderEntity).toOrder();
     }
 
     private Set<ItemEntity> getOrderItems(String clientId) {
@@ -125,30 +139,31 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDTO updateOrder(OrderDTO order) {
-        OrderEntity orderEntity = getOrderByOrderId(order.getOrderId());
-        orderEntity.setStatus(OrderStatus.valueOf(order.getStatus()));
-        orderEntity.setDeliveryDriverId(order.getDeliveryDriverId());
-        orderEntity.setUpdatedAt(Instant.now());
+        ActiveOrderEntity activeOrderEntity = getActiveOrderByOrderId(order.getOrderId());
+        activeOrderEntity.setStatus(OrderStatus.valueOf(order.getStatus()));
+        activeOrderEntity.setDeliveryDriverId(order.getDeliveryDriverId());
+        activeOrderEntity.setUpdatedAt(Instant.now());
 
-        orderEntity = orderRepository.save(orderEntity);
+        activeOrderEntity = activeOrderRepository.save(activeOrderEntity);
         orderStatusInfoService.saveOrderStatusInfo(order);
 
+        OrderEntity orderEntity = activeOrderEntity.toOrder();
         updateOrderProcess.start(createOrderStatusChange(orderEntity));
 
         return mapper.toDTO(orderEntity);
     }
 
-    private OrderEntity getOrderByOrderId(UUID orderId) {
-        return orderRepository.findOrderEntityByExternalId(orderId)
+    private ActiveOrderEntity getActiveOrderByOrderId(UUID orderId) {
+        return activeOrderRepository.findActiveOrderEntityByExternalId(orderId)
                 .orElseThrow(IllegalArgumentException::new);
     }
 
     @Override
     public Collection<OrderDTO> getActiveDeliveryDriverOrders(String driverId) {
-        return orderRepository
+        return activeOrderRepository
                 .findAllByDeliveryDriverIdAndStatusIn(driverId, Set.of(ACTIVE, ABOUT_TO_BE_DELIVERED))
                 .stream()
-                .map(mapper::toDTO)
+                .map(o -> mapper.toDTO(o.toOrder()))
                 .collect(Collectors.toList());
     }
 
