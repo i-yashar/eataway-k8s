@@ -6,10 +6,8 @@ import bg.tuplovdiv.orderservice.dto.OrderStatusInfoDTO;
 import bg.tuplovdiv.orderservice.dto.page.PageDTO;
 import bg.tuplovdiv.orderservice.service.OrderService;
 import bg.tuplovdiv.orderservice.service.OrderStatusInfoService;
-import bg.tuplovdiv.orderservice.validation.order.DeliveryValidator;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -25,16 +23,13 @@ public class OrderRestController {
     private static final String CLIENT_ORDERS_PATH = "/users/{clientId}" + ORDERS_PATH;
     private static final String ACTIVE_DELIVERY_DRIVER_ORDERS_PATH = "/delivery/drivers/{driverId}" + ORDERS_PATH;
     private static final String ORDER_STATUS_INFO_PATH = ORDER_PATH + "/info";
-    private static final String ORDER_BASKET_INFO_PATH = ORDER_PATH + "/menus";
 
     private final OrderService orderService;
     private final OrderStatusInfoService orderStatusInfoService;
-    private final DeliveryValidator deliveryValidator;
 
-    public OrderRestController(OrderService orderService, OrderStatusInfoService orderStatusInfoService, DeliveryValidator deliveryValidator) {
+    public OrderRestController(OrderService orderService, OrderStatusInfoService orderStatusInfoService) {
         this.orderService = orderService;
         this.orderStatusInfoService = orderStatusInfoService;
-        this.deliveryValidator = deliveryValidator;
     }
 
     @GetMapping(ORDER_PATH)
@@ -67,7 +62,6 @@ public class OrderRestController {
     }
 
     @PutMapping(ORDER_PATH)
-    @PreAuthorize("@deliveryValidator.isValid(#order)")
     public ResponseEntity<OrderDTO> updateOrder(@RequestBody @Valid OrderDTO order) {
         return ResponseEntity.ok(orderService.updateOrder(order));
     }
