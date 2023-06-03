@@ -1,4 +1,4 @@
-package bg.tuplovdiv.orderservice.task;
+package bg.tuplovdiv.orderservice.task.impl;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

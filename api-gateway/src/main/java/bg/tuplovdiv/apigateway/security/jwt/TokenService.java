@@ -1,8 +1,7 @@
 package bg.tuplovdiv.apigateway.security.jwt;
 
-import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUser;
-import bg.tuplovdiv.apigateway.security.authentication.impl.EatawayUser;
+import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
@@ -28,7 +27,7 @@ public class TokenService {
         AuthenticatedUser user = userProvider.provide();
         Instant now = Instant.now();
 
-        String scope = String.join(" ", ((EatawayUser) user).getRoles());
+        String scope = String.join(" ", user.getRoles());
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer(API_GATEWAY_SERVICE)

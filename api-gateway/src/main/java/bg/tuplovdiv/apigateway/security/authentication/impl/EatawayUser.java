@@ -48,6 +48,7 @@ public class EatawayUser implements AuthenticatedUser {
         return this;
     }
 
+    @Override
     public Collection<String> getRoles() {
         return roles;
     }
