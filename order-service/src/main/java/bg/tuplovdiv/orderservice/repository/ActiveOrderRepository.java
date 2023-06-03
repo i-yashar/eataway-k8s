@@ -16,4 +16,5 @@ public interface ActiveOrderRepository extends JpaRepository<ActiveOrderEntity, 
     Optional<ActiveOrderEntity> findActiveOrderEntityByExternalId(UUID orderId);
     Page<ActiveOrderEntity> findAllByClientIdAndStatusInOrderByUpdatedAtDesc(String clientId, Collection<OrderStatus> statuses, Pageable pageable);
     Collection<ActiveOrderEntity> findAllByDeliveryDriverIdAndStatusIn(String driverId, Collection<OrderStatus> statuses);
+    Collection<ActiveOrderEntity> findAllByStatus(OrderStatus status);
 }
