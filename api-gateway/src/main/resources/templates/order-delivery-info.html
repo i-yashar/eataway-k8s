@@ -30,7 +30,7 @@
                     <p class="mb-3 post-description" th:text="'Client phone number: ' + ${order.clientPhoneNumber}">
                         Client phone number</p>
 
-                    <p class="mb-3 post-description" th:text="'Total cost: ' + ${order.totalCost} + '$'">Total cost</p>
+                    <p class="mb-3 post-description" th:text="'Total cost: ' + ${#numbers.formatDecimal(order.totalCost,1,2)} + '$'">Total cost</p>
 
                     <p class="mb-3 post-description" th:text="'Order status: ' + ${order.status}">Order status</p>
                 </div>
