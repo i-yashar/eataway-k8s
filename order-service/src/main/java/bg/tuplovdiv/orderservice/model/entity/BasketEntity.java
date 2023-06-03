@@ -17,12 +17,11 @@ public class BasketEntity {
     private UUID externalId;
 
     @OneToOne
-    @Cascade(org.hibernate.annotations.CascadeType.DELETE)
     private UserEntity owner;
 
     @OneToMany(fetch = FetchType.EAGER)
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private Set<BasketItemEntity> items;
+    @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
+    private Set<ItemEntity> items;
 
     public Long getId() {
         return id;
@@ -51,11 +50,11 @@ public class BasketEntity {
         return this;
     }
 
-    public Set<BasketItemEntity> getItems() {
+    public Set<ItemEntity> getItems() {
         return items;
     }
 
-    public BasketEntity setItems(Set<BasketItemEntity> items) {
+    public BasketEntity setItems(Set<ItemEntity> items) {
         this.items = items;
         return this;
     }

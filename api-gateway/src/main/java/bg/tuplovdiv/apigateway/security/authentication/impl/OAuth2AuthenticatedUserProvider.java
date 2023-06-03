@@ -2,8 +2,7 @@ package bg.tuplovdiv.apigateway.security.authentication.impl;
 
 import bg.tuplovdiv.apigateway.model.entity.UserEntity;
 import bg.tuplovdiv.apigateway.repository.UserRepository;
-import bg.tuplovdiv.apigateway.security.user.impl.EatawayUser;
-import bg.tuplovdiv.apigateway.security.user.AuthenticatedUser;
+import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUser;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;

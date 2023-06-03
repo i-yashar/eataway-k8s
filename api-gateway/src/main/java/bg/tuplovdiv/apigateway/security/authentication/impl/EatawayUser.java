@@ -1,6 +1,6 @@
-package bg.tuplovdiv.apigateway.security.user.impl;
+package bg.tuplovdiv.apigateway.security.authentication.impl;
 
-import bg.tuplovdiv.apigateway.security.user.AuthenticatedUser;
+import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUser;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Collection;

@@ -1,7 +1,8 @@
 package bg.tuplovdiv.apigateway.messaging;
 
-import bg.tuplovdiv.apigateway.dto.BasketDTO;
+import bg.tuplovdiv.apigateway.dto.ItemDTO;
 
+import java.util.Set;
 import java.util.UUID;
 
 public class OrderContext extends Message {
@@ -9,10 +10,8 @@ public class OrderContext extends Message {
     private String clientId;
     private String clientPhoneNumber;
     private String address;
-    private String deliveryDriverId;
-    private BasketDTO basket;
+    private Set<ItemDTO> items;
     private Double totalCost;
-    private String status;
 
     public UUID getOrderId() {
         return orderId;
@@ -50,21 +49,12 @@ public class OrderContext extends Message {
         return this;
     }
 
-    public String getDeliveryDriverId() {
-        return deliveryDriverId;
+    public Set<ItemDTO> getItems() {
+        return items;
     }
 
-    public OrderContext setDeliveryDriverId(String deliveryDriverId) {
-        this.deliveryDriverId = deliveryDriverId;
-        return this;
-    }
-
-    public BasketDTO getBasket() {
-        return basket;
-    }
-
-    public OrderContext setBasket(BasketDTO basket) {
-        this.basket = basket;
+    public OrderContext setItems(Set<ItemDTO> items) {
+        this.items = items;
         return this;
     }
 
@@ -75,26 +65,5 @@ public class OrderContext extends Message {
     public OrderContext setTotalCost(Double totalCost) {
         this.totalCost = totalCost;
         return this;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public OrderContext setStatus(String status) {
-        this.status = status;
-        return this;
-    }
-
-    @Override
-    public String toString() {
-        return "OrderContext{" +
-                "orderId=" + orderId +
-                ", clientId='" + clientId + '\'' +
-                ", clientPhoneNumber='" + clientPhoneNumber + '\'' +
-                ", address='" + address + '\'' +
-                ", basket=" + basket +
-                ", totalCost=" + totalCost +
-                '}';
     }
 }

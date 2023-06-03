@@ -111,9 +111,9 @@ public class OrdersRestClient extends RestClient {
         return get(request, response -> mapJsonToObject(response.body(), BASKET_DTO_TYPE));
     }
 
-    public BasketDTO addBasketItem(String ownerId, BasketItemDTO basketItem) {
+    public BasketDTO addBasketItem(String ownerId, ItemDTO item) {
         HttpRequest request = HttpRequest.newBuilder()
-                .PUT(createRequestBody(basketItem))
+                .PUT(createRequestBody(item))
                 .uri(buildURI(ORDERS_API_BASKETS_BASE_PATH, ownerId))
                 .header("Content-Type", "application/json")
                 .header("accept", "application/json")

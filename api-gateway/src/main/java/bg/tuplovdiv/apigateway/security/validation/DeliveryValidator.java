@@ -1,48 +1,56 @@
 package bg.tuplovdiv.apigateway.security.validation;
 
-import bg.tuplovdiv.apigateway.model.entity.UserEntity;
-import bg.tuplovdiv.apigateway.order.OrderQueue;
-import bg.tuplovdiv.apigateway.repository.UserRepository;
+import bg.tuplovdiv.apigateway.exception.DeliveryDriverNotFreeException;
+import bg.tuplovdiv.apigateway.model.entity.DeliveryDriverEntity;
+import bg.tuplovdiv.apigateway.repository.DeliveryDriverRepository;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
-import bg.tuplovdiv.apigateway.security.user.AuthenticatedUser;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUser;
 import org.springframework.stereotype.Component;
 
-import static bg.tuplovdiv.apigateway.model.UserRoleEnum.EMPLOYEE;
+import java.util.Optional;
+import java.util.UUID;
 
 @Component
 public class DeliveryValidator {
 
     private final AuthenticatedUserProvider authenticatedUserProvider;
-    private final OrderQueue orderQueue;
-    private final UserRepository userRepository;
+    private final DeliveryDriverRepository deliveryDriverRepository;
 
-    public DeliveryValidator(AuthenticatedUserProvider authenticatedUserProvider, OrderQueue orderQueue, UserRepository userRepository) {
+    public DeliveryValidator(AuthenticatedUserProvider authenticatedUserProvider, DeliveryDriverRepository deliveryDriverRepository) {
         this.authenticatedUserProvider = authenticatedUserProvider;
-        this.orderQueue = orderQueue;
-        this.userRepository = userRepository;
-    }
-
-    public boolean isDeliveryDriverFree() {
-        UserEntity user = getUser();
-
-        boolean isDriverBusy = orderQueue.getActiveOrders()
-                .stream()
-                .anyMatch(order -> user.getUserId().equals(order.getDeliveryDriverId()));
-
-        return isDeliveryDriverValid() && !isDriverBusy;
+        this.deliveryDriverRepository = deliveryDriverRepository;
     }
 
     public boolean isDeliveryDriverValid() {
-        UserEntity user = getUser();
-
-        return user.getUserRoles().stream()
-                .anyMatch(role -> role.getUserRole().equals(EMPLOYEE));
+        return getDeliveryDriver().isPresent();
     }
 
-    private UserEntity getUser() {
+    public boolean isDeliveryDriverFree() {
+        Optional<DeliveryDriverEntity> driver = getDeliveryDriver();
+
+        if (driver.isEmpty()) {
+            return false;
+        }
+
+        if(!driver.get().isFree()) {
+            throw new DeliveryDriverNotFreeException();
+        }
+
+        return true;
+    }
+
+    public boolean isDeliveryDriverCorrect(UUID orderId) {
+        Optional<DeliveryDriverEntity> driver = getDeliveryDriver();
+
+        if (driver.isEmpty()) {
+            return false;
+        }
+
+        return orderId.equals(driver.get().getCurrentOrderId());
+    }
+
+    private Optional<DeliveryDriverEntity> getDeliveryDriver() {
         AuthenticatedUser principal = authenticatedUserProvider.provide();
-        return userRepository.findByUserId(principal.getUserId())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return deliveryDriverRepository.findByDeliveryDriverId(principal.getUserId());
     }
 }

@@ -1,37 +1,25 @@
 package bg.tuplovdiv.orderservice.dto;
 
-import java.util.UUID;
-
 public class ItemDTO {
 
-    private UUID itemId;
-    private String name;
-    private Integer quantity;
+    private MenuDTO menu;
+    private Integer count;
 
-    public UUID getItemId() {
-        return itemId;
+    public MenuDTO getMenu() {
+        return menu;
     }
 
-    public ItemDTO setItemId(UUID itemId) {
-        this.itemId = itemId;
+    public ItemDTO setMenu(MenuDTO menu) {
+        this.menu = menu;
         return this;
     }
 
-    public String getName() {
-        return name;
+    public Integer getCount() {
+        return count;
     }
 
-    public ItemDTO setName(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public ItemDTO setQuantity(Integer quantity) {
-        this.quantity = quantity;
+    public ItemDTO setCount(Integer count) {
+        this.count = count;
         return this;
     }
 }

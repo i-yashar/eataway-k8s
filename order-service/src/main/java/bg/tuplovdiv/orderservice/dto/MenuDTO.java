@@ -1,6 +1,5 @@
 package bg.tuplovdiv.orderservice.dto;
 
-import java.util.Set;
 import java.util.UUID;
 
 public class MenuDTO {
@@ -9,8 +8,9 @@ public class MenuDTO {
     private String name;
     private String description;
     private Double price;
-    private Set<ItemDTO> items;
     private UUID restaurantId;
+    private String restaurantName;
+    private String restaurantAddress;
 
     public UUID getMenuId() {
         return menuId;
@@ -48,21 +48,30 @@ public class MenuDTO {
         return this;
     }
 
-    public Set<ItemDTO> getItems() {
-        return items;
-    }
-
-    public MenuDTO setItems(Set<ItemDTO> items) {
-        this.items = items;
-        return this;
-    }
-
     public UUID getRestaurantId() {
         return restaurantId;
     }
 
     public MenuDTO setRestaurantId(UUID restaurantId) {
         this.restaurantId = restaurantId;
+        return this;
+    }
+
+    public String getRestaurantName() {
+        return restaurantName;
+    }
+
+    public MenuDTO setRestaurantName(String restaurantName) {
+        this.restaurantName = restaurantName;
+        return this;
+    }
+
+    public String getRestaurantAddress() {
+        return restaurantAddress;
+    }
+
+    public MenuDTO setRestaurantAddress(String restaurantAddress) {
+        this.restaurantAddress = restaurantAddress;
         return this;
     }
 }

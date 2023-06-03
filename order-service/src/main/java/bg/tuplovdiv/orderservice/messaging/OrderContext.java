@@ -1,7 +1,8 @@
 package bg.tuplovdiv.orderservice.messaging;
 
-import bg.tuplovdiv.orderservice.dto.BasketDTO;
+import bg.tuplovdiv.orderservice.dto.ItemDTO;
 
+import java.util.Set;
 import java.util.UUID;
 
 public class OrderContext extends Message {
@@ -9,15 +10,15 @@ public class OrderContext extends Message {
     private final String clientId;
     private final String clientPhoneNumber;
     private final String address;
-    private final BasketDTO basket;
+    private final Set<ItemDTO> items;
     private final Double totalCost;
 
-    private OrderContext(UUID orderId, String clientId, String clientPhoneNumber, String address, BasketDTO basket, Double totalCost) {
+    private OrderContext(UUID orderId, String clientId, String clientPhoneNumber, String address, Set<ItemDTO> items, Double totalCost) {
         this.orderId = orderId;
         this.clientId = clientId;
         this.clientPhoneNumber = clientPhoneNumber;
         this.address = address;
-        this.basket = basket;
+        this.items = items;
         this.totalCost = totalCost;
     }
 
@@ -37,8 +38,8 @@ public class OrderContext extends Message {
         return address;
     }
 
-    public BasketDTO getBasket() {
-        return basket;
+    public Set<ItemDTO> getItems() {
+        return items;
     }
 
     public Double getTotalCost() {
@@ -54,7 +55,7 @@ public class OrderContext extends Message {
         private String clientId;
         private String clientPhoneNumber;
         private String address;
-        private BasketDTO basket;
+        private Set<ItemDTO> items;
         private Double totalCost;
 
         public Builder orderId(UUID orderId) {
@@ -77,8 +78,8 @@ public class OrderContext extends Message {
             return this;
         }
 
-        public Builder basket(BasketDTO basket) {
-            this.basket = basket;
+        public Builder items(Set<ItemDTO> items) {
+            this.items = items;
             return this;
         }
 
@@ -93,7 +94,7 @@ public class OrderContext extends Message {
                     this.clientId,
                     this.clientPhoneNumber,
                     this.address,
-                    this.basket,
+                    this.items,
                     this.totalCost
             );
         }

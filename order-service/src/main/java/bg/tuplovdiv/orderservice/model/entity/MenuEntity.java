@@ -2,7 +2,6 @@ package bg.tuplovdiv.orderservice.model.entity;
 
 import jakarta.persistence.*;
 
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -23,9 +22,6 @@ public class MenuEntity {
 
     @Column(nullable = false)
     private Double price;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<ItemEntity> items;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private RestaurantEntity restaurant;
@@ -72,15 +68,6 @@ public class MenuEntity {
 
     public MenuEntity setPrice(Double price) {
         this.price = price;
-        return this;
-    }
-
-    public Set<ItemEntity> getItems() {
-        return items;
-    }
-
-    public MenuEntity setItems(Set<ItemEntity> items) {
-        this.items = items;
         return this;
     }
 

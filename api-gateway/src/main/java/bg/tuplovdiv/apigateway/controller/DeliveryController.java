@@ -1,7 +1,8 @@
 package bg.tuplovdiv.apigateway.controller;
 
+import bg.tuplovdiv.apigateway.dto.OrderDTO;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
-import bg.tuplovdiv.apigateway.security.user.AuthenticatedUser;
+import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUser;
 import bg.tuplovdiv.apigateway.security.validation.DeliveryValidator;
 import bg.tuplovdiv.apigateway.service.DeliveryService;
 import org.springframework.http.ResponseEntity;
@@ -49,14 +50,16 @@ public class DeliveryController {
 
     @GetMapping(ORDER_INFO_PATH)
     public String getOrderInfo(@PathVariable UUID orderId, Model model) {
-        model.addAttribute("order", deliveryService.getOrderInfo(orderId));
-        model.addAttribute("menus", deliveryService.getOrderBasketInfo(orderId).getItems());
+        OrderDTO orderInfo = deliveryService.getOrderInfo(orderId);
+        model.addAttribute("order", orderInfo);
+        model.addAttribute("items", orderInfo.getItems());
 
         return "order-delivery-info";
     }
 
     @PostMapping(ORDERS_PATH)
     @ResponseBody
+    @PreAuthorize("@deliveryValidator.isDeliveryDriverFree()")
     public ResponseEntity<Void> takeOrder(@RequestBody String orderId) {
         deliveryService.takeOrder(UUID.fromString(orderId), getUserId());
 
@@ -65,6 +68,7 @@ public class DeliveryController {
 
     @PutMapping(UPDATE_ORDERS_PATH)
     @ResponseBody
+    @PreAuthorize("@deliveryValidator.isDeliveryDriverCorrect(#orderId)")
     public ResponseEntity<Void> updateOrder(@PathVariable UUID orderId,
                                       @RequestParam(name = "status") String status) {
         deliveryService.updateOrder(orderId, status);
