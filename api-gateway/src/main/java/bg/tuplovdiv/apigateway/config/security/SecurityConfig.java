@@ -1,6 +1,6 @@
 package bg.tuplovdiv.apigateway.config.security;
 
-import bg.tuplovdiv.apigateway.security.handler.OAuth2LoginSuccessHandler;
+import bg.tuplovdiv.apigateway.security.authentication.impl.OAuth2LoginSuccessHandler;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;

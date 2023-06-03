@@ -1,6 +1,6 @@
 package bg.tuplovdiv.apigateway.service;
 
-import bg.tuplovdiv.apigateway.security.user.impl.EatawayUser;
+import bg.tuplovdiv.apigateway.security.authentication.impl.EatawayUser;
 
 import java.util.Collection;
 

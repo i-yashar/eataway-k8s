@@ -4,7 +4,7 @@ import bg.tuplovdiv.apigateway.exception.DeliveryDriverNotFreeException;
 import bg.tuplovdiv.apigateway.model.entity.DeliveryDriverEntity;
 import bg.tuplovdiv.apigateway.repository.DeliveryDriverRepository;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
-import bg.tuplovdiv.apigateway.security.user.AuthenticatedUser;
+import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUser;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;

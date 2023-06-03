@@ -1,4 +1,4 @@
-package bg.tuplovdiv.apigateway.security.user;
+package bg.tuplovdiv.apigateway.security.authentication;
 
 public interface AuthenticatedUser {
     String getUserId();

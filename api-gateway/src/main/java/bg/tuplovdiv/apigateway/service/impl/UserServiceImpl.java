@@ -9,7 +9,7 @@ import bg.tuplovdiv.apigateway.model.entity.UserRole;
 import bg.tuplovdiv.apigateway.repository.DeliveryDriverRepository;
 import bg.tuplovdiv.apigateway.repository.UserRepository;
 import bg.tuplovdiv.apigateway.repository.UserRoleRepository;
-import bg.tuplovdiv.apigateway.security.user.impl.EatawayUser;
+import bg.tuplovdiv.apigateway.security.authentication.impl.EatawayUser;
 import bg.tuplovdiv.apigateway.service.UserService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;

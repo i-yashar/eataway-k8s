@@ -1,8 +1,8 @@
 package bg.tuplovdiv.apigateway.security.jwt;
 
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
-import bg.tuplovdiv.apigateway.security.user.AuthenticatedUser;
-import bg.tuplovdiv.apigateway.security.user.impl.EatawayUser;
+import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUser;
+import bg.tuplovdiv.apigateway.security.authentication.impl.EatawayUser;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;

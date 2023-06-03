@@ -2,7 +2,7 @@ package bg.tuplovdiv.apigateway.controller;
 
 import bg.tuplovdiv.apigateway.dto.OrderDTO;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
-import bg.tuplovdiv.apigateway.security.user.AuthenticatedUser;
+import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUser;
 import bg.tuplovdiv.apigateway.security.validation.DeliveryValidator;
 import bg.tuplovdiv.apigateway.service.DeliveryService;
 import org.springframework.http.ResponseEntity;

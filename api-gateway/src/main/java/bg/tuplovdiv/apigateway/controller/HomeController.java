@@ -1,7 +1,7 @@
 package bg.tuplovdiv.apigateway.controller;
 
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
-import bg.tuplovdiv.apigateway.security.user.impl.EatawayUser;
+import bg.tuplovdiv.apigateway.security.authentication.impl.EatawayUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

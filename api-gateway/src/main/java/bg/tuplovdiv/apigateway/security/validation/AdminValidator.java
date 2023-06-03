@@ -3,7 +3,7 @@ package bg.tuplovdiv.apigateway.security.validation;
 import bg.tuplovdiv.apigateway.model.entity.UserEntity;
 import bg.tuplovdiv.apigateway.repository.UserRepository;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
-import bg.tuplovdiv.apigateway.security.user.AuthenticatedUser;
+import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUser;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 

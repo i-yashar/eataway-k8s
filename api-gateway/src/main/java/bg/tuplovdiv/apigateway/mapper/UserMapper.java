@@ -2,7 +2,7 @@ package bg.tuplovdiv.apigateway.mapper;
 
 import bg.tuplovdiv.apigateway.model.entity.UserEntity;
 import bg.tuplovdiv.apigateway.model.entity.UserRole;
-import bg.tuplovdiv.apigateway.security.user.impl.EatawayUser;
+import bg.tuplovdiv.apigateway.security.authentication.impl.EatawayUser;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;

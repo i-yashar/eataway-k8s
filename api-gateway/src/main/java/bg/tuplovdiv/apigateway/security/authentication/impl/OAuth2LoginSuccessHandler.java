@@ -1,6 +1,5 @@
-package bg.tuplovdiv.apigateway.security.handler;
+package bg.tuplovdiv.apigateway.security.authentication.impl;
 
-import bg.tuplovdiv.apigateway.security.user.impl.EatawayUser;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
 import bg.tuplovdiv.apigateway.service.UserService;
 import jakarta.servlet.ServletException;
