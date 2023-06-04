@@ -12,12 +12,36 @@
 
 <div th:object="${order}" class="welcomePage jumbotron mt-5 pb-3 mx-auto col-8">
     <h1 class="display-4">Order info</h1>
-    <p class="lead">Order id: <span th:text="${order.orderId}"></span></p>
+    <p class="lead">Order id: <span id="orderId" th:text="${order.orderId}"></span></p>
     <p class="lead">Delivery info: Address - <span th:text="${order.address}"></span> | Phone number - <span th:text="${order.clientPhoneNumber}"></span></p>
     <p class="lead">Total cost: <span th:text="${#numbers.formatDecimal(order.totalCost,1,2)}"></span>$</p>
     <p id="orderStatusField" class="lead">Status: <span th:text="${order.status}"></span></p>
 
     <hr id="orderInfoSeparator" class="my-4">
+
+    <div th:each="item : ${order.items}" class="row text-justify">
+        <div class="post-frame card card-body mt-3">
+            <div class="media align-items-center align-items-lg-start text-center text-lg-left flex-column flex-lg-row">
+
+                <div class="post-header media-body">
+
+                    <h5 class="media-title font-weight-semibold">
+                        <th:block th:text="${item.menu.name} + ' X ' + ${item.count}">Menu Name</th:block>
+                    </h5>
+
+                    <p class="mb-3 post-description" th:text="'Price: ' + ${item.menu.price * item.count}">Menu price</p>
+
+                    <p idclass="mb-3 post-description" th:text="'Restaurant name: ' + ${item.menu.restaurantName}">Restaurant
+                        name</p>
+
+                    <p class="mb-3 post-description" th:text="'Restaurant address: ' + ${item.menu.restaurantAddress}">
+                        Restaurant address</p>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
 
 </div>
 

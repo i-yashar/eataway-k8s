@@ -9,13 +9,15 @@ getOrderStatusInfoMessages()
 evtSource.onmessage = (event) => {
     const data = JSON.parse(event.data)
 
-    let statusField = document.getElementById('orderStatusField')
-    statusField.textContent = 'Status: ' + data.status
-
     let time = getTime()
     let infoMessage = getInfoMessage(data.status)
+    let statusField = document.getElementById('orderStatusField')
+    let orderId = document.getElementById('orderId').textContent
 
-    appendOrderInfoMessage(time, infoMessage)
+    if (data.orderId === orderId) {
+        statusField.textContent = 'Status: ' + data.status
+        appendOrderInfoMessage(time, infoMessage)
+    }
 }
 
 async function getOrderStatusInfoMessages() {

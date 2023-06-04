@@ -90,29 +90,42 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public UUID createOrder(CreateOrderRequest createOrderRequest) {
-        OrderEntity order = persistOrder(createOrderRequest);
+        List<OrderEntity> order = persistOrder(createOrderRequest);
         resetBasketItems(createOrderRequest.getClientId());
 
-        createOrderProcess.start(order);
+        order.forEach(createOrderProcess::start);
 
-        return order.getExternalId();
+        return order.get(0).getExternalId();
     }
 
-    private OrderEntity persistOrder(CreateOrderRequest createOrderRequest) {
+    private List<OrderEntity> persistOrder(CreateOrderRequest createOrderRequest) {
         String clientId = createOrderRequest.getClientId();
         Set<ItemEntity> orderItems = getOrderItems(clientId);
 
-        ActiveOrderEntity orderEntity = new ActiveOrderEntity()
-                .setExternalId(UUID.randomUUID())
-                .setClientId(clientId)
-                .setClientPhoneNumber(createOrderRequest.getClientPhoneNumber())
-                .setAddress(createOrderRequest.getAddress())
-                .setItems(orderItems)
-                .setTotalCost(calculateTotalCost(orderItems))
-                .setStatus(REGISTERED)
-                .setUpdatedAt(Instant.now());
+        Map<UUID, Set<ItemEntity>> orders = new HashMap<>();
 
-        return activeOrderRepository.save(orderEntity).toOrder();
+        for (ItemEntity item : orderItems) {
+            UUID restaurantId = item.getMenu().getRestaurant().getExternalId();
+            orders.putIfAbsent(restaurantId, new HashSet<>());
+            orders.get(restaurantId).add(item);
+        }
+
+        return orders.values()
+                .stream()
+                .map(o -> {
+                    ActiveOrderEntity orderEntity = new ActiveOrderEntity()
+                            .setExternalId(UUID.randomUUID())
+                            .setClientId(clientId)
+                            .setClientPhoneNumber(createOrderRequest.getClientPhoneNumber())
+                            .setAddress(createOrderRequest.getAddress())
+                            .setItems(o)
+                            .setTotalCost(calculateTotalCost(o))
+                            .setStatus(REGISTERED)
+                            .setUpdatedAt(Instant.now());
+
+                    return activeOrderRepository.save(orderEntity).toOrder();
+                })
+                .toList();
     }
 
     private Set<ItemEntity> getOrderItems(String clientId) {

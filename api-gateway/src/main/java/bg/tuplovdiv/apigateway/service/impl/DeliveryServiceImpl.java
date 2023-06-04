@@ -27,8 +27,14 @@ class DeliveryServiceImpl implements DeliveryService {
     }
 
     @Override
-    public Collection<OrderDTO> getRegisteredOrders() {
-        return orderQueue.getRegisteredOrders();
+    public Collection<OrderDTO> getRegisteredOrders(String driverId) {
+        UUID driverRestaurantId = getDeliveryDriver(driverId).getRestaurantId();
+        return orderQueue.getRegisteredOrders()
+                .stream()
+                .filter(o -> o.getItems()
+                        .stream()
+                        .anyMatch(i -> i.getMenu().getRestaurantId().equals(driverRestaurantId)))
+                .toList();
     }
 
     @Override

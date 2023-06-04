@@ -14,10 +14,7 @@ import bg.tuplovdiv.apigateway.service.UserService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static bg.tuplovdiv.apigateway.model.UserRoleEnum.CUSTOMER;
@@ -61,20 +58,21 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void registerUserAsEmployee(String userId) {
+    public void registerUserAsEmployee(String userId, UUID restaurantId) {
         UserEntity user = getUser(userId);
 
         user.setUserRoles(createUserRole(EMPLOYEE));
 
         userRepository.save(user);
-        deliveryDriverRepository.save(createDeliveryDriver(user));
+        deliveryDriverRepository.save(createDeliveryDriver(user, restaurantId));
     }
 
-    private DeliveryDriverEntity createDeliveryDriver(UserEntity user) {
+    private DeliveryDriverEntity createDeliveryDriver(UserEntity user, UUID restaurantId) {
         return new DeliveryDriverEntity()
                 .setDeliveryDriverId(user.getUserId())
                 .setFree(true)
-                .setCurrentOrderId(null);
+                .setCurrentOrderId(null)
+                .setRestaurantId(restaurantId);
     }
 
     @Override

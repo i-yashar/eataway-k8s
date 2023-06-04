@@ -1,10 +1,12 @@
 package bg.tuplovdiv.apigateway.security.validation;
 
+import bg.tuplovdiv.apigateway.dto.OrderDTO;
 import bg.tuplovdiv.apigateway.exception.DeliveryDriverNotFreeException;
 import bg.tuplovdiv.apigateway.model.entity.DeliveryDriverEntity;
 import bg.tuplovdiv.apigateway.repository.DeliveryDriverRepository;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUser;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProviderFactory;
+import bg.tuplovdiv.apigateway.service.OrderService;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -14,10 +16,12 @@ import java.util.UUID;
 public class DeliveryValidator {
 
     private final AuthenticatedUserProviderFactory authenticatedUserProviderFactory;
+    private final OrderService orderService;
     private final DeliveryDriverRepository deliveryDriverRepository;
 
-    public DeliveryValidator(AuthenticatedUserProviderFactory authenticatedUserProviderFactory, DeliveryDriverRepository deliveryDriverRepository) {
+    public DeliveryValidator(AuthenticatedUserProviderFactory authenticatedUserProviderFactory, OrderService orderService, DeliveryDriverRepository deliveryDriverRepository) {
         this.authenticatedUserProviderFactory = authenticatedUserProviderFactory;
+        this.orderService = orderService;
         this.deliveryDriverRepository = deliveryDriverRepository;
     }
 
@@ -27,13 +31,9 @@ public class DeliveryValidator {
     }
 
     public boolean isDeliveryDriverFree() {
-        Optional<DeliveryDriverEntity> driver = getDeliveryDriver();
+        DeliveryDriverEntity driver = getDeliveryDriver().get();
 
-        if (driver.isEmpty()) {
-            return false;
-        }
-
-        if(!driver.get().isFree()) {
+        if(!driver.isFree()) {
             throw new DeliveryDriverNotFreeException();
         }
 
@@ -41,13 +41,18 @@ public class DeliveryValidator {
     }
 
     public boolean isDeliveryDriverCorrect(UUID orderId) {
-        Optional<DeliveryDriverEntity> driver = getDeliveryDriver();
+        DeliveryDriverEntity driver = getDeliveryDriver().get();
 
-        if (driver.isEmpty()) {
-            return false;
-        }
+        return orderId.equals(driver.getCurrentOrderId());
+    }
 
-        return orderId.equals(driver.get().getCurrentOrderId());
+    public boolean isDeliveryDriverEligible(UUID orderId) {
+        UUID driverRestaurantId = getDeliveryDriver().get().getRestaurantId();
+        OrderDTO order = orderService.getOrderInfo(orderId);
+
+        return order.getItems()
+                .stream()
+                .anyMatch(i -> i.getMenu().getRestaurantId().equals(driverRestaurantId));
     }
 
     private Optional<DeliveryDriverEntity> getDeliveryDriver() {

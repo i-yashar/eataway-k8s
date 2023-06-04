@@ -20,6 +20,9 @@ public class DeliveryDriverEntity {
 
     private UUID currentOrderId;
 
+    @Column(nullable = false)
+    private UUID restaurantId;
+
     public Long getId() {
         return id;
     }
@@ -57,6 +60,15 @@ public class DeliveryDriverEntity {
 
     public DeliveryDriverEntity setCurrentOrderId(UUID currentOrderId) {
         this.currentOrderId = currentOrderId;
+        return this;
+    }
+
+    public UUID getRestaurantId() {
+        return restaurantId;
+    }
+
+    public DeliveryDriverEntity setRestaurantId(UUID restaurantId) {
+        this.restaurantId = restaurantId;
         return this;
     }
 }

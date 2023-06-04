@@ -35,7 +35,7 @@
                                 </li>
                                 <th:block th:if="${!user.roles.contains('ADMIN')}">
                                     <li th:if="${!user.roles.contains('EMPLOYEE')}" class="list-inline-item">
-                                        <a th:href="@{/admin/eataway/users/{userId}/register(userId = ${user.userId})}"
+                                        <a th:href="@{/admin/eataway/registration/restaurants(userId = ${user.userId})}"
                                            class="btn d-block w-100 d-sm-inline-block btn-success">Register as employee</a>
                                     </li>
                                     <li th:if="${user.roles.contains('EMPLOYEE')}" class="list-inline-item">

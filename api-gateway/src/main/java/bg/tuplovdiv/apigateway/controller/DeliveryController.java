@@ -15,7 +15,6 @@ import java.util.UUID;
 
 @Controller
 @RequestMapping("eataway/delivery")
-@PreAuthorize("@deliveryValidator.isDeliveryDriverValid()")
 public class DeliveryController {
 
     private static final String ORDERS_PATH = "orders";
@@ -34,14 +33,16 @@ public class DeliveryController {
     }
 
     @GetMapping(ORDERS_PATH)
-    @PreAuthorize("@deliveryValidator.isDeliveryDriverFree()")
+    @PreAuthorize("@deliveryValidator.isDeliveryDriverValid()" +
+            "&& @deliveryValidator.isDeliveryDriverFree()")
     public String getRegisteredOrders(Model model) {
-        model.addAttribute("orders", deliveryService.getRegisteredOrders());
+        model.addAttribute("orders", deliveryService.getRegisteredOrders(getUserId()));
 
         return "registered-orders";
     }
 
     @GetMapping(ACTIVE_ORDERS_PATH)
+    @PreAuthorize("@deliveryValidator.isDeliveryDriverValid()")
     public String getActiveOrders(Model model) {
         model.addAttribute("orders", deliveryService.getDeliveryDriverActiveOrders(getUserId()));
 
@@ -49,6 +50,8 @@ public class DeliveryController {
     }
 
     @GetMapping(ORDER_INFO_PATH)
+    @PreAuthorize("@deliveryValidator.isDeliveryDriverValid()" +
+            "&& @deliveryValidator.isDeliveryDriverEligible(#orderId)")
     public String getOrderInfo(@PathVariable UUID orderId, Model model) {
         OrderDTO orderInfo = deliveryService.getOrderInfo(orderId);
         model.addAttribute("order", orderInfo);
@@ -59,7 +62,9 @@ public class DeliveryController {
 
     @PostMapping(ORDERS_PATH)
     @ResponseBody
-    @PreAuthorize("@deliveryValidator.isDeliveryDriverFree()")
+    @PreAuthorize("@deliveryValidator.isDeliveryDriverValid()" +
+            "&& @deliveryValidator.isDeliveryDriverEligible(#orderId)" +
+            "&& @deliveryValidator.isDeliveryDriverFree()")
     public ResponseEntity<Void> takeOrder(@RequestBody String orderId) {
         deliveryService.takeOrder(UUID.fromString(orderId), getUserId());
 
@@ -68,7 +73,8 @@ public class DeliveryController {
 
     @PutMapping(UPDATE_ORDERS_PATH)
     @ResponseBody
-    @PreAuthorize("@deliveryValidator.isDeliveryDriverCorrect(#orderId)")
+    @PreAuthorize("@deliveryValidator.isDeliveryDriverValid()" +
+            "&& @deliveryValidator.isDeliveryDriverCorrect(#orderId)")
     public ResponseEntity<Void> updateOrder(@PathVariable UUID orderId,
                                       @RequestParam(name = "status") String status) {
         deliveryService.updateOrder(orderId, status);
