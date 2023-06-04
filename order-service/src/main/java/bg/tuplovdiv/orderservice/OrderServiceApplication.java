@@ -1,6 +1,6 @@
 package bg.tuplovdiv.orderservice;
 
-import bg.tuplovdiv.orderservice.config.security.RsaKeyProperties;
+import bg.tuplovdiv.orderservice.config.RsaKeyProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

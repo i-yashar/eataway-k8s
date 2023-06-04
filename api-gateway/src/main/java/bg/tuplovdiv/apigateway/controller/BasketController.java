@@ -1,7 +1,7 @@
 package bg.tuplovdiv.apigateway.controller;
 
 import bg.tuplovdiv.apigateway.dto.BasketDTO;
-import bg.tuplovdiv.apigateway.dto.CreateOrderRequest;
+import bg.tuplovdiv.apigateway.dto.CreateOrderRequestDTO;
 import bg.tuplovdiv.apigateway.dto.ItemDTO;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUser;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
@@ -37,8 +37,8 @@ public class BasketController {
     }
 
     @ModelAttribute("createOrderRequest")
-    public CreateOrderRequest initCreateOrderRequest() {
-        return new CreateOrderRequest();
+    public CreateOrderRequestDTO initCreateOrderRequest() {
+        return new CreateOrderRequestDTO();
     }
 
     @GetMapping(BASKET_PATH)

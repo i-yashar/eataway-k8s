@@ -1,6 +1,6 @@
 package bg.tuplovdiv.apigateway.controller;
 
-import bg.tuplovdiv.apigateway.dto.CreateOrderRequest;
+import bg.tuplovdiv.apigateway.dto.CreateOrderRequestDTO;
 import bg.tuplovdiv.apigateway.dto.OrderDTO;
 import bg.tuplovdiv.apigateway.dto.OrderStatusInfoDTO;
 import bg.tuplovdiv.apigateway.order.OrderStatusEmitters;
@@ -46,12 +46,12 @@ public class OrderController {
     }
 
     @ModelAttribute("createOrderRequest")
-    public CreateOrderRequest initCreateOrderRequest() {
-        return new CreateOrderRequest();
+    public CreateOrderRequestDTO initCreateOrderRequest() {
+        return new CreateOrderRequestDTO();
     }
 
     @PostMapping(ORDERS_PATH)
-    public String createOrder(@Valid CreateOrderRequest order,
+    public String createOrder(@Valid CreateOrderRequestDTO order,
                               BindingResult bindingResult,
                               RedirectAttributes redirectAttributes) {
 

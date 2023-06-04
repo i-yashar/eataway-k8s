@@ -1,9 +1,9 @@
 package bg.tuplovdiv.apigateway.messaging;
 
 import bg.tuplovdiv.apigateway.dto.CreateOrderRequestDTO;
-import bg.tuplovdiv.apigateway.dto.OrderStatusChangeDTO;
+import bg.tuplovdiv.apigateway.dto.OrderDTO;
 
 public interface OrderDispatcher {
     void sendOrderCreateRequest(CreateOrderRequestDTO request);
-    void sendOrderStatusUpdate(OrderStatusChangeDTO statusChange);
+    void sendOrderUpdate(OrderDTO order);
 }

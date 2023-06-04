@@ -1,5 +1,7 @@
 package bg.tuplovdiv.apigateway.messaging.impl;
 
+import bg.tuplovdiv.apigateway.cache.OrderCache;
+import bg.tuplovdiv.apigateway.dto.OrderDTO;
 import bg.tuplovdiv.apigateway.dto.OrderStatusChangeDTO;
 import bg.tuplovdiv.apigateway.order.OrderStatusEmitters;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -11,9 +13,17 @@ import static bg.tuplovdiv.apigateway.config.RabbitMQConfig.ORDER_UPDATED_QUEUE;
 @Component
 class OrderStatusChangeListener {
 
+    private final OrderCache orderCache;
+
+    OrderStatusChangeListener(OrderCache orderCache) {
+        this.orderCache = orderCache;
+    }
+
     @RabbitListener(queues = ORDER_UPDATED_QUEUE)
-    Void accept(OrderStatusChangeDTO statusChange) {
+    public void accept(OrderStatusChangeDTO statusChange) {
         String clientId = statusChange.getClientId();
+
+        updateOrder(statusChange);
 
         SseEmitter emitter = OrderStatusEmitters.get(clientId);
         try {
@@ -22,7 +32,11 @@ class OrderStatusChangeListener {
             emitter.complete();
             OrderStatusEmitters.remove(clientId);
         }
+    }
 
-        return null;
+    private void updateOrder(OrderStatusChangeDTO statusChange) {
+        OrderDTO order = orderCache.getOrder(statusChange.getOrderId());
+        order.setStatus(statusChange.getStatus());
+        orderCache.updateOrder(order);
     }
 }

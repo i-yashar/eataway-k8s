@@ -1,4 +1,4 @@
-package bg.tuplovdiv.orderservice.config.security;
+package bg.tuplovdiv.orderservice.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

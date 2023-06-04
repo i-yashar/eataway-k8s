@@ -1,5 +1,6 @@
 package bg.tuplovdiv.apigateway.service.impl;
 
+import bg.tuplovdiv.apigateway.cache.BasketCache;
 import bg.tuplovdiv.apigateway.connectivity.client.OrdersRestClient;
 import bg.tuplovdiv.apigateway.dto.BasketDTO;
 import bg.tuplovdiv.apigateway.dto.ItemDTO;
@@ -12,15 +13,20 @@ import java.util.UUID;
 class BasketServiceImpl implements BasketService {
 
     private final OrdersRestClient ordersClient;
+    private final BasketCache basketCache;
 
-    BasketServiceImpl(OrdersRestClient ordersClient) {
+    BasketServiceImpl(OrdersRestClient ordersClient, BasketCache basketCache) {
         this.ordersClient = ordersClient;
+        this.basketCache = basketCache;
     }
 
     @Override
     public BasketDTO getUserBasket(String ownerId) {
         BasketDTO basket = ordersClient.getUserBasket(ownerId);
         calculateTotalCost(basket);
+
+        basketCache.updateUserBasket(basket);
+
         return basket;
     }
 

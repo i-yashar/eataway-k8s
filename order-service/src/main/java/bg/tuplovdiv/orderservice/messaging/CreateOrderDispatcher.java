@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
-import static bg.tuplovdiv.orderservice.config.messaging.RabbitMQConfig.*;
+import static bg.tuplovdiv.orderservice.config.RabbitMQConfig.*;
 
 @Component("createOrderDispatcher")
 public class CreateOrderDispatcher implements MessageDispatcher {

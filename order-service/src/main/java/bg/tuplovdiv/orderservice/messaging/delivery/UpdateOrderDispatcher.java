@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
-import static bg.tuplovdiv.orderservice.config.messaging.RabbitMQConfig.EXCHANGE;
-import static bg.tuplovdiv.orderservice.config.messaging.RabbitMQConfig.ORDER_UPDATED_ROUTING_KEY;
+import static bg.tuplovdiv.orderservice.config.RabbitMQConfig.EXCHANGE;
+import static bg.tuplovdiv.orderservice.config.RabbitMQConfig.ORDER_UPDATED_ROUTING_KEY;
 
 @Component("updateOrderDispatcher")
 public class UpdateOrderDispatcher implements MessageDispatcher {
