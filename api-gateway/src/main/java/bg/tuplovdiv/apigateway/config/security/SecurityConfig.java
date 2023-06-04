@@ -44,7 +44,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .requestMatchers("/", "/home").permitAll()
+                        .requestMatchers("/", "/home", "/eataway/restaurants/**").permitAll()
                         .requestMatchers("/login").anonymous()
                         .anyRequest().authenticated())
                 .logout(logout -> logout
