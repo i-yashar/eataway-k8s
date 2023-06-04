@@ -11,11 +11,11 @@ import java.util.Collection;
 import java.util.UUID;
 
 @Service
-public class OrderServiceImpl implements OrderService {
+class OrderServiceImpl implements OrderService {
 
     private final OrdersRestClient client;
 
-    public OrderServiceImpl(OrdersRestClient client) {
+    OrderServiceImpl(OrdersRestClient client) {
         this.client = client;
     }
 

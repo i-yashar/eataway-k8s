@@ -9,10 +9,11 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Service
-public class BasketServiceImpl implements BasketService {
+class BasketServiceImpl implements BasketService {
+
     private final OrdersRestClient ordersClient;
 
-    public BasketServiceImpl(OrdersRestClient ordersClient) {
+    BasketServiceImpl(OrdersRestClient ordersClient) {
         this.ordersClient = ordersClient;
     }
 

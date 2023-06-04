@@ -4,8 +4,8 @@ import bg.tuplovdiv.apigateway.dto.CreateOrderRequest;
 import bg.tuplovdiv.apigateway.dto.OrderDTO;
 import bg.tuplovdiv.apigateway.dto.OrderStatusInfoDTO;
 import bg.tuplovdiv.apigateway.order.OrderStatusEmitters;
-import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUser;
+import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProviderFactory;
 import bg.tuplovdiv.apigateway.service.OrderService;
 import bg.tuplovdiv.orderservice.exception.UnauthorizedAccessException;
 import jakarta.validation.Valid;
@@ -30,13 +30,14 @@ public class OrderController {
     private static final String ORDER_LIVE_UPDATE_PATH = ORDERS_PATH + "/sse";
     private static final String ORDERS_STATUS_INFO_PATH = API_PATH + "/" + ORDER_PATH + "/info";
 
-    private final AuthenticatedUserProvider userProvider;
+    private final AuthenticatedUserProviderFactory authenticatedUserProviderFactory;
     private final OrderService orderService;
 
-    public OrderController(AuthenticatedUserProvider userProvider, OrderService orderService) {
-        this.userProvider = userProvider;
+    public OrderController(AuthenticatedUserProviderFactory authenticatedUserProviderFactory, OrderService orderService) {
+        this.authenticatedUserProviderFactory = authenticatedUserProviderFactory;
         this.orderService = orderService;
     }
+
 
     @ModelAttribute("createOrderRequest")
     public CreateOrderRequest initCreateOrderRequest() {
@@ -89,7 +90,7 @@ public class OrderController {
     }
 
     private String getUserId() {
-        AuthenticatedUser user = userProvider.provide();
+        AuthenticatedUser user = authenticatedUserProviderFactory.getProvider().provide();
 
         return user.getUserId();
     }

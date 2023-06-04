@@ -27,34 +27,27 @@ public abstract class RestClient {
     }
 
     protected <T> T get(HttpRequest request, ResponseHandler<T> handler) {
-        HttpResponse<String> response = execute(request);
-
-        return handler.handle(response);
+        return execute(request, handler);
     }
 
-    protected  <T> T post(HttpRequest request, ResponseHandler<T> handler) {
-        HttpResponse<String> response = execute(request);
-
-        return handler.handle(response);
+    protected <T> T post(HttpRequest request, ResponseHandler<T> handler) {
+        return execute(request, handler);
     }
 
-    protected  <T> T put(HttpRequest request, ResponseHandler<T> handler) {
-        HttpResponse<String> response = execute(request);
-
-        return handler.handle(response);
+    protected <T> T put(HttpRequest request, ResponseHandler<T> handler) {
+        return execute(request, handler);
     }
 
-    protected  <T> T delete(HttpRequest request, ResponseHandler<T> handler) {
-        HttpResponse<String> response = execute(request);
-
-        return handler.handle(response);
+    protected <T> T delete(HttpRequest request, ResponseHandler<T> handler) {
+        return execute(request, handler);
     }
 
-    private HttpResponse<String> execute(HttpRequest request) {
+    private <T> T execute(HttpRequest request, ResponseHandler<T> handler) {
         HttpResponse<String> response = sendRequest(request);
+
         verifyResponse(response);
 
-        return response;
+        return handler.handle(response);
     }
 
     private HttpResponse<String> sendRequest(HttpRequest request) {
@@ -63,7 +56,7 @@ public abstract class RestClient {
         try {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (IOException | InterruptedException e) {
-            throw new UnableToReachHostException("Unsuccessful request attempt to: " + request.uri());
+            throw new RemoteHostException("Unsuccessful request attempt to: " + request.uri());
         }
 
         return response;
@@ -72,7 +65,7 @@ public abstract class RestClient {
     protected void verifyResponse(HttpResponse<String> response) {
         boolean isValid = response != null && response.statusCode() >= 200 && response.statusCode() < 300;
 
-        if(!isValid) {
+        if (!isValid) {
             throw new BadRequestException("Request: " + (response != null ? response.request().uri() : null)
                     + " was unsuccessful. Status code returned: " + (response != null ? response.statusCode() : ""));
         }

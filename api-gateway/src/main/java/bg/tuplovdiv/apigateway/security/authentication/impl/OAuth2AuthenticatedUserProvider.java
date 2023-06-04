@@ -3,7 +3,12 @@ package bg.tuplovdiv.apigateway.security.authentication.impl;
 import bg.tuplovdiv.apigateway.model.entity.UserEntity;
 import bg.tuplovdiv.apigateway.repository.UserRepository;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUser;
+import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Component;
 
@@ -13,26 +18,30 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
-public class OAuth2AuthenticatedUserProvider extends BaseAuthenticatedUserProvider {
+class OAuth2AuthenticatedUserProvider implements AuthenticatedUserProvider {
 
     private final UserRepository userRepository;
+    private final ObjectMapper mapper;
 
-    protected OAuth2AuthenticatedUserProvider(Jackson2ObjectMapperBuilder mapperBuilder, UserRepository userRepository) {
-        super(mapperBuilder);
+    OAuth2AuthenticatedUserProvider(Jackson2ObjectMapperBuilder mapperBuilder, UserRepository userRepository) {
+        this.mapper = mapperBuilder.build();
+        this.mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         this.userRepository = userRepository;
     }
 
     @Override
-    protected Optional<AuthenticatedUser> getUser() {
-        if(getPrincipal() instanceof OAuth2AuthenticationToken token) {
-            EatawayUser user = extractUserFromToken(token);
+    public boolean supportsAuthentication(Authentication authentication) {
+        return authentication instanceof OAuth2AuthenticationToken;
+    }
 
-            setUserRoles(user);
+    @Override
+    public AuthenticatedUser provide() {
+        OAuth2AuthenticationToken token = (OAuth2AuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        EatawayUser user = extractUserFromToken(token);
 
-            return Optional.of(user);
-        }
+        setUserRoles(user);
 
-        return Optional.empty();
+        return user;
     }
 
     private EatawayUser extractUserFromToken(OAuth2AuthenticationToken token) {
@@ -43,7 +52,7 @@ public class OAuth2AuthenticatedUserProvider extends BaseAuthenticatedUserProvid
     private void setUserRoles(EatawayUser user) {
         Optional<UserEntity> optUser = userRepository.findByUserId(user.getUserId());
 
-        if(optUser.isPresent()) {
+        if (optUser.isPresent()) {
             Set<String> roles = optUser.get().getUserRoles()
                     .stream()
                     .map(role -> role.getUserRole().name())

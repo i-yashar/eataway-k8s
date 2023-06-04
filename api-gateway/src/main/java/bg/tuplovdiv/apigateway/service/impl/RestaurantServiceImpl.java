@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.UUID;
 
 @Service
-public class RestaurantServiceImpl implements RestaurantService {
+class RestaurantServiceImpl implements RestaurantService {
 
     private final RestaurantsRestClient client;
 

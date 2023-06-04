@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 class ScheduledTasks {
 
-    private static final long CLEANUP_RATE = 2;
+    private static final long CLEANUP_RATE = 60;
     private static final long INITIAL_DELAY = 1;
 
     private final CleanupService cleanupService;

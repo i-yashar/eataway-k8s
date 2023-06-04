@@ -1,30 +1,31 @@
 package bg.tuplovdiv.apigateway.security.jwt;
 
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUser;
-import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
+import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProviderFactory;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
-@Service
+@Component
 public class TokenService {
 
     private static final String API_GATEWAY_SERVICE = "api_gateway_service";
 
     private final JwtEncoder encoder;
-    private final AuthenticatedUserProvider userProvider;
+    private final AuthenticatedUserProviderFactory authenticatedUserProviderFactory;
 
-    public TokenService(JwtEncoder encoder, AuthenticatedUserProvider userProvider) {
+    public TokenService(JwtEncoder encoder, AuthenticatedUserProviderFactory authenticatedUserProviderFactory) {
         this.encoder = encoder;
-        this.userProvider = userProvider;
+        this.authenticatedUserProviderFactory = authenticatedUserProviderFactory;
     }
 
+
     public String generateToken() {
-        AuthenticatedUser user = userProvider.provide();
+        AuthenticatedUser user = authenticatedUserProviderFactory.getProvider().provide();
         Instant now = Instant.now();
 
         String scope = String.join(" ", user.getRoles());

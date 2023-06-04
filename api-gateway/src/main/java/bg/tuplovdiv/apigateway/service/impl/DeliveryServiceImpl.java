@@ -14,13 +14,13 @@ import java.util.Collection;
 import java.util.UUID;
 
 @Service
-public class DeliveryServiceImpl implements DeliveryService {
+class DeliveryServiceImpl implements DeliveryService {
 
     private final OrderQueue orderQueue;
     private final DeliveryDriverRepository deliveryDriverRepository;
     private final OrdersRestClient client;
 
-    public DeliveryServiceImpl(OrderQueue orderQueue, DeliveryDriverRepository deliveryDriverRepository, OrdersRestClient client) {
+    DeliveryServiceImpl(OrderQueue orderQueue, DeliveryDriverRepository deliveryDriverRepository, OrdersRestClient client) {
         this.orderQueue = orderQueue;
         this.deliveryDriverRepository = deliveryDriverRepository;
         this.client = client;

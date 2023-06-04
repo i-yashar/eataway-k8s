@@ -1,8 +1,8 @@
 package bg.tuplovdiv.apigateway.controller;
 
 import bg.tuplovdiv.apigateway.dto.OrderDTO;
-import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUser;
+import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProviderFactory;
 import bg.tuplovdiv.apigateway.security.validation.DeliveryValidator;
 import bg.tuplovdiv.apigateway.service.DeliveryService;
 import org.springframework.http.ResponseEntity;
@@ -24,12 +24,12 @@ public class DeliveryController {
     private static final String ACTIVE_ORDERS_PATH = ORDERS_PATH + "/active";
 
     private final DeliveryService deliveryService;
-    private final AuthenticatedUserProvider authenticatedUserProvider;
+    private final AuthenticatedUserProviderFactory authenticatedUserProviderFactory;
     private final DeliveryValidator deliveryValidator;
 
-    public DeliveryController(DeliveryService deliveryService, AuthenticatedUserProvider authenticatedUserProvider, DeliveryValidator deliveryValidator) {
+    public DeliveryController(DeliveryService deliveryService, AuthenticatedUserProviderFactory authenticatedUserProviderFactory, DeliveryValidator deliveryValidator) {
         this.deliveryService = deliveryService;
-        this.authenticatedUserProvider = authenticatedUserProvider;
+        this.authenticatedUserProviderFactory = authenticatedUserProviderFactory;
         this.deliveryValidator = deliveryValidator;
     }
 
@@ -77,7 +77,7 @@ public class DeliveryController {
     }
 
     private String getUserId() {
-        AuthenticatedUser user = authenticatedUserProvider.provide();
+        AuthenticatedUser user = authenticatedUserProviderFactory.getProvider().provide();
 
         return user.getUserId();
     }

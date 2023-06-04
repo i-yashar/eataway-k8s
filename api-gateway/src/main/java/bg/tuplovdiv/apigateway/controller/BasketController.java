@@ -3,8 +3,8 @@ package bg.tuplovdiv.apigateway.controller;
 import bg.tuplovdiv.apigateway.dto.BasketDTO;
 import bg.tuplovdiv.apigateway.dto.CreateOrderRequest;
 import bg.tuplovdiv.apigateway.dto.ItemDTO;
-import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUser;
+import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProviderFactory;
 import bg.tuplovdiv.apigateway.service.BasketService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -21,11 +21,11 @@ public class BasketController {
     private static final String ADD_BASKET_ITEM_PATH = "api/v1/basketItems";
     private static final String DELETE_BASKET_ITEM_PATH = "api/v1/basketItems/{menuId}";
 
-    private final AuthenticatedUserProvider userProvider;
+    private final AuthenticatedUserProviderFactory authenticatedUserProviderFactory;
     private final BasketService basketService;
 
-    public BasketController(AuthenticatedUserProvider userProvider, BasketService basketService) {
-        this.userProvider = userProvider;
+    public BasketController(AuthenticatedUserProviderFactory authenticatedUserProviderFactory, BasketService basketService) {
+        this.authenticatedUserProviderFactory = authenticatedUserProviderFactory;
         this.basketService = basketService;
     }
 
@@ -56,7 +56,7 @@ public class BasketController {
     }
 
     private String getUserId() {
-        AuthenticatedUser user = userProvider.provide();
+        AuthenticatedUser user = authenticatedUserProviderFactory.getProvider().provide();
 
         return user.getUserId();
     }

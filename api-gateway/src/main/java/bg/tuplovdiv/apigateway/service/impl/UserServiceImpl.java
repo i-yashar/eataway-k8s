@@ -24,14 +24,14 @@ import static bg.tuplovdiv.apigateway.model.UserRoleEnum.CUSTOMER;
 import static bg.tuplovdiv.apigateway.model.UserRoleEnum.EMPLOYEE;
 
 @Service
-public class UserServiceImpl implements UserService {
+class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final DeliveryDriverRepository deliveryDriverRepository;
     private final UserRoleRepository userRoleRepository;
     private final UserMapper mapper;
 
-    public UserServiceImpl(UserRepository userRepository, DeliveryDriverRepository deliveryDriverRepository, UserRoleRepository userRoleRepository, UserMapper mapper) {
+    UserServiceImpl(UserRepository userRepository, DeliveryDriverRepository deliveryDriverRepository, UserRoleRepository userRoleRepository, UserMapper mapper) {
         this.userRepository = userRepository;
         this.deliveryDriverRepository = deliveryDriverRepository;
         this.userRoleRepository = userRoleRepository;
