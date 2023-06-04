@@ -1,17 +1,13 @@
 package bg.tuplovdiv.orderservice.rest;
 
-import bg.tuplovdiv.orderservice.dto.CreateOrderRequest;
 import bg.tuplovdiv.orderservice.dto.OrderDTO;
 import bg.tuplovdiv.orderservice.dto.OrderStatusInfoDTO;
 import bg.tuplovdiv.orderservice.dto.page.PageDTO;
 import bg.tuplovdiv.orderservice.service.OrderService;
 import bg.tuplovdiv.orderservice.service.OrderStatusInfoService;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -42,28 +38,6 @@ public class OrderRestController {
                                                                  @RequestParam(name = "page", required = false, defaultValue = "0") int page,
                                                                  @RequestParam(name = "size", required = false, defaultValue = "15") int size) {
         return ResponseEntity.ok(orderService.findActiveUserOrders(clientId, page, size));
-    }
-
-    @PostMapping(ORDERS_PATH)
-    public ResponseEntity<Void> createOrder(@RequestBody @Valid CreateOrderRequest orderRequest) {
-        UUID orderId = orderService.createOrder(orderRequest);
-
-        URI uri = buildOrderCreatedPath(orderId);
-
-        return ResponseEntity.created(uri).build();
-    }
-
-    private URI buildOrderCreatedPath(UUID orderId) {
-        return ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{orderId}")
-                .buildAndExpand(orderId)
-                .toUri();
-    }
-
-    @PutMapping(ORDER_PATH)
-    public ResponseEntity<OrderDTO> updateOrder(@RequestBody @Valid OrderDTO order) {
-        return ResponseEntity.ok(orderService.updateOrder(order));
     }
 
     @GetMapping(ACTIVE_DELIVERY_DRIVER_ORDERS_PATH)

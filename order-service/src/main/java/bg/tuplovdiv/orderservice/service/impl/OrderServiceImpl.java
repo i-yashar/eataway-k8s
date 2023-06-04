@@ -1,11 +1,11 @@
 package bg.tuplovdiv.orderservice.service.impl;
 
-import bg.tuplovdiv.orderservice.dto.CreateOrderRequest;
+import bg.tuplovdiv.orderservice.dto.CreateOrderRequestDTO;
 import bg.tuplovdiv.orderservice.dto.OrderDTO;
+import bg.tuplovdiv.orderservice.dto.OrderStatusChangeDTO;
 import bg.tuplovdiv.orderservice.dto.page.PageDTO;
 import bg.tuplovdiv.orderservice.exception.BasketNotFoundException;
 import bg.tuplovdiv.orderservice.mapper.OrderMapper;
-import bg.tuplovdiv.orderservice.messaging.delivery.OrderStatusChange;
 import bg.tuplovdiv.orderservice.messaging.process.CreateOrderProcess;
 import bg.tuplovdiv.orderservice.messaging.process.UpdateOrderProcess;
 import bg.tuplovdiv.orderservice.model.entity.ActiveOrderEntity;
@@ -89,16 +89,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public UUID createOrder(CreateOrderRequest createOrderRequest) {
+    public UUID createOrder(CreateOrderRequestDTO createOrderRequest) {
         List<OrderEntity> order = persistOrder(createOrderRequest);
         resetBasketItems(createOrderRequest.getClientId());
 
-        order.forEach(createOrderProcess::start);
+        order.forEach(o -> createOrderProcess.start(mapper.toDTO(o)));
 
         return order.get(0).getExternalId();
     }
 
-    private List<OrderEntity> persistOrder(CreateOrderRequest createOrderRequest) {
+    private List<OrderEntity> persistOrder(CreateOrderRequestDTO createOrderRequest) {
         String clientId = createOrderRequest.getClientId();
         Set<ItemEntity> orderItems = getOrderItems(clientId);
 
@@ -180,8 +180,8 @@ public class OrderServiceImpl implements OrderService {
                 .collect(Collectors.toList());
     }
 
-    private OrderStatusChange createOrderStatusChange(OrderEntity order) {
-        return new OrderStatusChange()
+    private OrderStatusChangeDTO createOrderStatusChange(OrderEntity order) {
+        return new OrderStatusChangeDTO()
                 .setOrderId(order.getExternalId())
                 .setClientId(order.getClientId())
                 .setDeliveryDriverId(order.getDeliveryDriverId())

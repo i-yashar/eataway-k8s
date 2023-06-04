@@ -1,20 +1,19 @@
 package bg.tuplovdiv.orderservice.messaging.process;
 
-import bg.tuplovdiv.orderservice.messaging.MessageDispatcher;
-import bg.tuplovdiv.orderservice.messaging.delivery.OrderStatusChange;
-import org.springframework.beans.factory.annotation.Qualifier;
+import bg.tuplovdiv.orderservice.dto.OrderStatusChangeDTO;
+import bg.tuplovdiv.orderservice.messaging.UpdateOrderDispatcher;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UpdateOrderProcess {
 
-    private final MessageDispatcher dispatcher;
+    public final UpdateOrderDispatcher updateOrderDispatcher;
 
-    public UpdateOrderProcess(@Qualifier("updateOrderDispatcher") MessageDispatcher dispatcher) {
-        this.dispatcher = dispatcher;
+    public UpdateOrderProcess(UpdateOrderDispatcher updateOrderDispatcher) {
+        this.updateOrderDispatcher = updateOrderDispatcher;
     }
 
-    public void start(OrderStatusChange orderStatusChange) {
-        dispatcher.dispatch(orderStatusChange);
+    public void start(OrderStatusChangeDTO orderStatusChange) {
+        updateOrderDispatcher.dispatch(orderStatusChange);
     }
 }

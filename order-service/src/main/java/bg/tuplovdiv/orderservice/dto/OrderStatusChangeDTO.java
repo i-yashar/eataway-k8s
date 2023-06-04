@@ -1,10 +1,8 @@
-package bg.tuplovdiv.orderservice.messaging.delivery;
-
-import bg.tuplovdiv.orderservice.messaging.Message;
+package bg.tuplovdiv.orderservice.dto;
 
 import java.util.UUID;
 
-public class OrderStatusChange extends Message {
+public class OrderStatusChangeDTO {
 
     private UUID orderId;
     private String clientId;
@@ -15,7 +13,7 @@ public class OrderStatusChange extends Message {
         return orderId;
     }
 
-    public OrderStatusChange setOrderId(UUID orderId) {
+    public OrderStatusChangeDTO setOrderId(UUID orderId) {
         this.orderId = orderId;
         return this;
     }
@@ -24,7 +22,7 @@ public class OrderStatusChange extends Message {
         return clientId;
     }
 
-    public OrderStatusChange setClientId(String clientId) {
+    public OrderStatusChangeDTO setClientId(String clientId) {
         this.clientId = clientId;
         return this;
     }
@@ -33,7 +31,7 @@ public class OrderStatusChange extends Message {
         return deliveryDriverId;
     }
 
-    public OrderStatusChange setDeliveryDriverId(String deliveryDriverId) {
+    public OrderStatusChangeDTO setDeliveryDriverId(String deliveryDriverId) {
         this.deliveryDriverId = deliveryDriverId;
         return this;
     }
@@ -42,7 +40,7 @@ public class OrderStatusChange extends Message {
         return status;
     }
 
-    public OrderStatusChange setStatus(String status) {
+    public OrderStatusChangeDTO setStatus(String status) {
         this.status = status;
         return this;
     }
