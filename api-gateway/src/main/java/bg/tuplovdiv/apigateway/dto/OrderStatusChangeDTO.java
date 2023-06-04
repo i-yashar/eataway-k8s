@@ -1,10 +1,8 @@
-package bg.tuplovdiv.apigateway.messaging.delivery;
-
-import bg.tuplovdiv.apigateway.messaging.Message;
+package bg.tuplovdiv.apigateway.dto;
 
 import java.util.UUID;
 
-public class OrderStatusChangeEvent extends Message {
+public class OrderStatusChangeDTO {
 
     private UUID orderId;
     private String clientId;
@@ -15,7 +13,7 @@ public class OrderStatusChangeEvent extends Message {
         return orderId;
     }
 
-    public OrderStatusChangeEvent setOrderId(UUID orderId) {
+    public OrderStatusChangeDTO setOrderId(UUID orderId) {
         this.orderId = orderId;
         return this;
     }
@@ -24,7 +22,7 @@ public class OrderStatusChangeEvent extends Message {
         return clientId;
     }
 
-    public OrderStatusChangeEvent setClientId(String clientId) {
+    public OrderStatusChangeDTO setClientId(String clientId) {
         this.clientId = clientId;
         return this;
     }
@@ -33,7 +31,7 @@ public class OrderStatusChangeEvent extends Message {
         return deliveryDriverId;
     }
 
-    public OrderStatusChangeEvent setDeliveryDriverId(String deliveryDriverId) {
+    public OrderStatusChangeDTO setDeliveryDriverId(String deliveryDriverId) {
         this.deliveryDriverId = deliveryDriverId;
         return this;
     }
@@ -42,7 +40,7 @@ public class OrderStatusChangeEvent extends Message {
         return status;
     }
 
-    public OrderStatusChangeEvent setStatus(String status) {
+    public OrderStatusChangeDTO setStatus(String status) {
         this.status = status;
         return this;
     }

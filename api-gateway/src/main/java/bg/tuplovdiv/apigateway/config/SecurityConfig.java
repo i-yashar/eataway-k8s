@@ -1,4 +1,4 @@
-package bg.tuplovdiv.apigateway.config.security;
+package bg.tuplovdiv.apigateway.config;
 
 import bg.tuplovdiv.apigateway.security.authentication.impl.OAuth2LoginSuccessHandler;
 import com.nimbusds.jose.jwk.JWK;

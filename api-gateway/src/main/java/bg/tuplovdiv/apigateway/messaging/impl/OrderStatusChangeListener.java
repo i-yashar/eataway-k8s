@@ -1,24 +1,23 @@
-package bg.tuplovdiv.apigateway.messaging.delivery;
+package bg.tuplovdiv.apigateway.messaging.impl;
 
-import bg.tuplovdiv.apigateway.messaging.MessageListener;
+import bg.tuplovdiv.apigateway.dto.OrderStatusChangeDTO;
 import bg.tuplovdiv.apigateway.order.OrderStatusEmitters;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import static bg.tuplovdiv.apigateway.config.messaging.RabbitMQConfig.ORDER_UPDATED_QUEUE;
+import static bg.tuplovdiv.apigateway.config.RabbitMQConfig.ORDER_UPDATED_QUEUE;
 
 @Component
-public class OrderStatusChangeListener implements MessageListener<OrderStatusChangeEvent, Void> {
+class OrderStatusChangeListener {
 
-    @Override
     @RabbitListener(queues = ORDER_UPDATED_QUEUE)
-    public Void accept(OrderStatusChangeEvent message) {
-        String clientId = message.getClientId();
+    Void accept(OrderStatusChangeDTO statusChange) {
+        String clientId = statusChange.getClientId();
 
         SseEmitter emitter = OrderStatusEmitters.get(clientId);
         try {
-            emitter.send(message);
+            emitter.send(statusChange);
         } catch (Exception e) {
             emitter.complete();
             OrderStatusEmitters.remove(clientId);

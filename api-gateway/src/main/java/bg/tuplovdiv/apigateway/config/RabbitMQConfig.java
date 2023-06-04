@@ -1,4 +1,4 @@
-package bg.tuplovdiv.apigateway.config.messaging;
+package bg.tuplovdiv.apigateway.config;
 
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -13,14 +13,28 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfig {
 
     public static final String EXCHANGE = "order";
+    public static final String ORDER_CREATE_QUEUE = "order-create-queue";
     public static final String ORDER_CREATED_QUEUE = "order-created-queue";
+    public static final String ORDER_UPDATE_QUEUE = "order-update-queue";
     public static final String ORDER_UPDATED_QUEUE = "order-updated-queue";
+    public static final String ORDER_CREATE_ROUTING_KEY = "order.event.create";
     public static final String ORDER_CREATED_ROUTING_KEY = "order.event.created";
+    public static final String ORDER_UPDATE_ROUTING_KEY = "order.event.update";
     public static final String ORDER_UPDATED_ROUTING_KEY = "order.event.updated";
+
+    @Bean
+    public Queue orderCreateQueue() {
+        return new Queue(ORDER_CREATE_QUEUE);
+    }
 
     @Bean
     public Queue orderCreatedQueue() {
         return new Queue(ORDER_CREATED_QUEUE);
+    }
+
+    @Bean
+    public Queue orderUpdateQueue() {
+        return new Queue(ORDER_UPDATE_QUEUE);
     }
 
     @Bean
@@ -34,11 +48,27 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    public Binding orderCreateBinding(@Qualifier("orderCreateQueue") Queue queue, TopicExchange topicExchange) {
+        return BindingBuilder
+                .bind(queue)
+                .to(topicExchange)
+                .with(ORDER_CREATE_ROUTING_KEY);
+    }
+
+    @Bean
     public Binding orderCreatedBinding(@Qualifier("orderCreatedQueue") Queue queue, TopicExchange topicExchange) {
         return BindingBuilder
                 .bind(queue)
                 .to(topicExchange)
                 .with(ORDER_CREATED_ROUTING_KEY);
+    }
+
+    @Bean
+    public Binding orderUpdateBinding(@Qualifier("orderUpdateQueue") Queue queue, TopicExchange topicExchange) {
+        return BindingBuilder
+                .bind(queue)
+                .to(topicExchange)
+                .with(ORDER_UPDATE_ROUTING_KEY);
     }
 
     @Bean

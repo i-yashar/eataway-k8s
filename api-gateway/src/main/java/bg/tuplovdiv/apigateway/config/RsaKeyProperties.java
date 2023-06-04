@@ -1,4 +1,4 @@
-package bg.tuplovdiv.apigateway.config.security;
+package bg.tuplovdiv.apigateway.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
