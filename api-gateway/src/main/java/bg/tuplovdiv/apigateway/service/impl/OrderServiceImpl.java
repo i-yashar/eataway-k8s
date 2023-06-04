@@ -47,7 +47,8 @@ class OrderServiceImpl implements OrderService {
                 .setClientPhoneNumber(createOrderRequest.getClientPhoneNumber())
                 .setAddress(createOrderRequest.getAddress())
                 .setItems(basket.getItems())
-                .setTotalCost(basket.getTotalCost());
+                .setTotalCost(basket.getTotalCost())
+                .setStatus("REGISTERED");
     }
 
     @Override

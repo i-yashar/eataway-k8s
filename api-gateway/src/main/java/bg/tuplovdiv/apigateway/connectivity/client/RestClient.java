@@ -95,11 +95,6 @@ public abstract class RestClient {
         }
     }
 
-    protected String extractLocation(HttpResponse<String> response) {
-        return response.headers().firstValue("Location")
-                .orElseThrow(() -> new LocationHeaderNotFoundException("Response does not contain mandatory 'Location' header"));
-    }
-
     protected String getBearerToken() {
         return "Bearer " + jwtProvider.provideToken();
     }
