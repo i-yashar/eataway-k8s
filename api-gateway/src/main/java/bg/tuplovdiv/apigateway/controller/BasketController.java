@@ -4,6 +4,7 @@ import bg.tuplovdiv.apigateway.dto.BasketDTO;
 import bg.tuplovdiv.apigateway.dto.CreateOrderRequest;
 import bg.tuplovdiv.apigateway.dto.ItemDTO;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUser;
+import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProviderFactory;
 import bg.tuplovdiv.apigateway.service.BasketService;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,12 @@ public class BasketController {
     public BasketController(AuthenticatedUserProviderFactory authenticatedUserProviderFactory, BasketService basketService) {
         this.authenticatedUserProviderFactory = authenticatedUserProviderFactory;
         this.basketService = basketService;
+    }
+
+    @ModelAttribute
+    public void addUserAttribute(Model model) {
+        AuthenticatedUserProvider userProvider = authenticatedUserProviderFactory.getProvider();
+        model.addAttribute("user", userProvider.provide());
     }
 
     @ModelAttribute("createOrderRequest")

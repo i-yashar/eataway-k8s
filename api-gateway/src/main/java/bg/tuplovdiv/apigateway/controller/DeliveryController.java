@@ -2,6 +2,7 @@ package bg.tuplovdiv.apigateway.controller;
 
 import bg.tuplovdiv.apigateway.dto.OrderDTO;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUser;
+import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProviderFactory;
 import bg.tuplovdiv.apigateway.security.validation.DeliveryValidator;
 import bg.tuplovdiv.apigateway.service.DeliveryService;
@@ -30,6 +31,12 @@ public class DeliveryController {
         this.deliveryService = deliveryService;
         this.authenticatedUserProviderFactory = authenticatedUserProviderFactory;
         this.deliveryValidator = deliveryValidator;
+    }
+
+    @ModelAttribute
+    public void addUserAttribute(Model model) {
+        AuthenticatedUserProvider userProvider = authenticatedUserProviderFactory.getProvider();
+        model.addAttribute("user", userProvider.provide());
     }
 
     @GetMapping(ORDERS_PATH)

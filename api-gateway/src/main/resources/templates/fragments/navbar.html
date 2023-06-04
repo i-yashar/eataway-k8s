@@ -10,32 +10,52 @@
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="/home">Eataway</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
                 <ul class="navbar-nav mr-5 mb-2 mb-lg-0">
-                    <li class="nav-item ml-5">
-                        <a class="nav-link active" href="/eataway/restaurants">Restaurants</a>
-                    </li>
+                    <th:block th:if="${!user.roles.contains('EMPLOYEE')}">
+                        <li class="nav-item ml-5">
+                            <a class="nav-link active" href="/eataway/restaurants">Restaurants</a>
+                        </li>
+                    </th:block>
                 </ul>
 
-                <ul class="navbar-nav mr-auto mb-2 mb-lg-0">
-                    <th:block sec:authorize="isAuthenticated()">
-                        <li class="nav-item mr-5">
-                            <a class="nav-link active" th:href="@{/eataway/basket}">My cart</a>
-                        </li>
-                    </th:block>
-                    <th:block sec:authorize="isAuthenticated()">
-                        <li class="nav-item">
-                            <a class="nav-link active" th:href="@{/eataway/orders}">My orders</a>
-                        </li>
-                    </th:block>
-                </ul>
+                <th:block sec:authorize="isAuthenticated()">
+                    <ul class="navbar-nav mr-auto mb-2 mb-lg-0">
+                        <th:block th:if="${user.roles.contains('EMPLOYEE')}">
+                            <li lass="nav-item mr-5">
+                                <a th:href="@{/eataway/delivery/orders}"
+                                   class="nav-link active">Customer orders</a>
+                            </li>
+                            <li lass="nav-item mr-5">
+                                <a th:href="@{/eataway/delivery/orders/active}"
+                                   class="nav-link active">My active orders</a>
+                            </li>
+                        </th:block>
+                        <th:block th:if="${user.roles.contains('CUSTOMER')}">
+                            <li class="nav-item mr-5">
+                                <a class="nav-link active" th:href="@{/eataway/basket}">My cart</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" th:href="@{/eataway/orders}">My orders</a>
+                            </li>
+                        </th:block>
+                    </ul>
+                </th:block>
 
                 <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
                     <th:block sec:authorize="isAuthenticated()">
+                        <th:block th:if="${user.roles.contains('ADMIN')}">
+                            <li lass="nav-item mr-5">
+                                <a th:href="@{/admin/eataway/users}"
+                                   class="nav-link active">Admin page</a>
+                            </li>
+                        </th:block>
                         <li class="nav-item">
                             <form th:action="@{/logout}" th:method="post">
                                 <input class="btn btn-link nav-link active" type="submit" value="Logout">
@@ -43,9 +63,6 @@
                         </li>
                     </th:block>
                     <th:block sec:authorize="!isAuthenticated()">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="/users/register">Register</a>
-                        </li>
                         <li class="nav-item">
                             <a class="nav-link active" href="/users/login">Login</a>
                         </li>

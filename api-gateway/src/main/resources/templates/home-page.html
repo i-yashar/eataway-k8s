@@ -26,23 +26,11 @@
             <div class="row">
                 <p class="lead">You are currently logged in as an administrator</p>
             </div>
-            <li class="list-inline-item">
-                <a th:href="@{/admin/eataway/users}"
-                   class="btn d-block w-100 d-sm-inline-block btn-success">Admin page</a>
-            </li>
         </th:block>
         <th:block th:if="${user.roles.contains('EMPLOYEE')}">
             <div class="row">
                 <p class="lead">You are currently logged in as an employee</p>
             </div>
-            <li class="list-inline-item">
-                <a th:href="@{/eataway/delivery/orders}"
-                   class="btn d-block w-100 d-sm-inline-block btn-success">Customer orders</a>
-            </li>
-            <li class="list-inline-item">
-                <a th:href="@{/eataway/delivery/orders/active}"
-                   class="btn d-block w-100 d-sm-inline-block btn-success">My active orders</a>
-            </li>
         </th:block>
     </th:block>
 </div>

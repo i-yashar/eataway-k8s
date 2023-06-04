@@ -5,6 +5,7 @@ import bg.tuplovdiv.apigateway.dto.OrderDTO;
 import bg.tuplovdiv.apigateway.dto.OrderStatusInfoDTO;
 import bg.tuplovdiv.apigateway.order.OrderStatusEmitters;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUser;
+import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProviderFactory;
 import bg.tuplovdiv.apigateway.service.OrderService;
 import bg.tuplovdiv.orderservice.exception.UnauthorizedAccessException;
@@ -38,6 +39,11 @@ public class OrderController {
         this.orderService = orderService;
     }
 
+    @ModelAttribute
+    public void addUserAttribute(Model model) {
+        AuthenticatedUserProvider userProvider = authenticatedUserProviderFactory.getProvider();
+        model.addAttribute("user", userProvider.provide());
+    }
 
     @ModelAttribute("createOrderRequest")
     public CreateOrderRequest initCreateOrderRequest() {

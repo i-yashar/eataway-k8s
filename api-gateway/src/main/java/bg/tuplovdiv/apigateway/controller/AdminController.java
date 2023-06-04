@@ -1,15 +1,14 @@
 package bg.tuplovdiv.apigateway.controller;
 
+import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
+import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProviderFactory;
 import bg.tuplovdiv.apigateway.security.validation.AdminValidator;
 import bg.tuplovdiv.apigateway.service.RestaurantService;
 import bg.tuplovdiv.apigateway.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -23,13 +22,21 @@ public class AdminController {
     private static final String RESTAURANTS_PATH = "/registration/restaurants";
 
     private final UserService userService;
+    private final AuthenticatedUserProviderFactory authenticatedUserProviderFactory;
     private final RestaurantService restaurantService;
     private final AdminValidator adminValidator;
 
-    public AdminController(UserService userService, RestaurantService restaurantService, AdminValidator adminValidator) {
+    public AdminController(UserService userService, AuthenticatedUserProviderFactory authenticatedUserProviderFactory, RestaurantService restaurantService, AdminValidator adminValidator) {
         this.userService = userService;
+        this.authenticatedUserProviderFactory = authenticatedUserProviderFactory;
         this.restaurantService = restaurantService;
         this.adminValidator = adminValidator;
+    }
+
+    @ModelAttribute
+    public void addUserAttribute(Model model) {
+        AuthenticatedUserProvider userProvider = authenticatedUserProviderFactory.getProvider();
+        model.addAttribute("user", userProvider.provide());
     }
 
     @GetMapping(USERS_PATH)
