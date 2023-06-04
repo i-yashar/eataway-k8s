@@ -1,4 +1,4 @@
-package bg.tuplovdiv.orderservice.messaging;
+package bg.tuplovdiv.orderservice.messaging.impl;
 
 import bg.tuplovdiv.orderservice.dto.OrderDTO;
 import bg.tuplovdiv.orderservice.service.OrderService;
@@ -8,11 +8,11 @@ import org.springframework.stereotype.Component;
 import static bg.tuplovdiv.orderservice.config.RabbitMQConfig.ORDER_UPDATE_QUEUE;
 
 @Component
-public class OrderUpdateListener {
+class OrderUpdateListener {
 
     private final OrderService orderService;
 
-    public OrderUpdateListener(OrderService orderService) {
+    OrderUpdateListener(OrderService orderService) {
         this.orderService = orderService;
     }
 
