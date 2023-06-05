@@ -4,12 +4,10 @@ import bg.tuplovdiv.apigateway.cache.OrderCache;
 import bg.tuplovdiv.apigateway.connectivity.client.OrdersRestClient;
 import bg.tuplovdiv.apigateway.dto.OrderDTO;
 import bg.tuplovdiv.apigateway.messaging.OrderDispatcher;
-import bg.tuplovdiv.apigateway.model.entity.DeliveryDriverEntity;
 import bg.tuplovdiv.apigateway.order.OrderQueue;
-import bg.tuplovdiv.apigateway.repository.DeliveryDriverRepository;
+import bg.tuplovdiv.apigateway.service.DeliveryDriverService;
 import bg.tuplovdiv.apigateway.service.DeliveryService;
 import jakarta.transaction.Transactional;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -21,20 +19,20 @@ class DeliveryServiceImpl implements DeliveryService {
     private final OrderDispatcher orderDispatcher;
     private final OrderQueue orderQueue;
     private final OrderCache orderCache;
-    private final DeliveryDriverRepository deliveryDriverRepository;
+    private final DeliveryDriverService deliveryDriverService;
     private final OrdersRestClient client;
 
-    DeliveryServiceImpl(OrderDispatcher orderDispatcher, OrderQueue orderQueue, OrderCache orderCache, DeliveryDriverRepository deliveryDriverRepository, OrdersRestClient client) {
+    DeliveryServiceImpl(OrderDispatcher orderDispatcher, OrderQueue orderQueue, OrderCache orderCache, DeliveryDriverService deliveryDriverService, OrdersRestClient client) {
         this.orderDispatcher = orderDispatcher;
         this.orderQueue = orderQueue;
         this.orderCache = orderCache;
-        this.deliveryDriverRepository = deliveryDriverRepository;
+        this.deliveryDriverService = deliveryDriverService;
         this.client = client;
     }
 
     @Override
     public Collection<OrderDTO> getRegisteredOrders(String driverId) {
-        UUID driverRestaurantId = getDeliveryDriver(driverId).getRestaurantId();
+        UUID driverRestaurantId = deliveryDriverService.getDeliveryDriverRestaurant(driverId);
         return orderQueue.getRegisteredOrders()
                 .stream()
                 .filter(o -> o.getItems()
@@ -61,17 +59,9 @@ class DeliveryServiceImpl implements DeliveryService {
         order.setStatus("ACTIVE");
 
         orderDispatcher.sendOrderUpdate(order);
-        registerDriver(deliveryDriverId, orderId);
+        deliveryDriverService.registerDriver(deliveryDriverId, orderId);
 
         return order;
-    }
-
-    private void registerDriver(String deliveryDriverId, UUID orderId) {
-        DeliveryDriverEntity deliveryDriver = getDeliveryDriver(deliveryDriverId);
-
-        deliveryDriver.setFree(false);
-        deliveryDriver.setCurrentOrderId(orderId);
-        deliveryDriverRepository.save(deliveryDriver);
     }
 
     @Override
@@ -81,24 +71,8 @@ class DeliveryServiceImpl implements DeliveryService {
         order.setStatus(status);
 
         orderDispatcher.sendOrderUpdate(order);
-        setDriverFreeIfOrderIsDelivered(order);
+        deliveryDriverService.setDriverFreeIfOrderIsDelivered(order);
 
         return order;
-    }
-
-
-    private void setDriverFreeIfOrderIsDelivered(OrderDTO order) {
-        if (order.getStatus().equals("DELIVERED")) {
-            DeliveryDriverEntity deliveryDriver = getDeliveryDriver(order.getDeliveryDriverId());
-
-            deliveryDriver.setFree(true);
-            deliveryDriver.setCurrentOrderId(null);
-            deliveryDriverRepository.save(deliveryDriver);
-        }
-    }
-
-    private DeliveryDriverEntity getDeliveryDriver(String deliveryDriverId) {
-        return deliveryDriverRepository.findByDeliveryDriverId(deliveryDriverId)
-                .orElseThrow(() -> new UsernameNotFoundException("Delivery driver not found."));
     }
 }
