@@ -1,5 +1,6 @@
 package bg.tuplovdiv.orderservice.model.entity;
 
+import bg.tuplovdiv.orderservice.model.enums.OrderStatusInfo;
 import jakarta.persistence.*;
 
 import java.util.UUID;
@@ -13,14 +14,13 @@ public class OrderStatusInfoEntity {
     private Long id;
 
     @Column(nullable = false)
-    private UUID externalId;
-
-    @Column(nullable = false)
     private UUID orderId;
 
     private String time;
 
-    private String infoMessage;
+    @Enumerated(value = EnumType.STRING)
+    @Column(nullable = false)
+    private OrderStatusInfo infoMessage;
 
     public Long getId() {
         return id;
@@ -28,15 +28,6 @@ public class OrderStatusInfoEntity {
 
     public OrderStatusInfoEntity setId(Long id) {
         this.id = id;
-        return this;
-    }
-
-    public UUID getExternalId() {
-        return externalId;
-    }
-
-    public OrderStatusInfoEntity setExternalId(UUID externalId) {
-        this.externalId = externalId;
         return this;
     }
 
@@ -58,11 +49,11 @@ public class OrderStatusInfoEntity {
         return this;
     }
 
-    public String getInfoMessage() {
+    public OrderStatusInfo getInfoMessage() {
         return infoMessage;
     }
 
-    public OrderStatusInfoEntity setInfoMessage(String infoMessage) {
+    public OrderStatusInfoEntity setInfoMessage(OrderStatusInfo infoMessage) {
         this.infoMessage = infoMessage;
         return this;
     }

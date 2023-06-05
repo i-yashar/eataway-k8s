@@ -8,6 +8,7 @@ import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUser;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProviderFactory;
 import bg.tuplovdiv.apigateway.service.OrderService;
+import bg.tuplovdiv.apigateway.service.OrderStatusInfoService;
 import bg.tuplovdiv.orderservice.exception.UnauthorizedAccessException;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -33,10 +34,12 @@ public class OrderController {
 
     private final AuthenticatedUserProviderFactory authenticatedUserProviderFactory;
     private final OrderService orderService;
+    private final OrderStatusInfoService orderStatusInfoService;
 
-    public OrderController(AuthenticatedUserProviderFactory authenticatedUserProviderFactory, OrderService orderService) {
+    public OrderController(AuthenticatedUserProviderFactory authenticatedUserProviderFactory, OrderService orderService, OrderStatusInfoService orderStatusInfoService) {
         this.authenticatedUserProviderFactory = authenticatedUserProviderFactory;
         this.orderService = orderService;
+        this.orderStatusInfoService = orderStatusInfoService;
     }
 
     @ModelAttribute
@@ -62,9 +65,9 @@ public class OrderController {
         }
 
         order.setClientId(getUserId());
-        UUID orderId = orderService.createOrder(order);
+        orderService.createOrder(order);
 
-        return "redirect:/eataway/orders/" + orderId;
+        return "redirect:/eataway/orders";
     }
 
     @GetMapping(ORDER_PATH)
@@ -104,6 +107,6 @@ public class OrderController {
     @GetMapping(ORDERS_STATUS_INFO_PATH)
     @ResponseBody
     public ResponseEntity<Collection<OrderStatusInfoDTO>> getOrderStatusInfoMessages(@PathVariable UUID orderId) {
-        return ResponseEntity.ok(orderService.getOrderStatusInfoMessages(orderId));
+        return ResponseEntity.ok(orderStatusInfoService.getOrderStatusInfoMessages(orderId));
     }
 }
