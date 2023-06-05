@@ -1,4 +1,4 @@
-package bg.tuplovdiv.orderservice.model.entity;
+package com.example.basketservice.model.entity;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.Cascade;

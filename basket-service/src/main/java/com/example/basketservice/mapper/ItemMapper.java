@@ -1,7 +1,8 @@
-package bg.tuplovdiv.orderservice.mapper;
+package com.example.basketservice.mapper;
 
-import bg.tuplovdiv.orderservice.dto.ItemDTO;
-import bg.tuplovdiv.orderservice.model.entity.ItemEntity;
+import com.example.basketservice.dto.ItemDTO;
+import com.example.basketservice.model.entity.ItemEntity;
+import com.example.basketservice.model.entity.MenuEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
@@ -26,5 +27,12 @@ public class ItemMapper {
         return new ItemDTO()
                 .setMenu(menuMapper.toDTO(entity.getMenu()))
                 .setCount(entity.getCount());
+    }
+
+    public ItemEntity fromDTO(ItemDTO dto) {
+        MenuEntity menu = menuMapper.fromDTO(dto.getMenu());
+        return new ItemEntity()
+                .setMenu(menu)
+                .setCount(dto.getCount());
     }
 }

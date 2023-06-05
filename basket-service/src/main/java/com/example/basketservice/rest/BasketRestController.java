@@ -1,8 +1,8 @@
-package bg.tuplovdiv.orderservice.rest;
+package com.example.basketservice.rest;
 
-import bg.tuplovdiv.orderservice.dto.BasketDTO;
-import bg.tuplovdiv.orderservice.dto.ItemDTO;
-import bg.tuplovdiv.orderservice.service.BasketService;
+import com.example.basketservice.dto.BasketDTO;
+import com.example.basketservice.dto.ItemDTO;
+import com.example.basketservice.service.BasketService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +23,7 @@ public class BasketRestController {
 
     @PutMapping(BASKET_PATH)
     public ResponseEntity<BasketDTO> addBasketItem(@PathVariable String ownerId,
-                                              @RequestBody ItemDTO basketItem) {
+                                                   @RequestBody ItemDTO basketItem) {
         return ResponseEntity.ok(basketService.addBasketItem(ownerId, basketItem));
     }
 

@@ -1,7 +1,7 @@
-package bg.tuplovdiv.orderservice.service;
+package com.example.basketservice.service;
 
-import bg.tuplovdiv.orderservice.dto.BasketDTO;
-import bg.tuplovdiv.orderservice.dto.ItemDTO;
+import com.example.basketservice.dto.BasketDTO;
+import com.example.basketservice.dto.ItemDTO;
 
 import java.util.UUID;
 

@@ -1,8 +1,8 @@
-package bg.tuplovdiv.orderservice.mapper;
+package com.example.basketservice.mapper;
 
-import bg.tuplovdiv.orderservice.dto.BasketDTO;
-import bg.tuplovdiv.orderservice.dto.ItemDTO;
-import bg.tuplovdiv.orderservice.model.entity.BasketEntity;
+import com.example.basketservice.dto.BasketDTO;
+import com.example.basketservice.dto.ItemDTO;
+import com.example.basketservice.model.entity.BasketEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
@@ -20,7 +20,7 @@ public class BasketMapper {
         Set<ItemDTO> items = itemMapper.toDTO(basketEntity.getItems());
         return new BasketDTO()
                 .setBasketId(basketEntity.getExternalId())
-                .setOwnerId(basketEntity.getOwner().getUserId())
+                .setOwnerId(basketEntity.getOwner())
                 .setItems(items);
     }
 }

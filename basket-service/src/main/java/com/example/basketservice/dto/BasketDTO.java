@@ -1,4 +1,4 @@
-package bg.tuplovdiv.orderservice.dto;
+package com.example.basketservice.dto;
 
 import java.util.Set;
 import java.util.UUID;

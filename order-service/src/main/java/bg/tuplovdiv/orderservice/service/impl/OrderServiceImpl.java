@@ -143,7 +143,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private BasketEntity getBasketEntity(String clientId) {
-        return basketRepository.findBasketEntityByOwnerUserId(clientId)
+        return basketRepository.findBasketEntityByOwner(clientId)
                 .orElseThrow(() -> new BasketNotFoundException("Basket not found"));
     }
 
