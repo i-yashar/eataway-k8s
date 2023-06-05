@@ -1,7 +1,6 @@
 package bg.tuplovdiv.apigateway.task;
 
 import bg.tuplovdiv.apigateway.connectivity.client.OrderManagementClient;
-import bg.tuplovdiv.apigateway.exception.RemoteHostException;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -17,10 +16,6 @@ class StartupTasks {
 
     @EventListener(ApplicationReadyEvent.class)
     public void dispatchRegisteredOrders() {
-        try {
-            orderManagementClient.dispatchRegisteredOrders();
-        } catch (RemoteHostException ignore) {
-
-        }
+        orderManagementClient.triggerRegisteredOrderDispatch();
     }
 }
