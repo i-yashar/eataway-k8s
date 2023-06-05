@@ -65,9 +65,9 @@ public class OrderController {
         }
 
         order.setClientId(getUserId());
-        UUID orderId = orderService.createOrder(order);
+        orderService.createOrder(order);
 
-        return "redirect:/eataway/orders/" + orderId;
+        return "redirect:/eataway/orders";
     }
 
     @GetMapping(ORDER_PATH)

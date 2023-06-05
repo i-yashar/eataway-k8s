@@ -1,6 +1,6 @@
 package bg.tuplovdiv.apigateway.service.impl;
 
-import bg.tuplovdiv.apigateway.cache.OrderCache;
+import bg.tuplovdiv.apigateway.connectivity.client.OrdersRestClient;
 import bg.tuplovdiv.apigateway.dto.OrderStatusInfoDTO;
 import bg.tuplovdiv.apigateway.service.OrderStatusInfoService;
 import org.springframework.stereotype.Component;
@@ -15,16 +15,16 @@ class OrderStatusInfoServiceImpl implements OrderStatusInfoService {
     private static final String ABOUT_TO_BE_DELIVERED_STATUS_MESSAGE = "Your order will be delivered in a few minutes";
     private static final String DELIVERED_STATUS_MESSAGE = "Your order was delivered. Enjoy your food!";
 
-    private final OrderCache orderCache;
+    private final OrdersRestClient client;
 
-    OrderStatusInfoServiceImpl(OrderCache orderCache) {
-        this.orderCache = orderCache;
+    OrderStatusInfoServiceImpl(OrdersRestClient client) {
+        this.client = client;
     }
 
     @Override
     public Collection<OrderStatusInfoDTO> getOrderStatusInfoMessages(UUID orderId) {
         Collection<OrderStatusInfoDTO> statusInfoMessages =
-                orderCache.getOrderStatusInfoMessages(orderId);
+                client.getOrderStatusInfoMessages(orderId);
 
         addReadableStatusInfoMessages(statusInfoMessages);
 

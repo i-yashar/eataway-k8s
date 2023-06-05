@@ -59,6 +59,7 @@ class DeliveryServiceImpl implements DeliveryService {
         order.setStatus("ACTIVE");
 
         orderDispatcher.sendOrderUpdate(order);
+        orderCache.updateOrder(order);
         deliveryDriverService.registerDriver(deliveryDriverId, orderId);
 
         return order;
