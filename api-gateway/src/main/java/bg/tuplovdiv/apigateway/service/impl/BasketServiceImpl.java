@@ -1,7 +1,7 @@
 package bg.tuplovdiv.apigateway.service.impl;
 
 import bg.tuplovdiv.apigateway.cache.BasketCache;
-import bg.tuplovdiv.apigateway.connectivity.client.OrdersRestClient;
+import bg.tuplovdiv.apigateway.connectivity.client.BasketRestClient;
 import bg.tuplovdiv.apigateway.dto.BasketDTO;
 import bg.tuplovdiv.apigateway.dto.ItemDTO;
 import bg.tuplovdiv.apigateway.service.BasketService;
@@ -12,17 +12,17 @@ import java.util.UUID;
 @Service
 class BasketServiceImpl implements BasketService {
 
-    private final OrdersRestClient ordersClient;
+    private final BasketRestClient client;
     private final BasketCache basketCache;
 
-    BasketServiceImpl(OrdersRestClient ordersClient, BasketCache basketCache) {
-        this.ordersClient = ordersClient;
+    BasketServiceImpl(BasketRestClient client, BasketCache basketCache) {
+        this.client = client;
         this.basketCache = basketCache;
     }
 
     @Override
     public BasketDTO getUserBasket(String ownerId) {
-        BasketDTO basket = ordersClient.getUserBasket(ownerId);
+        BasketDTO basket = client.getUserBasket(ownerId);
         calculateTotalCost(basket);
 
         basketCache.updateUserBasket(basket);
@@ -39,11 +39,11 @@ class BasketServiceImpl implements BasketService {
 
     @Override
     public BasketDTO addBasketItem(String ownerId, ItemDTO item) {
-        return ordersClient.addBasketItem(ownerId, item);
+        return client.addBasketItem(ownerId, item);
     }
 
     @Override
     public void deleteBasketItem(String ownerId, UUID menuId) {
-        ordersClient.deleteBasketItem(ownerId, menuId);
+        client.deleteBasketItem(ownerId, menuId);
     }
 }

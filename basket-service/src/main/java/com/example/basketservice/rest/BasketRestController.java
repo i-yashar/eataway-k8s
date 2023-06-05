@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/orders/api/v1")
+@RequestMapping("/baskets/api/v1")
 public class BasketRestController {
 
     private static final String BASKET_PATH = "/users/{ownerId}/basket";
