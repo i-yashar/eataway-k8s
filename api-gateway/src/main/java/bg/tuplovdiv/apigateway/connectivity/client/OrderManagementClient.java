@@ -1,5 +1,6 @@
 package bg.tuplovdiv.apigateway.connectivity.client;
 
+import bg.tuplovdiv.apigateway.exception.RemoteHostException;
 import bg.tuplovdiv.apigateway.security.jwt.JwtProvider;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +17,7 @@ public class OrderManagementClient extends RestClient {
         super(jwtProvider);
     }
 
-    public Void dispatchRegisteredOrders() {
+    public void triggerRegisteredOrderDispatch() {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
                 .uri(buildURI(DISPATCH_REGISTERED_ORDERS_PATH))
@@ -24,6 +25,10 @@ public class OrderManagementClient extends RestClient {
                 .header("Authorization", getBearerToken())
                 .build();
 
-        return get(request, response -> null);
+        try {
+            get(request, response -> null);
+        } catch (RemoteHostException ignore) {
+
+        }
     }
 }

@@ -6,7 +6,6 @@ import bg.tuplovdiv.apigateway.connectivity.client.OrdersRestClient;
 import bg.tuplovdiv.apigateway.dto.BasketDTO;
 import bg.tuplovdiv.apigateway.dto.CreateOrderRequestDTO;
 import bg.tuplovdiv.apigateway.dto.OrderDTO;
-import bg.tuplovdiv.apigateway.dto.OrderStatusInfoDTO;
 import bg.tuplovdiv.apigateway.messaging.OrderDispatcher;
 import bg.tuplovdiv.apigateway.service.OrderService;
 import org.springframework.stereotype.Service;
@@ -59,10 +58,5 @@ class OrderServiceImpl implements OrderService {
     @Override
     public Collection<OrderDTO> getUserActiveOrders(String userId) {
         return client.getUserActiveOrders(userId).getContent();
-    }
-
-    @Override
-    public Collection<OrderStatusInfoDTO> getOrderStatusInfoMessages(UUID orderId) {
-        return client.getOrderStatusInfoMessages(orderId);
     }
 }
