@@ -1,1 +1,2 @@
-# eataway-microservice-architecture
+# eataway
+foood delivery application
