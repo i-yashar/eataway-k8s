@@ -1,13 +1,13 @@
 package bg.tuplovdiv.apigateway.service.impl;
 
+import bg.tuplovdiv.apigateway.cache.OrderCache;
 import bg.tuplovdiv.apigateway.connectivity.client.OrdersRestClient;
 import bg.tuplovdiv.apigateway.dto.OrderDTO;
-import bg.tuplovdiv.apigateway.model.entity.DeliveryDriverEntity;
+import bg.tuplovdiv.apigateway.messaging.OrderDispatcher;
 import bg.tuplovdiv.apigateway.order.OrderQueue;
-import bg.tuplovdiv.apigateway.repository.DeliveryDriverRepository;
+import bg.tuplovdiv.apigateway.service.DeliveryDriverService;
 import bg.tuplovdiv.apigateway.service.DeliveryService;
 import jakarta.transaction.Transactional;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -16,19 +16,23 @@ import java.util.UUID;
 @Service
 class DeliveryServiceImpl implements DeliveryService {
 
+    private final OrderDispatcher orderDispatcher;
     private final OrderQueue orderQueue;
-    private final DeliveryDriverRepository deliveryDriverRepository;
+    private final OrderCache orderCache;
+    private final DeliveryDriverService deliveryDriverService;
     private final OrdersRestClient client;
 
-    DeliveryServiceImpl(OrderQueue orderQueue, DeliveryDriverRepository deliveryDriverRepository, OrdersRestClient client) {
+    DeliveryServiceImpl(OrderDispatcher orderDispatcher, OrderQueue orderQueue, OrderCache orderCache, DeliveryDriverService deliveryDriverService, OrdersRestClient client) {
+        this.orderDispatcher = orderDispatcher;
         this.orderQueue = orderQueue;
-        this.deliveryDriverRepository = deliveryDriverRepository;
+        this.orderCache = orderCache;
+        this.deliveryDriverService = deliveryDriverService;
         this.client = client;
     }
 
     @Override
     public Collection<OrderDTO> getRegisteredOrders(String driverId) {
-        UUID driverRestaurantId = getDeliveryDriver(driverId).getRestaurantId();
+        UUID driverRestaurantId = deliveryDriverService.getDeliveryDriverRestaurant(driverId);
         return orderQueue.getRegisteredOrders()
                 .stream()
                 .filter(o -> o.getItems()
@@ -44,7 +48,7 @@ class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     public OrderDTO getOrderInfo(UUID orderId) {
-        return client.getUserOrder(orderId);
+        return orderCache.getOrder(orderId);
     }
 
     @Override
@@ -54,45 +58,22 @@ class DeliveryServiceImpl implements DeliveryService {
         order.setDeliveryDriverId(deliveryDriverId);
         order.setStatus("ACTIVE");
 
-        order = client.updateOrder(order);
-        registerDriver(deliveryDriverId, orderId);
+        orderDispatcher.sendOrderUpdate(order);
+        orderCache.updateOrder(order);
+        deliveryDriverService.registerDriver(deliveryDriverId, orderId);
 
         return order;
-    }
-
-    private void registerDriver(String deliveryDriverId, UUID orderId) {
-        DeliveryDriverEntity deliveryDriver = getDeliveryDriver(deliveryDriverId);
-
-        deliveryDriver.setFree(false);
-        deliveryDriver.setCurrentOrderId(orderId);
-        deliveryDriverRepository.save(deliveryDriver);
     }
 
     @Override
     @Transactional
     public OrderDTO updateOrder(UUID orderId, String status) {
-        OrderDTO order = client.getUserOrder(orderId);
+        OrderDTO order = orderCache.getOrder(orderId);
         order.setStatus(status);
 
-        order = client.updateOrder(order);
-        setDriverFreeIfOrderIsDelivered(order);
+        orderDispatcher.sendOrderUpdate(order);
+        deliveryDriverService.setDriverFreeIfOrderIsDelivered(order);
 
         return order;
-    }
-
-
-    private void setDriverFreeIfOrderIsDelivered(OrderDTO order) {
-        if (order.getStatus().equals("DELIVERED")) {
-            DeliveryDriverEntity deliveryDriver = getDeliveryDriver(order.getDeliveryDriverId());
-
-            deliveryDriver.setFree(true);
-            deliveryDriver.setCurrentOrderId(null);
-            deliveryDriverRepository.save(deliveryDriver);
-        }
-    }
-
-    private DeliveryDriverEntity getDeliveryDriver(String deliveryDriverId) {
-        return deliveryDriverRepository.findByDeliveryDriverId(deliveryDriverId)
-                .orElseThrow(() -> new UsernameNotFoundException("Delivery driver not found."));
     }
 }

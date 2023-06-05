@@ -1,14 +1,14 @@
 package bg.tuplovdiv.orderservice.messaging;
 
+import bg.tuplovdiv.orderservice.dto.OrderDTO;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
+import static bg.tuplovdiv.orderservice.config.RabbitMQConfig.EXCHANGE;
+import static bg.tuplovdiv.orderservice.config.RabbitMQConfig.ORDER_CREATED_ROUTING_KEY;
 
-import static bg.tuplovdiv.orderservice.config.messaging.RabbitMQConfig.*;
-
-@Component("createOrderDispatcher")
-public class CreateOrderDispatcher implements MessageDispatcher {
+@Component
+public class CreateOrderDispatcher {
 
     private final RabbitTemplate template;
 
@@ -16,14 +16,7 @@ public class CreateOrderDispatcher implements MessageDispatcher {
         this.template = template;
     }
 
-    @Override
-    public void dispatch(Message message) {
-        setMessageMetadata(message);
-        template.convertAndSend(EXCHANGE, ORDER_CREATED_ROUTING_KEY, message);
-    }
-
-    private void setMessageMetadata(Message message) {
-        message.setMessageId(UUID.randomUUID());
-        message.setCreatedAt(System.currentTimeMillis());
+    public void dispatch(OrderDTO order) {
+        template.convertAndSend(EXCHANGE, ORDER_CREATED_ROUTING_KEY, order);
     }
 }

@@ -32,6 +32,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+/basket-service/src/main/resources/certs/public.pem
 /order-service/src/main/resources/certs/public.pem
 /restaurant-service/src/main/resources/certs/public.pem
 /api-gateway/src/main/resources/certs/public.pem

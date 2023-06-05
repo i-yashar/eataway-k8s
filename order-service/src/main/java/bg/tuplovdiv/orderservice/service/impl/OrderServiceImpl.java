@@ -1,13 +1,12 @@
 package bg.tuplovdiv.orderservice.service.impl;
 
-import bg.tuplovdiv.orderservice.dto.CreateOrderRequest;
+import bg.tuplovdiv.orderservice.dto.CreateOrderRequestDTO;
 import bg.tuplovdiv.orderservice.dto.OrderDTO;
+import bg.tuplovdiv.orderservice.dto.OrderStatusChangeDTO;
 import bg.tuplovdiv.orderservice.dto.page.PageDTO;
 import bg.tuplovdiv.orderservice.exception.BasketNotFoundException;
 import bg.tuplovdiv.orderservice.mapper.OrderMapper;
-import bg.tuplovdiv.orderservice.messaging.delivery.OrderStatusChange;
-import bg.tuplovdiv.orderservice.messaging.process.CreateOrderProcess;
-import bg.tuplovdiv.orderservice.messaging.process.UpdateOrderProcess;
+import bg.tuplovdiv.orderservice.messaging.OrderDispatcher;
 import bg.tuplovdiv.orderservice.model.entity.ActiveOrderEntity;
 import bg.tuplovdiv.orderservice.model.entity.BasketEntity;
 import bg.tuplovdiv.orderservice.model.entity.ItemEntity;
@@ -33,17 +32,15 @@ import static bg.tuplovdiv.orderservice.model.enums.OrderStatus.*;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderStatusInfoService orderStatusInfoService;
-    private final CreateOrderProcess createOrderProcess;
-    private final UpdateOrderProcess updateOrderProcess;
+    private final OrderDispatcher orderDispatcher;
     private final OrderRepository orderRepository;
     private final ActiveOrderRepository activeOrderRepository;
     private final BasketRepository basketRepository;
     private final OrderMapper mapper;
 
-    public OrderServiceImpl(OrderStatusInfoService orderStatusInfoService, CreateOrderProcess createOrderProcess, UpdateOrderProcess updateOrderProcess, OrderRepository orderRepository, ActiveOrderRepository activeOrderRepository, BasketRepository basketRepository, OrderMapper mapper) {
+    public OrderServiceImpl(OrderStatusInfoService orderStatusInfoService, OrderDispatcher orderDispatcher, OrderRepository orderRepository, ActiveOrderRepository activeOrderRepository, BasketRepository basketRepository, OrderMapper mapper) {
         this.orderStatusInfoService = orderStatusInfoService;
-        this.createOrderProcess = createOrderProcess;
-        this.updateOrderProcess = updateOrderProcess;
+        this.orderDispatcher = orderDispatcher;
         this.orderRepository = orderRepository;
         this.activeOrderRepository = activeOrderRepository;
         this.basketRepository = basketRepository;
@@ -89,16 +86,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public UUID createOrder(CreateOrderRequest createOrderRequest) {
+    public UUID createOrder(CreateOrderRequestDTO createOrderRequest) {
         List<OrderEntity> order = persistOrder(createOrderRequest);
         resetBasketItems(createOrderRequest.getClientId());
 
-        order.forEach(createOrderProcess::start);
+        order.forEach(o -> orderDispatcher.sendCreatedOrder(mapper.toDTO(o)));
 
         return order.get(0).getExternalId();
     }
 
-    private List<OrderEntity> persistOrder(CreateOrderRequest createOrderRequest) {
+    private List<OrderEntity> persistOrder(CreateOrderRequestDTO createOrderRequest) {
         String clientId = createOrderRequest.getClientId();
         Set<ItemEntity> orderItems = getOrderItems(clientId);
 
@@ -146,7 +143,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private BasketEntity getBasketEntity(String clientId) {
-        return basketRepository.findBasketEntityByOwnerUserId(clientId)
+        return basketRepository.findBasketEntityByOwner(clientId)
                 .orElseThrow(() -> new BasketNotFoundException("Basket not found"));
     }
 
@@ -161,7 +158,7 @@ public class OrderServiceImpl implements OrderService {
         orderStatusInfoService.saveOrderStatusInfo(order);
 
         OrderEntity orderEntity = activeOrderEntity.toOrder();
-        updateOrderProcess.start(createOrderStatusChange(orderEntity));
+        orderDispatcher.sendChangedOrderStatus(createOrderStatusChange(orderEntity));
 
         return mapper.toDTO(orderEntity);
     }
@@ -180,8 +177,8 @@ public class OrderServiceImpl implements OrderService {
                 .collect(Collectors.toList());
     }
 
-    private OrderStatusChange createOrderStatusChange(OrderEntity order) {
-        return new OrderStatusChange()
+    private OrderStatusChangeDTO createOrderStatusChange(OrderEntity order) {
+        return new OrderStatusChangeDTO()
                 .setOrderId(order.getExternalId())
                 .setClientId(order.getClientId())
                 .setDeliveryDriverId(order.getDeliveryDriverId())

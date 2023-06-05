@@ -16,8 +16,8 @@ public class BasketEntity {
 
     private UUID externalId;
 
-    @OneToOne
-    private UserEntity owner;
+    @Column(unique = true)
+    private String owner;
 
     @OneToMany(fetch = FetchType.EAGER)
     @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
@@ -41,11 +41,11 @@ public class BasketEntity {
         return this;
     }
 
-    public UserEntity getOwner() {
+    public String getOwner() {
         return owner;
     }
 
-    public BasketEntity setOwner(UserEntity owner) {
+    public BasketEntity setOwner(String owner) {
         this.owner = owner;
         return this;
     }

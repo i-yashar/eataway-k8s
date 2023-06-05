@@ -1,6 +1,6 @@
 package bg.tuplovdiv.apigateway.controller;
 
-import bg.tuplovdiv.apigateway.dto.CreateOrderRequest;
+import bg.tuplovdiv.apigateway.dto.CreateOrderRequestDTO;
 import bg.tuplovdiv.apigateway.dto.OrderDTO;
 import bg.tuplovdiv.apigateway.dto.OrderStatusInfoDTO;
 import bg.tuplovdiv.apigateway.order.OrderStatusEmitters;
@@ -8,6 +8,7 @@ import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUser;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProviderFactory;
 import bg.tuplovdiv.apigateway.service.OrderService;
+import bg.tuplovdiv.apigateway.service.OrderStatusInfoService;
 import bg.tuplovdiv.orderservice.exception.UnauthorizedAccessException;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -33,10 +34,12 @@ public class OrderController {
 
     private final AuthenticatedUserProviderFactory authenticatedUserProviderFactory;
     private final OrderService orderService;
+    private final OrderStatusInfoService orderStatusInfoService;
 
-    public OrderController(AuthenticatedUserProviderFactory authenticatedUserProviderFactory, OrderService orderService) {
+    public OrderController(AuthenticatedUserProviderFactory authenticatedUserProviderFactory, OrderService orderService, OrderStatusInfoService orderStatusInfoService) {
         this.authenticatedUserProviderFactory = authenticatedUserProviderFactory;
         this.orderService = orderService;
+        this.orderStatusInfoService = orderStatusInfoService;
     }
 
     @ModelAttribute
@@ -46,12 +49,12 @@ public class OrderController {
     }
 
     @ModelAttribute("createOrderRequest")
-    public CreateOrderRequest initCreateOrderRequest() {
-        return new CreateOrderRequest();
+    public CreateOrderRequestDTO initCreateOrderRequest() {
+        return new CreateOrderRequestDTO();
     }
 
     @PostMapping(ORDERS_PATH)
-    public String createOrder(@Valid CreateOrderRequest order,
+    public String createOrder(@Valid CreateOrderRequestDTO order,
                               BindingResult bindingResult,
                               RedirectAttributes redirectAttributes) {
 
@@ -62,9 +65,9 @@ public class OrderController {
         }
 
         order.setClientId(getUserId());
-        UUID orderId = orderService.createOrder(order);
+        orderService.createOrder(order);
 
-        return "redirect:/eataway/orders/" + orderId;
+        return "redirect:/eataway/orders";
     }
 
     @GetMapping(ORDER_PATH)
@@ -104,6 +107,6 @@ public class OrderController {
     @GetMapping(ORDERS_STATUS_INFO_PATH)
     @ResponseBody
     public ResponseEntity<Collection<OrderStatusInfoDTO>> getOrderStatusInfoMessages(@PathVariable UUID orderId) {
-        return ResponseEntity.ok(orderService.getOrderStatusInfoMessages(orderId));
+        return ResponseEntity.ok(orderStatusInfoService.getOrderStatusInfoMessages(orderId));
     }
 }
