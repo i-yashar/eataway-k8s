@@ -4,19 +4,9 @@ import java.util.UUID;
 
 public class OrderStatusInfoDTO {
 
-    private UUID orderStatusInfoId;
     private UUID orderId;
     private String time;
     private String infoMessage;
-
-    public UUID getOrderStatusInfoId() {
-        return orderStatusInfoId;
-    }
-
-    public OrderStatusInfoDTO setOrderStatusInfoId(UUID orderStatusInfoId) {
-        this.orderStatusInfoId = orderStatusInfoId;
-        return this;
-    }
 
     public UUID getOrderId() {
         return orderId;

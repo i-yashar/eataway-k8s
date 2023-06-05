@@ -9,9 +9,8 @@ public class OrderStatusInfoMapper {
 
     public OrderStatusInfoDTO toDTO(OrderStatusInfoEntity entity) {
         return new OrderStatusInfoDTO()
-                .setOrderStatusInfoId(entity.getExternalId())
                 .setOrderId(entity.getOrderId())
                 .setTime(entity.getTime())
-                .setInfoMessage(entity.getInfoMessage());
+                .setInfoMessage(entity.getInfoMessage().name());
     }
 }
