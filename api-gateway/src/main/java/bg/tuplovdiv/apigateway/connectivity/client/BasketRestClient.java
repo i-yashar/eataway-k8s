@@ -15,7 +15,7 @@ public class BasketRestClient extends RestClient{
     private static final String HOST = "http://localhost:8083";
     private static final String BASKETS_API_BASE_PATH = HOST + "/baskets/api/v1";
     private static final String BASKETS_API_BASKETS_BASE_PATH = BASKETS_API_BASE_PATH + "/users/%s/basket";
-    private static final String BASKETS_API_BASKETS_BASKET_ITEM_PATH = BASKETS_API_BASE_PATH + "/items/%s";
+    private static final String BASKETS_API_BASKETS_BASKET_ITEM_PATH = BASKETS_API_BASKETS_BASE_PATH + "/items/%s";
 
     private static final TypeReference<BasketDTO> BASKET_DTO_TYPE = new TypeReference<>() {};
 
