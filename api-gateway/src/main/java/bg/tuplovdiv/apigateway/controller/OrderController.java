@@ -31,6 +31,7 @@ public class OrderController {
     private static final String ORDER_PATH = ORDERS_PATH + "/{orderId}";
     private static final String ORDER_LIVE_UPDATE_PATH = ORDERS_PATH + "/sse";
     private static final String ORDERS_STATUS_INFO_PATH = API_PATH + "/" + ORDER_PATH + "/info";
+    private static final String ORDERS_SUCCESS_PATh = "orders/success";
 
     private final AuthenticatedUserProviderFactory authenticatedUserProviderFactory;
     private final OrderService orderService;
@@ -53,6 +54,11 @@ public class OrderController {
         return new CreateOrderRequestDTO();
     }
 
+    @GetMapping(ORDERS_SUCCESS_PATh)
+    public String successfulOrder() {
+        return "order-successful";
+    }
+
     @PostMapping(ORDERS_PATH)
     public String createOrder(@Valid CreateOrderRequestDTO order,
                               BindingResult bindingResult,
@@ -67,7 +73,7 @@ public class OrderController {
         order.setClientId(getUserId());
         orderService.createOrder(order);
 
-        return "redirect:/eataway/orders";
+        return "redirect:/eataway/orders/success";
     }
 
     @GetMapping(ORDER_PATH)
