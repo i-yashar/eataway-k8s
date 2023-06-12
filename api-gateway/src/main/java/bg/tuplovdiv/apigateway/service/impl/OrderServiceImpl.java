@@ -47,7 +47,7 @@ class OrderServiceImpl implements OrderService {
                 .setAddress(createOrderRequest.getAddress())
                 .setItems(basket.getItems())
                 .setTotalCost(basket.getTotalCost())
-                .setStatus("REGISTERED");
+                .setStatus("PENDING");
     }
 
     @Override
