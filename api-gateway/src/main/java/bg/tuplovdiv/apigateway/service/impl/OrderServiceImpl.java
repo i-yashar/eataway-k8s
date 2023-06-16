@@ -1,12 +1,12 @@
 package bg.tuplovdiv.apigateway.service.impl;
 
-import bg.tuplovdiv.apigateway.cache.BasketCache;
 import bg.tuplovdiv.apigateway.cache.OrderCache;
 import bg.tuplovdiv.apigateway.connectivity.client.OrdersRestClient;
 import bg.tuplovdiv.apigateway.dto.BasketDTO;
 import bg.tuplovdiv.apigateway.dto.CreateOrderRequestDTO;
 import bg.tuplovdiv.apigateway.dto.OrderDTO;
 import bg.tuplovdiv.apigateway.messaging.OrderDispatcher;
+import bg.tuplovdiv.apigateway.service.BasketService;
 import bg.tuplovdiv.apigateway.service.OrderService;
 import org.springframework.stereotype.Service;
 
@@ -19,13 +19,13 @@ class OrderServiceImpl implements OrderService {
     private final OrderDispatcher orderDispatcher;
     private final OrderCache orderCache;
     private final OrdersRestClient client;
-    private final BasketCache basketCache;
+    private final BasketService basketService;
 
-    OrderServiceImpl(OrderDispatcher orderDispatcher, OrderCache orderCache, OrdersRestClient client, BasketCache basketCache) {
+    OrderServiceImpl(OrderDispatcher orderDispatcher, OrderCache orderCache, OrdersRestClient client, BasketService basketService) {
         this.orderDispatcher = orderDispatcher;
         this.orderCache = orderCache;
         this.client = client;
-        this.basketCache = basketCache;
+        this.basketService = basketService;
     }
 
     @Override
@@ -39,7 +39,7 @@ class OrderServiceImpl implements OrderService {
     }
 
     private OrderDTO createOrderDTO(CreateOrderRequestDTO createOrderRequest) {
-        BasketDTO basket = basketCache.getUserBasket(createOrderRequest.getClientId());
+        BasketDTO basket = basketService.getUserBasket(createOrderRequest.getClientId());
         return new OrderDTO()
                 .setOrderId(UUID.randomUUID())
                 .setClientId(createOrderRequest.getClientId())
