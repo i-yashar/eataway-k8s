@@ -9,7 +9,6 @@ import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider
 import bg.tuplovdiv.apigateway.service.OrderService;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -25,38 +24,46 @@ public class DeliveryValidator {
         this.deliveryDriverRepository = deliveryDriverRepository;
     }
 
-
     public boolean isDeliveryDriverValid() {
-        return getDeliveryDriver().isPresent();
+        return getDeliveryDriver() != null;
     }
 
     public boolean isDeliveryDriverFree() {
-        DeliveryDriverEntity driver = getDeliveryDriver().get();
+        DeliveryDriverEntity driver = getDeliveryDriver();
+        return driver != null && isDeliveryDriverFree(driver);
+    }
 
+    public boolean isDeliveryDriverValidForInfo(UUID orderId) {
+        DeliveryDriverEntity driver = getDeliveryDriver();
+        return driver != null && orderContainsDriverRestaurant(driver, orderId);
+    }
+
+    public boolean isDeliveryDriverValidForTake(UUID orderId) {
+        DeliveryDriverEntity driver = getDeliveryDriver();
+        return driver != null && isDeliveryDriverFree(driver) && orderContainsDriverRestaurant(driver, orderId);
+    }
+
+    private boolean isDeliveryDriverFree(DeliveryDriverEntity driver) {
         if(!driver.isFree()) {
             throw new DeliveryDriverNotFreeException();
         }
-
         return true;
     }
 
-    public boolean isDeliveryDriverCorrect(UUID orderId) {
-        DeliveryDriverEntity driver = getDeliveryDriver().get();
-
-        return orderId.equals(driver.getCurrentOrderId());
-    }
-
-    public boolean isDeliveryDriverEligible(UUID orderId) {
-        UUID driverRestaurantId = getDeliveryDriver().get().getRestaurantId();
+    private boolean orderContainsDriverRestaurant(DeliveryDriverEntity driver, UUID orderId) {
         OrderDTO order = orderService.getOrderInfo(orderId);
-
         return order.getItems()
                 .stream()
-                .anyMatch(i -> i.getMenu().getRestaurantId().equals(driverRestaurantId));
+                .anyMatch(i -> i.getMenu().getRestaurantId().equals(driver.getRestaurantId()));
     }
 
-    private Optional<DeliveryDriverEntity> getDeliveryDriver() {
+    public boolean isDeliveryDriverValidForUpdate(UUID orderId) {
+        DeliveryDriverEntity driver = getDeliveryDriver();
+        return driver != null && orderId.equals(driver.getCurrentOrderId());
+    }
+
+    private DeliveryDriverEntity getDeliveryDriver() {
         AuthenticatedUser principal = authenticatedUserProviderFactory.getProvider().provide();
-        return deliveryDriverRepository.findByDeliveryDriverId(principal.getUserId());
+        return deliveryDriverRepository.findByDeliveryDriverId(principal.getUserId()).orElse(null);
     }
 }

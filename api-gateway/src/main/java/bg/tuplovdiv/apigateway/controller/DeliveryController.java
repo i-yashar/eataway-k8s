@@ -43,8 +43,7 @@ public class DeliveryController {
     }
 
     @GetMapping(ORDERS_PATH)
-    @PreAuthorize("@deliveryValidator.isDeliveryDriverValid()" +
-            "&& @deliveryValidator.isDeliveryDriverFree()")
+    @PreAuthorize("@deliveryValidator.isDeliveryDriverFree()")
     public String getRegisteredOrders(Model model) {
         model.addAttribute("orders", deliveryService.getRegisteredOrders(getUserId()));
 
@@ -60,8 +59,7 @@ public class DeliveryController {
     }
 
     @GetMapping(ORDER_INFO_PATH)
-    @PreAuthorize("@deliveryValidator.isDeliveryDriverValid()" +
-            "&& @deliveryValidator.isDeliveryDriverEligible(#orderId)")
+    @PreAuthorize("@deliveryValidator.isDeliveryDriverValidForInfo(#orderId)")
     public String getOrderInfo(@PathVariable UUID orderId, Model model) {
         OrderDTO orderInfo = deliveryService.getOrderInfo(orderId);
         model.addAttribute("order", orderInfo);
@@ -72,9 +70,7 @@ public class DeliveryController {
 
     @PostMapping(ORDERS_PATH)
     @ResponseBody
-    @PreAuthorize("@deliveryValidator.isDeliveryDriverValid()" +
-            "&& @deliveryValidator.isDeliveryDriverEligible(#orderId)" +
-            "&& @deliveryValidator.isDeliveryDriverFree()")
+    @PreAuthorize("@deliveryValidator.isDeliveryDriverValidForTake(#orderId)")
     public ResponseEntity<Void> takeOrder(@RequestBody String orderId) {
         deliveryService.takeOrder(UUID.fromString(orderId), getUserId());
 
@@ -83,11 +79,10 @@ public class DeliveryController {
 
     @PutMapping(UPDATE_ORDERS_PATH)
     @ResponseBody
-    @PreAuthorize("@deliveryValidator.isDeliveryDriverValid()" +
-            "&& @deliveryValidator.isDeliveryDriverCorrect(#orderId)" +
+    @PreAuthorize("@deliveryValidator.isDeliveryDriverValidForUpdate(#orderId)" +
             "&& @statusValidator.isStatusUpdateValid(#status)")
     public ResponseEntity<Void> updateOrder(@PathVariable UUID orderId,
-                                      @RequestParam(name = "status") String status) {
+                                            @RequestParam(name = "status") String status) {
         deliveryService.updateOrder(orderId, status);
 
         return ResponseEntity.ok().build();
