@@ -5,6 +5,7 @@ import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUser;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProviderFactory;
 import bg.tuplovdiv.apigateway.security.validation.DeliveryValidator;
+import bg.tuplovdiv.apigateway.security.validation.StatusValidator;
 import bg.tuplovdiv.apigateway.service.DeliveryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,11 +27,13 @@ public class DeliveryController {
     private final DeliveryService deliveryService;
     private final AuthenticatedUserProviderFactory authenticatedUserProviderFactory;
     private final DeliveryValidator deliveryValidator;
+    private final StatusValidator statusValidator;
 
-    public DeliveryController(DeliveryService deliveryService, AuthenticatedUserProviderFactory authenticatedUserProviderFactory, DeliveryValidator deliveryValidator) {
+    public DeliveryController(DeliveryService deliveryService, AuthenticatedUserProviderFactory authenticatedUserProviderFactory, DeliveryValidator deliveryValidator, StatusValidator statusValidator) {
         this.deliveryService = deliveryService;
         this.authenticatedUserProviderFactory = authenticatedUserProviderFactory;
         this.deliveryValidator = deliveryValidator;
+        this.statusValidator = statusValidator;
     }
 
     @ModelAttribute
@@ -81,7 +84,8 @@ public class DeliveryController {
     @PutMapping(UPDATE_ORDERS_PATH)
     @ResponseBody
     @PreAuthorize("@deliveryValidator.isDeliveryDriverValid()" +
-            "&& @deliveryValidator.isDeliveryDriverCorrect(#orderId)")
+            "&& @deliveryValidator.isDeliveryDriverCorrect(#orderId)" +
+            "&& @statusValidator.isStatusUpdateValid(#status)")
     public ResponseEntity<Void> updateOrder(@PathVariable UUID orderId,
                                       @RequestParam(name = "status") String status) {
         deliveryService.updateOrder(orderId, status);
