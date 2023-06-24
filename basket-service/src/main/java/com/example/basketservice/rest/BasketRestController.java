@@ -20,7 +20,7 @@ public class BasketRestController {
         this.basketService = basketService;
     }
 
-    @PatchMapping(BASKET_ITEM_PATH)
+    @PutMapping(BASKET_ITEM_PATH)
     public ResponseEntity<BasketDTO> addBasketItem(@PathVariable String ownerId,
                                                    @PathVariable UUID menuId) {
         return ResponseEntity.ok(basketService.addBasketItem(ownerId, menuId));

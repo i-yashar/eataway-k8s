@@ -7,7 +7,6 @@ import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider
 import bg.tuplovdiv.apigateway.security.validation.DeliveryValidator;
 import bg.tuplovdiv.apigateway.security.validation.StatusValidator;
 import bg.tuplovdiv.apigateway.service.DeliveryService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,8 +21,6 @@ public class DeliveryController {
     private static final String ORDERS_PATH = "orders";
     private static final String ORDER_INFO_PATH = ORDERS_PATH + "/{orderId}";
     private static final String ORDER_PATH = ORDERS_PATH + "/{orderId}";
-    private static final String TAKE_ORDERS_PATH = ORDERS_PATH + "/take";
-    private static final String UPDATE_ORDERS_PATH = ORDERS_PATH + "/{orderId}/update";
     private static final String ACTIVE_ORDERS_PATH = ORDERS_PATH + "/active";
 
     private final DeliveryService deliveryService;
@@ -70,25 +67,15 @@ public class DeliveryController {
         return "order-delivery-info";
     }
 
-//    @GetMapping(TAKE_ORDERS_PATH)
-//    @ResponseBody
-//    @PreAuthorize("@deliveryValidator.isDeliveryDriverValidForTake(#orderId)")
-//    public ResponseEntity<Void> takeOrder(@RequestBody String orderId) {
-//        deliveryService.takeOrder(UUID.fromString(orderId), getUserId());
-//
-//        return ResponseEntity.ok().build();
-//    }
-
-    @PatchMapping(ORDER_PATH)
-    @ResponseBody
-    @PreAuthorize("@deliveryValidator.isDeliveryDriverValidForUpdate(#orderId)" +
-            "&& @statusValidator.isStatusUpdateValid(#status)")
-    public ResponseEntity<Void> updateOrder(@PathVariable UUID orderId,
-                                            @RequestParam(name = "currentStatus") String status) {
+    @PutMapping(ORDER_PATH)
+//    @PreAuthorize("@deliveryValidator.isDeliveryDriverValidForUpdate(#orderId)" +
+//            "&& @statusValidator.isStatusUpdateValid(#status)")
+    public String updateOrder(@PathVariable UUID orderId,
+                              @RequestParam(name = "currentStatus") String status) {
         status = updateStatus(status);
         deliveryService.updateOrder(orderId, status, getUserId());
 
-        return ResponseEntity.ok().build();
+        return "redirect:/eataway/delivery/orders/" + orderId;
     }
 
     private String updateStatus(String status) {

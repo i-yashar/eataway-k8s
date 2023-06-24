@@ -28,10 +28,16 @@
 
                                 <ul class="list-inline list-inline-dotted mb-0">
                                     <li class="list-inline-item">
-                                        <a th:id="${'removeMenuBtn' + item.menu.menuId}"
-                                           class="removeMenuFromBasketBtn btn btn-sm btn-success"
-                                           href="javascript:void(0)"
-                                           role="button">Remove</a>
+                                        <form
+                                                th:action="@{/eataway/api/v1/basketItems/{menuId}/delete(menuId = ${item.menu.menuId})}"
+                                                th:method="put"
+                                        >
+                                            <input id="orderUpdateButton"
+                                                   class="btn btn btn-success"
+                                                   type="submit"
+                                                   value="Remove"
+                                                   >
+                                        </form>
                                     </li>
                                 </ul>
                             </div>

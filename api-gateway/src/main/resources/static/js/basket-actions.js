@@ -44,5 +44,4 @@ async function onRemoveMenuFromBasket(event) {
     })
 
     location.reload()
-    console.log('hello world')
 }

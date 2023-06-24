@@ -17,7 +17,7 @@ public class BasketController {
 
     private static final String BASKET_PATH = "basket";
     private static final String ADD_BASKET_ITEM_PATH = "api/v1/basketItems/{menuId}";
-    private static final String DELETE_BASKET_ITEM_PATH = "api/v1/basketItems/{menuId}";
+    private static final String DELETE_BASKET_ITEM_PATH = "api/v1/basketItems/{menuId}/delete";
 
     private final AuthenticatedUserProviderFactory authenticatedUserProviderFactory;
     private final BasketService basketService;
@@ -52,7 +52,7 @@ public class BasketController {
         return "redirect:/eataway/basket";
     }
 
-    @GetMapping(DELETE_BASKET_ITEM_PATH)
+    @PutMapping(DELETE_BASKET_ITEM_PATH)
     public String deleteBasketItem(@PathVariable UUID menuId) {
         basketService.deleteBasketItem(getUserId(), menuId);
 
