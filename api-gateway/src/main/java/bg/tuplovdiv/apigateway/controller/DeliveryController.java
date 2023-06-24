@@ -21,6 +21,7 @@ public class DeliveryController {
 
     private static final String ORDERS_PATH = "orders";
     private static final String ORDER_INFO_PATH = ORDERS_PATH + "/{orderId}";
+    private static final String ORDER_PATH = ORDERS_PATH + "/{orderId}";
     private static final String TAKE_ORDERS_PATH = ORDERS_PATH + "/take";
     private static final String UPDATE_ORDERS_PATH = ORDERS_PATH + "/{orderId}/update";
     private static final String ACTIVE_ORDERS_PATH = ORDERS_PATH + "/active";
@@ -78,15 +79,25 @@ public class DeliveryController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(UPDATE_ORDERS_PATH)
+    @PatchMapping(ORDER_PATH)
     @ResponseBody
     @PreAuthorize("@deliveryValidator.isDeliveryDriverValidForUpdate(#orderId)" +
             "&& @statusValidator.isStatusUpdateValid(#status)")
     public ResponseEntity<Void> updateOrder(@PathVariable UUID orderId,
-                                            @RequestParam(name = "status") String status) {
+                                            @RequestParam(name = "currentStatus") String status) {
+        status = updateStatus(status);
         deliveryService.updateOrder(orderId, status);
 
         return ResponseEntity.ok().build();
+    }
+
+    private String updateStatus(String status) {
+        return switch (status) {
+            case "REGISTERED" -> "ACTIVE";
+            case "ACTIVE" -> "ABOUT_TO_BE_DELIVERED";
+            case "ABOUT_TO_BE_DELIVERED" -> "DELIVERED";
+            default -> "";
+        };
     }
 
     private String getUserId() {

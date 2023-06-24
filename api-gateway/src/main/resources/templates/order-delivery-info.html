@@ -68,6 +68,12 @@
 
     <ul class="list-inline list-inline-dotted mt-3 mb-3">
         <li class="list-inline-item">
+            <form
+                    th:action="@{http://localhost:8082/eataway/api/v1/basketItems/{menuId}(menuId = ${menu.menuId})}"
+                    th:method="put"
+            >
+                <input class="btn btn btn-success" type="submit" value="Add to cart">
+            </form>
             <a id="orderUpdateButton"
                class="upVoteBtn btn btn-success"
                href="#"
