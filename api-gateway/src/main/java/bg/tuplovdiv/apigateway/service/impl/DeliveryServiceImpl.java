@@ -67,7 +67,11 @@ class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     @Transactional
-    public OrderDTO updateOrder(UUID orderId, String status) {
+    public OrderDTO updateOrder(UUID orderId, String status, String deliveryDriverId) {
+        if(hasBeenTaken(status)) {
+            return takeOrder(orderId, deliveryDriverId);
+        }
+
         OrderDTO order = orderCache.getOrder(orderId);
         order.setStatus(status);
 
@@ -75,5 +79,9 @@ class DeliveryServiceImpl implements DeliveryService {
         deliveryDriverService.setDriverFreeIfOrderIsDelivered(order);
 
         return order;
+    }
+
+    private boolean hasBeenTaken(String status) {
+        return status.equals("ACTIVE");
     }
 }

@@ -10,5 +10,5 @@ public interface DeliveryService {
     Collection<OrderDTO> getDeliveryDriverActiveOrders(String deliveryDriverId);
     OrderDTO getOrderInfo(UUID orderId);
     OrderDTO takeOrder(UUID orderId, String deliveryDriverId);
-    OrderDTO updateOrder(UUID orderId, String status);
+    OrderDTO updateOrder(UUID orderId, String status, String deliveryDriverId);
 }

@@ -12,8 +12,6 @@ async function onUpdateOrder(event) {
     const orderId = location.pathname.substring(25)
     const status = event.target.name;
 
-    console.log(event)
-
     if (status === 'REGISTERED') {
         const url = "http://localhost:8082/eataway/delivery/orders/take"
 

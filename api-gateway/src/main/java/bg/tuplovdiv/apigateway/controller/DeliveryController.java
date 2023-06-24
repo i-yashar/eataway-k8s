@@ -70,14 +70,14 @@ public class DeliveryController {
         return "order-delivery-info";
     }
 
-    @GetMapping(TAKE_ORDERS_PATH)
-    @ResponseBody
-    @PreAuthorize("@deliveryValidator.isDeliveryDriverValidForTake(#orderId)")
-    public ResponseEntity<Void> takeOrder(@RequestBody String orderId) {
-        deliveryService.takeOrder(UUID.fromString(orderId), getUserId());
-
-        return ResponseEntity.ok().build();
-    }
+//    @GetMapping(TAKE_ORDERS_PATH)
+//    @ResponseBody
+//    @PreAuthorize("@deliveryValidator.isDeliveryDriverValidForTake(#orderId)")
+//    public ResponseEntity<Void> takeOrder(@RequestBody String orderId) {
+//        deliveryService.takeOrder(UUID.fromString(orderId), getUserId());
+//
+//        return ResponseEntity.ok().build();
+//    }
 
     @PatchMapping(ORDER_PATH)
     @ResponseBody
@@ -86,7 +86,7 @@ public class DeliveryController {
     public ResponseEntity<Void> updateOrder(@PathVariable UUID orderId,
                                             @RequestParam(name = "currentStatus") String status) {
         status = updateStatus(status);
-        deliveryService.updateOrder(orderId, status);
+        deliveryService.updateOrder(orderId, status, getUserId());
 
         return ResponseEntity.ok().build();
     }
