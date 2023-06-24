@@ -15,10 +15,10 @@ async function onUpdateOrder(event) {
     console.log(event)
 
     if (status === 'REGISTERED') {
-        const url = "http://localhost:8082/eataway/delivery/orders"
+        const url = "http://localhost:8082/eataway/delivery/orders/take"
 
         const response = await fetch(url, {
-            method: 'POST',
+            method: 'GET',
             headers: {
                 "Content-Type": "application/text"
             },
@@ -28,10 +28,10 @@ async function onUpdateOrder(event) {
         window.location.replace('http://localhost:8082/eataway/delivery/orders/' + orderId)
     } else {
         const newStatus = status === 'ACTIVE' ? 'ABOUT_TO_BE_DELIVERED' : 'DELIVERED'
-        const url = 'http://localhost:8082/eataway/delivery/orders/' + orderId + '?' + 'status=' + newStatus
+        const url = 'http://localhost:8082/eataway/delivery/orders/' + orderId +'/update' + '?' + 'status=' + newStatus
 
         const response = await fetch(url, {
-            method: 'PUT',
+            method: 'GET',
             headers: {
                 "Content-Type": "application/json"
             }

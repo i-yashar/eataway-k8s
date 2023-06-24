@@ -6,63 +6,67 @@
 <body>
 
 <div th:replace="fragments/navbar :: navbar">
-  Navbar
+    Navbar
 </div>
 
 <div class="container-fluid col-md-8">
-  <div class="row text-justify">
+    <div class="row text-justify">
 
-    <div th:object="${restaurant}" class="post-frame card card-body mt-3">
-      <div th:id="${'postNo' + restaurant.restaurantId}" class="media align-items-center align-items-lg-start text-center text-lg-left flex-column flex-lg-row">
+        <div th:object="${restaurant}" class="post-frame card card-body mt-3">
+            <div th:id="${'postNo' + restaurant.restaurantId}"
+                 class="media align-items-center align-items-lg-start text-center text-lg-left flex-column flex-lg-row">
 
-        <div class="post-header media-body">
-            <h4 class="media-title font-weight-semibold">
-              <th:block th:text="${restaurant.name}">Restaurant Name</th:block>
-            </h4>
+                <div class="post-header media-body">
+                    <h4 class="media-title font-weight-semibold">
+                        <th:block th:text="${restaurant.name}">Restaurant Name</th:block>
+                    </h4>
 
-          <ul class="post-details list-inline list-inline-dotted mb-3 mb-lg-2">
-            <li class="list-inline-item">
-              <p th:text="'Address:' + ${restaurant.address}">Restaurant Address</p>
-            </li>
-          </ul>
+                    <ul class="post-details list-inline list-inline-dotted mb-3 mb-lg-2">
+                        <li class="list-inline-item">
+                            <p th:text="'Address:' + ${restaurant.address}">Restaurant Address</p>
+                        </li>
+                    </ul>
 
-          <p class="mb-3 post-description" th:text="${restaurant.description}">Description</p>
+                    <p class="mb-3 post-description" th:text="${restaurant.description}">Description</p>
 
+                </div>
+
+            </div>
         </div>
 
-      </div>
     </div>
 
-  </div>
+    <h2 class="text-white mt-5">Menu</h2>
 
-<h2 class="text-white mt-5">Menu</h2>
+    <div th:each="menu : ${menus}" class="row text-justify">
+        <div class="post-frame card card-body mt-3">
+            <div class="media align-items-center align-items-lg-start text-center text-lg-left flex-column flex-lg-row">
 
-  <div th:each="menu : ${menus}" class="row text-justify">
-    <div class="post-frame card card-body mt-3">
-      <div class="media align-items-center align-items-lg-start text-center text-lg-left flex-column flex-lg-row">
+                <div class="post-header media-body">
 
-        <div class="post-header media-body">
+                    <h5 class="media-title font-weight-semibold">
+                        <th:block th:text="${menu.name}">Menu Name</th:block>
+                    </h5>
 
-          <h5 class="media-title font-weight-semibold">
-            <th:block th:text="${menu.name}">Menu Name</th:block>
-          </h5>
+                    <p class="mb-3 post-description" th:text="${menu.description}">Description</p>
 
-          <p class="mb-3 post-description" th:text="${menu.description}">Description</p>
+                    <span class="mb-3 post-description" th:text="'$' + ${menu.price}">Price</span>
 
-          <span class="mb-3 post-description" th:text="'$' + ${menu.price}">Price</span>
+                    <ul class="list-inline list-inline-dotted mb-0">
+                        <li class="list-inline-item">
+                            <form
+                                    th:action="@{http://localhost:8082/eataway/api/v1/basketItems/{menuId}(menuId = ${menu.menuId})}"
+                                    th:method="put"
+                            >
+                                <input class="btn btn btn-success" type="submit" value="Add to cart">
+                            </form>
+                        </li>
+                    </ul>
+                </div>
 
-          <ul class="list-inline list-inline-dotted mb-0">
-            <li class="list-inline-item">
-              <a th:id="${'addMenuBtn' + menu.menuId}" class="addMenuToBasketBtn btn btn-sm btn-success"
-                 href="javascript:void(0)"
-                 role="button">Add to cart </a>
-            </li>
-          </ul>
+            </div>
         </div>
-
-      </div>
     </div>
-  </div>
 
 </div>
 <script src="/js/basket-actions.js"></script>

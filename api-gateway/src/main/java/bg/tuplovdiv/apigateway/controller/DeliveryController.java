@@ -21,7 +21,8 @@ public class DeliveryController {
 
     private static final String ORDERS_PATH = "orders";
     private static final String ORDER_INFO_PATH = ORDERS_PATH + "/{orderId}";
-    private static final String UPDATE_ORDERS_PATH = ORDERS_PATH + "/{orderId}";
+    private static final String TAKE_ORDERS_PATH = ORDERS_PATH + "/take";
+    private static final String UPDATE_ORDERS_PATH = ORDERS_PATH + "/{orderId}/update";
     private static final String ACTIVE_ORDERS_PATH = ORDERS_PATH + "/active";
 
     private final DeliveryService deliveryService;
@@ -68,7 +69,7 @@ public class DeliveryController {
         return "order-delivery-info";
     }
 
-    @PostMapping(ORDERS_PATH)
+    @GetMapping(TAKE_ORDERS_PATH)
     @ResponseBody
     @PreAuthorize("@deliveryValidator.isDeliveryDriverValidForTake(#orderId)")
     public ResponseEntity<Void> takeOrder(@RequestBody String orderId) {
@@ -77,7 +78,7 @@ public class DeliveryController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping(UPDATE_ORDERS_PATH)
+    @GetMapping(UPDATE_ORDERS_PATH)
     @ResponseBody
     @PreAuthorize("@deliveryValidator.isDeliveryDriverValidForUpdate(#orderId)" +
             "&& @statusValidator.isStatusUpdateValid(#status)")

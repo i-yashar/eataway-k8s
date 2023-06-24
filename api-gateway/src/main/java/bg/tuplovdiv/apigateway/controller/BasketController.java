@@ -2,7 +2,6 @@ package bg.tuplovdiv.apigateway.controller;
 
 import bg.tuplovdiv.apigateway.dto.BasketDTO;
 import bg.tuplovdiv.apigateway.dto.CreateOrderRequestDTO;
-import bg.tuplovdiv.apigateway.dto.ItemDTO;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUser;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProviderFactory;
@@ -19,7 +18,7 @@ import java.util.UUID;
 public class BasketController {
 
     private static final String BASKET_PATH = "basket";
-    private static final String ADD_BASKET_ITEM_PATH = "api/v1/basketItems";
+    private static final String ADD_BASKET_ITEM_PATH = "api/v1/basketItems/{menuId}";
     private static final String DELETE_BASKET_ITEM_PATH = "api/v1/basketItems/{menuId}";
 
     private final AuthenticatedUserProviderFactory authenticatedUserProviderFactory;
@@ -50,11 +49,11 @@ public class BasketController {
 
     @PutMapping(ADD_BASKET_ITEM_PATH)
     @ResponseBody
-    public ResponseEntity<BasketDTO> addBasketItem(@RequestBody ItemDTO item) {
+    public ResponseEntity<BasketDTO> addBasketItem(@PathVariable UUID menuId) {
         return ResponseEntity.ok(basketService.addBasketItem(getUserId(), item));
     }
 
-    @DeleteMapping(DELETE_BASKET_ITEM_PATH)
+    @GetMapping(DELETE_BASKET_ITEM_PATH)
     @ResponseBody
     public ResponseEntity<Void> deleteBasketItem(@PathVariable UUID menuId) {
         basketService.deleteBasketItem(getUserId(), menuId);
