@@ -1,7 +1,6 @@
 package com.example.basketservice.rest;
 
 import com.example.basketservice.dto.BasketDTO;
-import com.example.basketservice.dto.ItemDTO;
 import com.example.basketservice.service.BasketService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,10 +20,10 @@ public class BasketRestController {
         this.basketService = basketService;
     }
 
-    @PutMapping(BASKET_PATH)
+    @PatchMapping(BASKET_ITEM_PATH)
     public ResponseEntity<BasketDTO> addBasketItem(@PathVariable String ownerId,
-                                                   @RequestBody ItemDTO basketItem) {
-        return ResponseEntity.ok(basketService.addBasketItem(ownerId, basketItem));
+                                                   @PathVariable UUID menuId) {
+        return ResponseEntity.ok(basketService.addBasketItem(ownerId, menuId));
     }
 
     @GetMapping(BASKET_PATH)

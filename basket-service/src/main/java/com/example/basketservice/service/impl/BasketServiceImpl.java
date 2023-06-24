@@ -2,6 +2,7 @@ package com.example.basketservice.service.impl;
 
 import com.example.basketservice.dto.BasketDTO;
 import com.example.basketservice.dto.ItemDTO;
+import com.example.basketservice.dto.MenuDTO;
 import com.example.basketservice.exception.MenuNotFoundException;
 import com.example.basketservice.mapper.BasketMapper;
 import com.example.basketservice.mapper.ItemMapper;
@@ -32,13 +33,13 @@ public class BasketServiceImpl implements BasketService {
     }
 
     @Override
-    public BasketDTO addBasketItem(String ownerId, ItemDTO item) {
+    public BasketDTO addBasketItem(String ownerId, UUID menuId) {
         BasketEntity basket = getBasketEntityByOwnerId(ownerId);
         Set<ItemEntity> basketItems = basket.getItems() == null ? new HashSet<>() : basket.getItems();
-        Optional<ItemEntity> optItem = getBasketItem(basketItems, item.getMenu().getMenuId());
+        Optional<ItemEntity> optItem = getBasketItem(basketItems, menuId);
 
         if (optItem.isEmpty()) {
-            addNewBasketItem(basketItems, item);
+            addNewBasketItem(basketItems, menuId);
         } else {
             incrementBasketItemCount(optItem.get());
         }
@@ -46,8 +47,9 @@ public class BasketServiceImpl implements BasketService {
         return mapper.toDTO(basketRepository.save(basket));
     }
 
-    private void addNewBasketItem(Set<ItemEntity> basketItems, ItemDTO item) {
-        ItemEntity itemEntity = itemMapper.fromDTO(item);
+    private void addNewBasketItem(Set<ItemEntity> basketItems, UUID menuId) {
+        ItemDTO newItem = new ItemDTO().setMenu(new MenuDTO().setMenuId(menuId)).setCount(1);
+        ItemEntity itemEntity = itemMapper.fromDTO(newItem);
         basketItems.add(itemEntity);
     }
 
