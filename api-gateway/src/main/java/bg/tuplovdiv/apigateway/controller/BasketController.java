@@ -50,7 +50,7 @@ public class BasketController {
     @PutMapping(ADD_BASKET_ITEM_PATH)
     @ResponseBody
     public ResponseEntity<BasketDTO> addBasketItem(@PathVariable UUID menuId) {
-        return ResponseEntity.ok(basketService.addBasketItem(getUserId(), item));
+        return ResponseEntity.ok(basketService.addBasketItem(getUserId(), menuId));
     }
 
     @GetMapping(DELETE_BASKET_ITEM_PATH)

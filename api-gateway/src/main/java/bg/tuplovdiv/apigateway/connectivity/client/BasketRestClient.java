@@ -1,7 +1,6 @@
 package bg.tuplovdiv.apigateway.connectivity.client;
 
 import bg.tuplovdiv.apigateway.dto.BasketDTO;
-import bg.tuplovdiv.apigateway.dto.ItemDTO;
 import bg.tuplovdiv.apigateway.security.jwt.JwtProvider;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.springframework.stereotype.Component;
@@ -33,10 +32,10 @@ public class BasketRestClient extends RestClient{
         return get(request, response -> mapJsonToObject(response.body(), BASKET_DTO_TYPE));
     }
 
-    public BasketDTO addBasketItem(String ownerId, ItemDTO item) {
+    public BasketDTO addBasketItem(String ownerId, UUID menuId) {
         HttpRequest request = HttpRequest.newBuilder()
-                .PUT(createRequestBody(item))
-                .uri(buildURI(BASKETS_API_BASKETS_BASE_PATH, ownerId))
+                .PUT(createRequestBody(menuId))
+                .uri(buildURI(BASKETS_API_BASKETS_BASKET_ITEM_PATH, ownerId, menuId.toString()))
                 .header("Content-Type", "application/json")
                 .header("accept", "application/json")
                 .header("Authorization", getBearerToken())

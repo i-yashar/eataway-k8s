@@ -2,7 +2,6 @@ package bg.tuplovdiv.apigateway.service.impl;
 
 import bg.tuplovdiv.apigateway.connectivity.client.BasketRestClient;
 import bg.tuplovdiv.apigateway.dto.BasketDTO;
-import bg.tuplovdiv.apigateway.dto.ItemDTO;
 import bg.tuplovdiv.apigateway.service.BasketService;
 import org.springframework.stereotype.Service;
 
@@ -33,8 +32,8 @@ class BasketServiceImpl implements BasketService {
     }
 
     @Override
-    public BasketDTO addBasketItem(String ownerId, ItemDTO item) {
-        return client.addBasketItem(ownerId, item);
+    public BasketDTO addBasketItem(String ownerId, UUID menuId) {
+        return client.addBasketItem(ownerId, menuId);
     }
 
     @Override
