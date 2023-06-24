@@ -38,9 +38,22 @@ public class DeliveryValidator {
         return driver != null && orderContainsDriverRestaurant(driver, orderId);
     }
 
-    public boolean isDeliveryDriverValidForTake(UUID orderId) {
+    public boolean isDeliveryDriverValidForUpdate(UUID orderId, String currentStatus) {
         DeliveryDriverEntity driver = getDeliveryDriver();
-        return driver != null && isDeliveryDriverFree(driver) && orderContainsDriverRestaurant(driver, orderId);
+        if(driver == null) {
+            return false;
+        }
+
+        if(currentStatus.equals("REGISTERED")) {
+            return isDeliveryDriverFree(driver) && orderContainsDriverRestaurant(driver, orderId);
+        }
+
+        return orderId.equals(driver.getCurrentOrderId());
+    }
+
+    private DeliveryDriverEntity getDeliveryDriver() {
+        AuthenticatedUser principal = authenticatedUserProviderFactory.getProvider().provide();
+        return deliveryDriverRepository.findByDeliveryDriverId(principal.getUserId()).orElse(null);
     }
 
     private boolean isDeliveryDriverFree(DeliveryDriverEntity driver) {
@@ -55,15 +68,5 @@ public class DeliveryValidator {
         return order.getItems()
                 .stream()
                 .anyMatch(i -> i.getMenu().getRestaurantId().equals(driver.getRestaurantId()));
-    }
-
-    public boolean isDeliveryDriverValidForUpdate(UUID orderId) {
-        DeliveryDriverEntity driver = getDeliveryDriver();
-        return driver != null && orderId.equals(driver.getCurrentOrderId());
-    }
-
-    private DeliveryDriverEntity getDeliveryDriver() {
-        AuthenticatedUser principal = authenticatedUserProviderFactory.getProvider().provide();
-        return deliveryDriverRepository.findByDeliveryDriverId(principal.getUserId()).orElse(null);
     }
 }

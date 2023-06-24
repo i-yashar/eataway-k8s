@@ -68,8 +68,7 @@ public class DeliveryController {
     }
 
     @PutMapping(ORDER_PATH)
-//    @PreAuthorize("@deliveryValidator.isDeliveryDriverValidForUpdate(#orderId)" +
-//            "&& @statusValidator.isStatusUpdateValid(#status)")
+    @PreAuthorize("@deliveryValidator.isDeliveryDriverValidForUpdate(#orderId, #status)")
     public String updateOrder(@PathVariable UUID orderId,
                               @RequestParam(name = "currentStatus") String status) {
         status = updateStatus(status);

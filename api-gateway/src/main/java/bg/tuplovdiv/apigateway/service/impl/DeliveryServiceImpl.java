@@ -53,20 +53,6 @@ class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     @Transactional
-    public OrderDTO takeOrder(UUID orderId, String deliveryDriverId) {
-        OrderDTO order = orderQueue.takeOrder(orderId);
-        order.setDeliveryDriverId(deliveryDriverId);
-        order.setStatus("ACTIVE");
-
-        orderDispatcher.sendOrderUpdate(order);
-        orderCache.updateOrder(order);
-        deliveryDriverService.registerDriver(deliveryDriverId, orderId);
-
-        return order;
-    }
-
-    @Override
-    @Transactional
     public OrderDTO updateOrder(UUID orderId, String status, String deliveryDriverId) {
         if(hasBeenTaken(status)) {
             return takeOrder(orderId, deliveryDriverId);
@@ -77,6 +63,18 @@ class DeliveryServiceImpl implements DeliveryService {
 
         orderDispatcher.sendOrderUpdate(order);
         deliveryDriverService.setDriverFreeIfOrderIsDelivered(order);
+
+        return order;
+    }
+
+    private OrderDTO takeOrder(UUID orderId, String deliveryDriverId) {
+        OrderDTO order = orderQueue.takeOrder(orderId);
+        order.setDeliveryDriverId(deliveryDriverId);
+        order.setStatus("ACTIVE");
+
+        orderDispatcher.sendOrderUpdate(order);
+        orderCache.updateOrder(order);
+        deliveryDriverService.registerDriver(deliveryDriverId, orderId);
 
         return order;
     }
