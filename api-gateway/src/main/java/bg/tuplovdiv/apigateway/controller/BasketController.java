@@ -1,12 +1,10 @@
 package bg.tuplovdiv.apigateway.controller;
 
-import bg.tuplovdiv.apigateway.dto.BasketDTO;
 import bg.tuplovdiv.apigateway.dto.CreateOrderRequestDTO;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUser;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProvider;
 import bg.tuplovdiv.apigateway.security.authentication.AuthenticatedUserProviderFactory;
 import bg.tuplovdiv.apigateway.service.BasketService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -48,17 +46,17 @@ public class BasketController {
     }
 
     @PutMapping(ADD_BASKET_ITEM_PATH)
-    @ResponseBody
-    public ResponseEntity<BasketDTO> addBasketItem(@PathVariable UUID menuId) {
-        return ResponseEntity.ok(basketService.addBasketItem(getUserId(), menuId));
+    public String addBasketItem(@PathVariable UUID menuId) {
+        basketService.addBasketItem(getUserId(), menuId);
+
+        return "redirect:/eataway/basket";
     }
 
     @GetMapping(DELETE_BASKET_ITEM_PATH)
-    @ResponseBody
-    public ResponseEntity<Void> deleteBasketItem(@PathVariable UUID menuId) {
+    public String deleteBasketItem(@PathVariable UUID menuId) {
         basketService.deleteBasketItem(getUserId(), menuId);
 
-        return ResponseEntity.noContent().build();
+        return "redirect:/eataway/basket";
     }
 
     private String getUserId() {
