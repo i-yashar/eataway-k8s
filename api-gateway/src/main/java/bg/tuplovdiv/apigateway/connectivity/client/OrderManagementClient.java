@@ -1,7 +1,7 @@
 package bg.tuplovdiv.apigateway.connectivity.client;
 
 import bg.tuplovdiv.apigateway.exception.RemoteHostException;
-import bg.tuplovdiv.apigateway.security.jwt.JwtProvider;
+import bg.tuplovdiv.apigateway.security.jwt.ManagementJwtProvider;
 import org.springframework.stereotype.Component;
 
 import java.net.http.HttpRequest;
@@ -13,7 +13,7 @@ public class OrderManagementClient extends RestClient {
     private static final String ORDER_MANAGEMENT_API_BASE_PATH = HOST + "/orders/api/v1/management";
     private static final String DISPATCH_REGISTERED_ORDERS_PATH = ORDER_MANAGEMENT_API_BASE_PATH + "/dispatch";
 
-    public OrderManagementClient(JwtProvider jwtProvider) {
+    public OrderManagementClient(ManagementJwtProvider jwtProvider) {
         super(jwtProvider);
     }
 

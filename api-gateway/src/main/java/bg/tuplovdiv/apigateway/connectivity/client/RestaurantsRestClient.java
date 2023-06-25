@@ -5,6 +5,7 @@ import bg.tuplovdiv.apigateway.dto.RestaurantDTO;
 import bg.tuplovdiv.apigateway.dto.page.PageDTO;
 import bg.tuplovdiv.apigateway.security.jwt.JwtProvider;
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
@@ -25,7 +26,7 @@ public class RestaurantsRestClient extends RestClient {
     private static final TypeReference<RestaurantDTO> RESTAURANT_TYPE = new TypeReference<>() {};
     private static final TypeReference<PageDTO<MenuDTO>> PAGE_OF_RESTAURANT_MENUS_TYPE = new TypeReference<>() {};
 
-    public RestaurantsRestClient(JwtProvider jwtProvider) {
+    public RestaurantsRestClient(@Qualifier("jwtProvider") JwtProvider jwtProvider) {
         super(jwtProvider);
     }
 

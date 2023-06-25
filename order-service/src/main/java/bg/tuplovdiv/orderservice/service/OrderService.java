@@ -11,6 +11,6 @@ public interface OrderService {
     OrderDTO findOrderByOrderId(UUID orderId);
     PageDTO<OrderDTO> findActiveUserOrders(String clientId, int page, int size);
     UUID createOrder(CreateOrderRequestDTO orderRequest);
-    OrderDTO updateOrder(OrderDTO order);
+    void updateOrder(OrderDTO order);
     Collection<OrderDTO> getActiveDeliveryDriverOrders(String driverId);
 }

@@ -3,6 +3,7 @@ package bg.tuplovdiv.apigateway.connectivity.client;
 import bg.tuplovdiv.apigateway.dto.BasketDTO;
 import bg.tuplovdiv.apigateway.security.jwt.JwtProvider;
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.net.http.HttpRequest;
@@ -18,7 +19,7 @@ public class BasketRestClient extends RestClient{
 
     private static final TypeReference<BasketDTO> BASKET_DTO_TYPE = new TypeReference<>() {};
 
-    public BasketRestClient(JwtProvider jwtProvider) {
+    public BasketRestClient(@Qualifier("jwtProvider") JwtProvider jwtProvider) {
         super(jwtProvider);
     }
     public BasketDTO getUserBasket(String ownerId) {

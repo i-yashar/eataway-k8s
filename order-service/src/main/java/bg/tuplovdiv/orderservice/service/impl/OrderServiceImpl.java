@@ -148,7 +148,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDTO updateOrder(OrderDTO order) {
+    public void updateOrder(OrderDTO order) {
         ActiveOrderEntity activeOrderEntity = getActiveOrderByOrderId(order.getOrderId());
         activeOrderEntity.setStatus(OrderStatus.valueOf(order.getStatus()));
         activeOrderEntity.setDeliveryDriverId(order.getDeliveryDriverId());
@@ -159,8 +159,6 @@ public class OrderServiceImpl implements OrderService {
 
         OrderEntity orderEntity = activeOrderEntity.toOrder();
         orderDispatcher.sendChangedOrderStatus(createOrderStatusChange(orderEntity));
-
-        return mapper.toDTO(orderEntity);
     }
 
     private ActiveOrderEntity getActiveOrderByOrderId(UUID orderId) {

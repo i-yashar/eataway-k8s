@@ -4,6 +4,7 @@ import bg.tuplovdiv.apigateway.dto.*;
 import bg.tuplovdiv.apigateway.dto.page.PageDTO;
 import bg.tuplovdiv.apigateway.security.jwt.JwtProvider;
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.net.http.HttpRequest;
@@ -25,7 +26,7 @@ public class OrdersRestClient extends RestClient {
     private static final TypeReference<Collection<OrderDTO>> ORDER_DTOS_TYPE = new TypeReference<>() {};
     private static final TypeReference<Collection<OrderStatusInfoDTO>> ORDER_STATUS_INFO_DTOS_TYPE = new TypeReference<>() {};
 
-    public OrdersRestClient(JwtProvider jwtProvider) {
+    public OrdersRestClient(@Qualifier("jwtProvider") JwtProvider jwtProvider) {
         super(jwtProvider);
     }
 

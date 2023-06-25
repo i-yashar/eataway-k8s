@@ -9,11 +9,17 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @Component
 public class TokenService {
 
     private static final String API_GATEWAY_SERVICE = "api_gateway_service";
+    private static final List<String> AUDIENCE;
+
+    static {
+        AUDIENCE = List.of("api_gateway_backend_services");
+    }
 
     private final JwtEncoder encoder;
     private final AuthenticatedUserProviderFactory authenticatedUserProviderFactory;
@@ -35,6 +41,7 @@ public class TokenService {
                 .issuedAt(now)
                 .expiresAt(now.plus(1, ChronoUnit.HOURS))
                 .subject(user.getUserId())
+                .audience(AUDIENCE)
                 .claim("scope", scope)
                 .build();
 

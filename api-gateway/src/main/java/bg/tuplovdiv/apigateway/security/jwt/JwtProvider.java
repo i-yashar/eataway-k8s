@@ -1,11 +1,13 @@
 package bg.tuplovdiv.apigateway.security.jwt;
 
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.SessionScope;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
-@Component
+@Component("jwtProvider")
+@SessionScope
 public class JwtProvider {
 
     private String token;
